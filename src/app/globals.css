@@ -4,16 +4,16 @@
 
 :root {
   /* Colors */
-  --offwhite: 210, 17%, 98%;
-  --black: 0, 0%, 9%;
-  --white: 0, 0%, 100%;
-  --blue: 212, 60%, 58%;
-  --red: 355, 49%, 58%;
-  --gray: 215, 16%, 47%;
-  --green: 127, 82%, 65%;
-  --brightred: 0, 82%, 65%;
-  --lightblue: 212, 100%, 94%;
-  --lightred: 356, 41%, 93%;
+  --offwhite: 210 17% 98%;
+  --black: 0 0% 9%;
+  --white: 0 0% 100%;
+  --blue: 212 60% 58%;
+  --red: 355 49% 58%;
+  --gray: 215 16% 47%;
+  --green: 127 82% 65%;
+  --brightred: 0 82% 65%;
+  --lightblue: 212 100% 94%;
+  --lightred: 356 41% 93%;
 
   /* Usage */
   --background: var(--offwhite);
