@@ -9,7 +9,7 @@ export default function Home() {
       </Button>
       <Button intent="public" size="small" rounde="full">Public</Button>
       <Button intent="private" size="small" rounde="full">Private</Button>
-      <Button intent="secondary" size="large">Private</Button>
+      <Button intent="secondary" size="large">Rejoindre</Button>
     </div>
   );
 }
