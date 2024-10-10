@@ -2,10 +2,8 @@ import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 import React from "react";
 
-// Classe de base commune pour tous les boutons
 const baseButtonClass = "inline-flex justify-center items-center gap-2.5 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
-// Définition des variantes de boutons avec cva
 const buttonVariants = cva(baseButtonClass, {
   variants: {
     intent: {
@@ -42,7 +40,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
 }
 
-// Composant Button
 const Button: React.FC<ButtonProps> = ({
   className, 
   intent,    
@@ -51,7 +48,6 @@ const Button: React.FC<ButtonProps> = ({
   children, 
   ...props   
 }) => {
-  // Combine les classes de cva et les classes supplémentaires passées via className
   const buttonClassNames = clsx(buttonVariants({ intent, size, rounde }), className);
 
   return (
