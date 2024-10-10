@@ -21,6 +21,7 @@
   --components-bg: var(--white);
   --btn-bg: var(--black);
   --btn-fg: var(--white);
+  --btn-fg-secondary: var(--black);
   --footer-bg: var(--black);
   --footer-fg: var(--white);
   --card-date: var(--gray);

@@ -1,56 +1,64 @@
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
+import React from "react";
 
-// Définition des classes de base
-const base = "mes classes de base";
+// Classe de base commune pour tous les boutons
+const baseButtonClass = "inline-flex justify-center items-center gap-2.5 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
-const buttonVariants = cva(base, {
+// Définition des variantes de boutons avec cva
+const buttonVariants = cva(baseButtonClass, {
   variants: {
     intent: {
-      primary: "inline-flex px-4 py-2 justify-center items-center gap-2.5 rounded-md bg-btnBg",
-      secondary: "bg-hoverbutton text-hoverfont hover:bg-button hover:text-font",
-      outline: "bg-none text-hoverfont border-button border-2",
-      ghost: "bg-none text-hoverfont hover:text-font",
+      primary: "bg-btnBg text-btnFg hover:bg-btnBg/80 font-medium",
+      secondary: "bg-btnPublic text-btnFgS font-medium hover:bg-btnPublic/80",
+      public: "bg-btnPublic text-btnFgS hover:bg-btnPublic/80",
+      private: "bg-btnPrivate text-btnFgS hover:bg-btnPrivate/80",
     },
     size: {
-      verysmall: "py-1 px-2 w-28 h-8 text-sm",
-      small: "py-2 px-4 w-32 h-8 text-sm",
-      medium: "py-3 px-6 w-36 h-12 text-base",
-      big: "py-4 px-8 w-48 h-14 text-lg",
+      verysmall: "py-1 px-2 h-8 text-sm",
+      small: "py-2 px-4  h-8 text-sm",
+      medium: "py-3 px-6  h-12 text-base",
+      large: "py-3 px-10 h-12 text-lg",
     },
     rounde: {
+      full: "rounded-full",
+      md: "rounded-md",
       rd: "rounded-lg",
       nrd: "rounded-none",
     },
   },
-  compoundVariants: [],
   defaultVariants: {
     intent: "primary",
     size: "medium",
-    rounde: "rd",
+    rounde: "md",
   },
 });
 
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  intent?: "primary" | "public" | "private" |"secondary";
+  size?: "verysmall" | "small" | "medium" | "large";
+  rounde?: "full" | "md" | "rd" | "nrd";
+  className?: string;
+  children?: React.ReactNode;
+}
+
 // Composant Button
-export default function Button({
-  className,    // Classes supplémentaires passées via props
-  intent,       // Variante d'intention (primary, secondary, etc.)
-  size,         // Taille (small, medium, etc.)
-  rounde,       // Roundness (rd, nrd)
-  children,     // Contenu enfant du bouton
-  ...props      // Autres props
-}) {
-  // Combine les classes avec clsx et buttonVariants
+const Button: React.FC<ButtonProps> = ({
+  className, 
+  intent,    
+  size,    
+  rounde,    
+  children, 
+  ...props   
+}) => {
+  // Combine les classes de cva et les classes supplémentaires passées via className
   const buttonClassNames = clsx(buttonVariants({ intent, size, rounde }), className);
 
-  console.log(buttonClassNames); // Aide pour le débogage, affiche les classes combinées
-
   return (
-    <button
-      className={buttonClassNames}  // Utilise les classes générées
-      {...props}  // Passe les autres props au bouton (comme onClick, etc.)
-    >
+    <button className={buttonClassNames} {...props}>
       {children}
     </button>
   );
-}
+};
+
+export default Button;
