@@ -2,7 +2,7 @@ import { Raleway } from 'next/font/google';
 
 const ralewayBold = Raleway({
   subsets: ['latin'],
-  weight: ['900'],
+  weight: ['600'],
   variable: '--font-raleway',
 });
 
@@ -24,20 +24,20 @@ export function CardEvent({ nom, lieu, date, img, id }: ToolCardProps) {
   return (
     <li
       key={id}
-      className="group flex justify-between items-center bg-white w-72 md:w-96 rounded-2xl shadow-md p-3.5 cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden"
+      className="flex justify-between items-center bg-white w-9/12 sm:w-96 h-32 md:w-full 2xl:w-[480px] rounded-3xl shadow-md cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden"
     >
-      <section>
-        <div>
-          <p>{nom}</p>
-          <p>{lieu}</p>
+      <section className='flex flex-col justify-between w-full h-full p-3.5 pr-0'>
+        <div className='text-sm md:text-lg'>
+          <p className={`${ralewayBold.className}`}>{nom}</p>
+          <p className={`${ralewayMedium.className}`}>{lieu}</p>
         </div>
-        <div>
+        <div className='flex gap-2 text-cardDate text-xs md:text-sm'>
           <img src="./calendar.svg" alt="calendar Icon" />
-          <p>{date}</p>
+          <p className={`${ralewayMedium.className}`}>{date}</p>
         </div>
       </section>
-      <section>
-        <img src={img} alt="Img évènement" />
+      <section className='w-5/12 h-full sm:w-6/12'>
+        <img className='object-cover w-full h-full' src={img} alt="Img évènement" />
       </section>
     </li>
   );
