@@ -9,6 +9,11 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			agbalumo: ['var(--font-agbalumo)'],
+			raleway: ['var(--font-raleway)'],
+			inter: ['var(--font-inter)'],
+		},
   		colors: {
   			background: 'hsl(var(--background)/<alpha-value>)',
   			foreground: 'hsl(var(--foreground)/<alpha-value>)',
