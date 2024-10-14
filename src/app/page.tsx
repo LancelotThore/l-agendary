@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { LockClosedIcon } from "@/components/ui/icons";
 
 export default function Home() {
   return (
@@ -6,7 +7,7 @@ export default function Home() {
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <Button>Button</Button>
         <Button variant="accent">Accent</Button>
-        <Button variant="destructive">Destructive</Button>
+        <Button variant="destructive">Destructive <LockClosedIcon className="w-6"/></Button>
         <Button variant="link">Link</Button>
       </main>
     </div>
