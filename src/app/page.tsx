@@ -1,4 +1,4 @@
-import EventHeader from "./ui/components/eventHeader";
+import EventHeader from "../components/ui/eventHeader";
 
 export default function Home() {
   return (
