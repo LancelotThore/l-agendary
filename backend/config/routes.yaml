@@ -1,0 +1,29 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+
+home:
+    path: /
+    controller: App\Controller\HomeController::index
+
+
+auth_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+auth_register:
+    path: /register
+    controller: App\Controller\SecurityController::register
+
+auth_logout:
+    path: /logout
+    controller: App\Controller\SecurityController::logout
+
+
+
+
+# -------------------------
+# Events
