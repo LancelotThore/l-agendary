@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Agbalumo, Raleway } from 'next/font/google';
 import { ToolCard } from "./ui/components/toolCard";
-import { Card } from "./ui/components/card";
+import { CardEvent } from "./ui/components/cardEvent";
 
 const agbalumo = Agbalumo({
   subsets: ['latin'],
@@ -32,14 +32,16 @@ let toolCards = [
 
 let cards = [
   {
-    title: 'Recherchez un événement',
-    description: 'Trouvez ce qui vous convient !',
-    icon: './research-red.svg',
+    nom: 'Recherchez un événement',
+    lieu: 'Trouvez ce qui vous convient !',
+    date: '85 janvier 2077',
+    img: './research-red.svg',
   },
   {
-    title: 'Créez un nouvel événement',
-    description: 'Faisons de nouvelles choses, ensemble.',
-    icon: './plus-blue.svg',
+    nom: 'Créez un nouvel événement',
+    lieu: 'Faisons de nouvelles choses, ensemble.',
+    date: '30 janvier 2025',
+    img: './plus-blue.svg',
   }
 ];
 
@@ -63,13 +65,14 @@ export default function Home() {
       </ul>
       
       <h2 className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}>Evénements publics les plus populaires !</h2>
-      <ul>
+      <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]">
         {cards.map((card, id) => (
-          <Card
+          <CardEvent
             id={id + 1}
-            title={card.title}
-            description={card.description}
-            img={card.icon}
+            nom={card.nom}
+            lieu={card.lieu}
+            date={card.date}
+            img={card.img}
           />
         ))}
       </ul>
