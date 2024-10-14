@@ -14,21 +14,63 @@
   --brightred: 0 82% 65%;
   --lightblue: 212 100% 94%;
   --lightred: 356 41% 93%;
-
-  /* Usage */
-  --background: var(--offwhite);
-  --foreground: var(--black);
-  --components-bg: var(--white);
-  --btn-bg: var(--black);
-  --btn-fg: var(--white);
-  --btn-fg-secondary: var(--black);
-  --footer-bg: var(--black);
-  --footer-fg: var(--white);
-  --card-date: var(--gray);
-  --card-create-primary: var(--blue);
-  --card-create-secondary: var(--lightblue);
-  --card-research-primary: var(--red);
-  --card-research-secondary: var(--lightred);
-  --btn-public: var(--green);
-  --btn-private: var(--brightred);
 }
+
+@layer base {
+  :root {
+    --background: var(--offwhite);
+    --foreground: var(--black);
+
+    --primary: var(--black);
+    --primary-foreground: var(--white);
+
+    --secondary: var(--white);
+    --secondary-foreground: var(--black);
+
+    --accent: var(--green);
+    --accent-foreground: var(--black);
+
+    --destructive: var(--brightred);
+    --destructive-foreground: var(--black);
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+
+    /* Components */
+    --card: var(--white);
+    --card-foreground: var(--black);
+  }
+  .dark {
+    --background: var(--offwhite);
+    --foreground: var(--black);
+
+    --primary: var(--black);
+    --primary-foreground: var(--white);
+
+    --secondary: var(--white);
+    --secondary-foreground: var(--black);
+
+    --accent: var(--green);
+    --accent-foreground: var(--black);
+
+    --destructive: var(--brightred);
+    --destructive-foreground: var(--black);
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+
+    /* Components */
+    --card: var(--white);
+    --card-foreground: var(--black);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+

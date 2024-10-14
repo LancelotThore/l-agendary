@@ -1,33 +1,61 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: [
+    darkMode: ["class"],
+    content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        background: 'hsl(var(--background) / <alpha-value>)',
-        foreground: 'hsl(var(--foreground) / <alpha-value>)',
-        componentsBg: 'hsl(var(--components-bg) / <alpha-value>)',
-        btnBg: 'hsl(var(--btn-bg) / <alpha-value>)',
-        btnFg: 'hsl(var(--btn-fg) / <alpha-value>)',
-        btnFgS: 'hsl(var(--btn-fg-secondary) / <alpha-value>)',
-        footerBg: 'hsl(var(--footer-bg) / <alpha-value>)',
-        footerFg: 'hsl(var(--footer-fg) / <alpha-value>)',
-        cardDate: 'hsl(var(--card-date) / <alpha-value>)',
-        cardCreatePrimary: 'hsl(var(--card-create-primary) / <alpha-value>)',
-        cardCreateSecondary: 'hsl(var(--card-create-secondary) / <alpha-value>)',
-        cardResearchPrimary: 'hsl(var(--card-research-primary) / <alpha-value>)',
-        cardResearchSecondary: 'hsl(var(--card-research-secondary) / <alpha-value>)',
-        btnPublic: 'hsl(var(--btn-public) / <alpha-value>)',
-        btnPrivate: 'hsl(var(--btn-private) / <alpha-value>)',
-      },
-    },
-  },
-  plugins: [],
-};
+  	extend: {
+		fontFamily: {
+			agbalumo: ['var(--font-agbalumo)'],
+			raleway: ['var(--font-raleway)'],
+			inter: ['var(--font-inter)'],
+		},
+  		colors: {
+  			background: 'hsl(var(--background)/<alpha-value>)',
+  			foreground: 'hsl(var(--foreground)/<alpha-value>)',
 
+  			card: {
+  				DEFAULT: 'hsl(var(--card)/<alpha-value>)',
+  				foreground: 'hsl(var(--card-foreground)/<alpha-value>)'
+  			},
+  			primary: {
+  				DEFAULT: 'hsl(var(--primary)/<alpha-value>)',
+  				foreground: 'hsl(var(--primary-foreground)/<alpha-value>)'
+  			},
+  			secondary: {
+  				DEFAULT: 'hsl(var(--secondary)/<alpha-value>)',
+  				foreground: 'hsl(var(--secondary-foreground)/<alpha-value>)'
+  			},
+  			accent: {
+  				DEFAULT: 'hsl(var(--accent)/<alpha-value>)',
+  				foreground: 'hsl(var(--accent-foreground)/<alpha-value>)'
+  			},
+  			destructive: {
+  				DEFAULT: 'hsl(var(--destructive)/<alpha-value>)',
+  				foreground: 'hsl(var(--destructive-foreground)/<alpha-value>)'
+  			},
+  			border: 'hsl(var(--border))',
+  			input: 'hsl(var(--input))',
+  			ring: 'hsl(var(--ring))',
+  			chart: {
+  				'1': 'hsl(var(--chart-1))',
+  				'2': 'hsl(var(--chart-2))',
+  				'3': 'hsl(var(--chart-3))',
+  				'4': 'hsl(var(--chart-4))',
+  				'5': 'hsl(var(--chart-5))'
+  			}
+  		},
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		}
+  	}
+  },
+  plugins: [require("tailwindcss-animate")],
+};
 export default config;
