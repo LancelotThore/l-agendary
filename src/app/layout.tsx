@@ -27,9 +27,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Head>
-        <script src="/node_modules/flowbite/dist/flowbite.min.js"></script>
-      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} relative antialiased`}
       >

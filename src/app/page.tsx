@@ -10,35 +10,36 @@ const agbalumo = Agbalumo({
 })
 const raleway = Raleway({
   subsets: ['latin'],
+  weight: '900',
   variable: '--font-raleway',
 })
 
 
 let toolCards = [
   {
-      title: 'Recherchez un événement',
-      description: 'Trouvez ce qui vous convient !',
-      icon: './research-red.svg',
-      color: 'text-cardResearchPrimary',
-    },
-    {
-      title: 'Créez un nouvel événement',
-      description: 'Faisons de nouvelles choses, ensemble.',
-      icon: './plus-blue.svg',
-      color:'text-cardCreatePrimary',   
+    title: 'Recherchez un événement',
+    description: 'Trouvez ce qui vous convient !',
+    icon: './research-red.svg',
+    color: 'text-cardResearchPrimary',
+  },
+  {
+    title: 'Créez un nouvel événement',
+    description: 'Faisons de nouvelles choses, ensemble.',
+    icon: './plus-blue.svg',
+    color: 'text-cardCreatePrimary',
   }
 ];
 
 let cards = [
   {
-      title: 'Recherchez un événement',
-      description: 'Trouvez ce qui vous convient !',
-      icon: './research-red.svg',
-    },
-    {
-      title: 'Créez un nouvel événement',
-      description: 'Faisons de nouvelles choses, ensemble.',
-      icon: './plus-blue.svg',
+    title: 'Recherchez un événement',
+    description: 'Trouvez ce qui vous convient !',
+    icon: './research-red.svg',
+  },
+  {
+    title: 'Créez un nouvel événement',
+    description: 'Faisons de nouvelles choses, ensemble.',
+    icon: './plus-blue.svg',
   }
 ];
 
@@ -56,17 +57,21 @@ export default function Home() {
             description={toolcard.description}
             icon={toolcard.icon}
             color={toolcard.color}
-        />
+          />
         ))}
 
-        {/* {cards.map((card, id) => (
+      </ul>
+      
+      <h2 className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}>Evénements publics les plus populaires !</h2>
+      <ul>
+        {cards.map((card, id) => (
           <Card
             id={id + 1}
             title={card.title}
             description={card.description}
-            img={icon}
-        />
-        ))} */}
+            img={card.icon}
+          />
+        ))}
       </ul>
     </div>
   );
