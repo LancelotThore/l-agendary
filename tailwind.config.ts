@@ -9,6 +9,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        agbalumo: ['var(--font-agbalumo)'],
+        raleway: ['var(--font-raleway)'],
+        inter: ['var(--font-inter)'],
+      },
       colors: {
         background: 'hsl(var(--background), 1)',
         foreground: 'hsl(var(--foreground), 1)',
@@ -27,8 +32,5 @@ const config: Config = {
       },
     },
   },
-  plugins: [
-    require('flowbite/plugin')
-  ]
 };
 export default config;
