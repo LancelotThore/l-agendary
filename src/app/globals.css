@@ -33,6 +33,10 @@
     --destructive: var(--brightred);
     --destructive-foreground: var(--black);
 
+    /* Gradient */
+    --gradient-primary: var(--black);
+    --gradient-secondary: var(--white);
+
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
 
