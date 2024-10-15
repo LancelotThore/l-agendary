@@ -53,6 +53,10 @@ const config: Config = {
 				'secondary': 'var(--gradient-secondary)',
 			}
   		},
+		fontSize: {
+			'3xs': '0.5rem',
+			'2xs': '0.625rem',
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],

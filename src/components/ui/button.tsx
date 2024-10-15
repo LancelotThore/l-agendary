@@ -15,11 +15,11 @@ const buttonVariants = cva(
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         public: "bg-accent text-accent-foreground rounded-full",
-        private: "bg-destructive text-destructive-foreground rounded-lg",
+        private: "bg-destructive text-destructive-foreground rounded-full",
       },
       size: {
         default: "h-10 text-xs px-4 py-2",
-        sm: "px-2.5 py-1",
+        sm: "px-2.5 py-1 text-2xs",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
       },
