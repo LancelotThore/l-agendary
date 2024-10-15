@@ -22,7 +22,7 @@ export function Footer() {
             <a href="/" className='pl-5'>Contact</a>
         </div>
 
-        <div className={`${ralewayMedium.className} flex my-5 text-sm`}>
+        <div className={`${ralewayMedium.className} flex mt-5 text-sm`}>
             <a href="/" className='border-r-2 border-background pr-2'>© L’agendary</a>
             <a href="/" className='border-r-2 border-background px-2 underline'>Tous droits réservés</a>
             <a href="/" className='pl-2'>2024</a>
