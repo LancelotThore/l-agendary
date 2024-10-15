@@ -110,10 +110,12 @@ export default function Home() {
       <h2 className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}>A propos de nous</h2>
       <section className="w-full flex justify-center mb-20">
         <div className="w-9/12 flex flex-col gap-5 text-sm lg:text-base lg:flex-row-reverse md:w-full">
-          <img className="object-cover rounded-md md:w-full md:h-[400px]" src="./teams.jpg" alt="Image teams" />
-          <div className="md:flex md:flex-col md:justify-center">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc volutpat pellentesque elit eget volutpat. Nullam tempus orci vitae dapibus commodo.</p>
-            <p>Sed ut pulvinar turpis, quis blandit est. Aenean rhoncus varius neque, in sollicitudin mauris commodo eget. In ornare luctus blandit. Nam malesuada placerat urna id efficitur.</p>
+          <img className="object-cover rounded-md md:w-full lg:w-6/12" src="./teams.jpg" alt="Image teams" />
+          <div className="flex flex-col justify-center gap-5 md:w-full lg:w-6/12 sm:text-sm md:text-base">
+            <p><span className={`${agbalumo.className}`}>L'agendary</span> est une application conviviale qui permet à chacun de créer un événement en seulement quelques secondes. Que vous souhaitiez organiser une fête d'anniversaire intime, une grande convention, ou un événement culturel d'envergure, Agendary vous facilite la tâche.</p>
+            <p>Avec Agendary, vous avez la possibilité de rendre votre événement privé, accessible uniquement aux personnes que vous invitez, ou public, ouvert à toute la communauté des utilisateurs. Cela vous donne un contrôle total sur qui peut voir et participer à vos événements.</p>
+            <p>Peu importe le type d'événement – qu'il s'agisse d'une réunion de famille, d'une rencontre professionnelle ou d'un concert – vous pouvez non seulement le créer, mais aussi y participer facilement grâce à une interface intuitive et rapide.</p>
+            <p>Créez, partagez et rejoignez les événements qui vous passionnent avec Agendary, et ne manquez jamais une occasion de vous divertir ou de vous connecter avec les autres!</p>
           </div>
         </div>
       </section>
