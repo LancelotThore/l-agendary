@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Raleway } from 'next/font/google';
+import RegisterLayout from './layout';
 
 const raleway = Raleway({
   subsets: ['latin'],
@@ -7,14 +8,11 @@ const raleway = Raleway({
   variable: '--font-raleway',
 })
 
-export default function Home() {
+export default function RegisterPage() {
   return (
-    <div className="bg-background">
-
-      <img src="./logo" alt="" />
-      <form action="post">
-
-      </form>
-    </div>
+    <RegisterLayout>
+      <h1>Page de Registration</h1>
+      {/* Votre contenu de page ici */}
+    </RegisterLayout>
   );
 }

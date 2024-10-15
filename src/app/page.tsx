@@ -73,10 +73,10 @@ let cards = [
 
 export default function Home() {
   return (
-    <div className="bg-background mx-0 md:mx-20 lg:mx-40">
-      <h1 className={`${agbalumo.className} text-[32px] py-[57px] text-center`}>L'Art de Planifier !</h1>
+    <div className="bg-background sm:w-11/12 mx-auto md:w-10/12">
+      <h1 className={`${agbalumo.className} text-3xl py-14 text-center`}>L'Art de Planifier !</h1>
 
-      <ul className="flex items-center flex-wrap px-10 justify-center gap-[21px]">
+      <ul className="flex items-center flex-wrap px-10 justify-center gap-5">
       {toolCards.map((toolcard, id) => (
           <ToolCard
             key={id}
