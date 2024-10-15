@@ -3,7 +3,6 @@ import { Agbalumo, Raleway } from 'next/font/google';
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
 import { Button } from '../components/ui/button';
-import { Footer } from '../components/ui/footer';
 
 const agbalumo = Agbalumo({
   subsets: ['latin'],
@@ -68,18 +67,19 @@ let cards = [
     lieu: 'Lieu pour voir aussi',
     date: '85 janvier 2077',
     img: './paysage.webp',
-  },
+  }
 ];
 
 
 export default function Home() {
   return (
-    <div className="bg-background">
+    <div className="bg-background mx-0 md:mx-20 lg:mx-40">
       <h1 className={`${agbalumo.className} text-[32px] py-[57px] text-center`}>L'Art de Planifier !</h1>
 
-      <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]">
-        {toolCards.map((toolcard, id) => (
+      <ul className="flex items-center flex-wrap px-10 justify-center gap-[21px]">
+      {toolCards.map((toolcard, id) => (
           <ToolCard
+            key={id}
             id={id + 1}
             title={toolcard.title}
             description={toolcard.description}
@@ -87,14 +87,14 @@ export default function Home() {
             color={toolcard.color}
           />
         ))}
-
       </ul>
 
       <h2 className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}>Evénements publics les plus populaires !</h2>
       {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
-      <ul className="flex items-center gap-5 flex-col md:grid md:grid-cols-2 md:gap-5 md:px-10 lg:grid-cols-3">
+      <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {cards.map((card, id) => (
           <CardEvent
+          key={id}
             id={id + 1}
             nom={card.nom}
             lieu={card.lieu}
@@ -108,8 +108,8 @@ export default function Home() {
       </div>
 
       <h2 className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}>A propos de nous</h2>
-      <section className="flex justify-center mb-10 px-10">
-        <div className="w-72 flex flex-col gap-5 text-sm lg:text-base lg:flex-row md:w-full">
+      <section className="w-full flex justify-center mb-20">
+        <div className="w-9/12 flex flex-col gap-5 text-sm lg:text-base lg:flex-row-reverse md:w-full">
           <img className="object-cover rounded-md md:w-full md:h-[400px]" src="./teams.jpg" alt="Image teams" />
           <div className="md:flex md:flex-col md:justify-center">
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc volutpat pellentesque elit eget volutpat. Nullam tempus orci vitae dapibus commodo.</p>
@@ -117,7 +117,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <Footer />
     </div>
   );
 }
