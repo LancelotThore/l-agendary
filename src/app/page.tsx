@@ -73,7 +73,7 @@ let cards = [
 
 export default function Home() {
   return (
-    <div className="bg-background mx-0 md:mx-20 lg:mx-40">
+    <div className="mx-0 md:mx-20 lg:mx-40">
       <h1 className={`${agbalumo.className} text-[32px] py-[57px] text-center`}>L'Art de Planifier !</h1>
 
       <ul className="flex items-center flex-wrap px-10 justify-center gap-[21px]">
