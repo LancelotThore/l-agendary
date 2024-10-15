@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Logo, Search, MenuBurger } from "../ui/icons";
+import { Logo, Search, MenuBurger, Home, Close } from "../ui/icons";
 import { Button } from '../ui/button';
 
 export function Navbar() {
@@ -20,7 +20,7 @@ export function Navbar() {
                     </a>
                     <a
                         href="/"
-                        className="hidden md:flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded hover:text-blue-700 font-medium"
+                        className="hidden md:flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded hover:text-blue-700 font-medium text-lg"
                     >
                         <span>Rechercher</span>
                         <Search className="w-5 h-5" aria-hidden="true" />
@@ -28,36 +28,65 @@ export function Navbar() {
                 </div>
                 <button
                     type="button"
-                    className="inline-flex items-center p-2 justify-center text-sm text-primary rounded-lg md:hidden"
+                    className="inline-flex items-center p-2 justify-center text-sm text-primary rounded-lg md:hidden transition-all duration-300"
                     onClick={toggleMenu}
                 >
-                    <MenuBurger className="w-8" />
+                    {isMenuOpen ? <Close className="w-8" /> : <MenuBurger className="w-8" />}
                 </button>
                 <div className="hidden md:block" id="navbar-default">
                     <ul className="font-medium flex flex-col items-center p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-secondary">
-                        <div className="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
-                            <Button>S'enregistrer</Button>
-                            <Button>Se connecter</Button>
+                        <div className="hidden md:flex items-center rtl:space-x-reverse">
+                            <a
+                                href="/"
+                                className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium"
+                            >
+                                <Button className="mt-2">S'enregistrer</Button>
+                            </a>
+                            <a
+                                href="/"
+                                className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium"
+                            >
+                                <Button className="mt-2">Se connecter</Button>
+                            </a>
                         </div>
                     </ul>
                 </div>
             </div>
             <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
-                <ul className="font-medium flex flex-col p-4 mt-4 rounded-lg bg-secondary items-end">
+                <ul className="font-medium flex flex-col p-4 rounded-lg bg-secondary items-end">
                     <li>
                         <a
                             href="/"
-                            className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium"
+                            className="flex items-center space-x-2 rtl:space-x-reverse block py-1 px-3 rounded font-medium text-xl"
+                        >
+                            <span>Accueil</span>
+                            <Home className="w-5 h-5" aria-hidden="true" />
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="/"
+                            className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
                         >
                             <span>Rechercher</span>
                             <Search className="w-5 h-5" aria-hidden="true" />
                         </a>
                     </li>
                     <li>
-                        <Button className="mt-2">S'enregistrer</Button>
+                        <a
+                            href="/"
+                            className="flex items-center block px-3 py-1 rounded font-medium"
+                        >
+                            <Button className="mt-2">S'enregistrer</Button>
+                        </a>
                     </li>
                     <li>
-                        <Button className="mt-2">Se connecter</Button>
+                        <a
+                            href="/"
+                            className="flex items-center block px-3 py-1 rounded font-medium"
+                        >
+                            <Button className="mt-2">Se connecter</Button>
+                        </a>
                     </li>
                 </ul>
             </div>
