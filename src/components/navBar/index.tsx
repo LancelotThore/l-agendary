@@ -13,10 +13,10 @@ export function Navbar() {
 
     return (
         <nav className="bg-secondary text-primary">
-            <div className="flex items-center justify-between mx-auto p-8 shadow-md">
+            <div className="flex items-center justify-between mx-auto p-6 shadow-md">
                 <div className="flex items-center space-x-10 rtl:space-x-reverse">
                     <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-                        <Logo className="w-36" />
+                        <Logo className="w-40" />
                     </a>
                     <a
                         href="/"
