@@ -19,6 +19,9 @@ const config: Config = {
 				cardDate: {
 					DEFAULT: 'hsl(var(--card-event-date))'
 				},
+				FormBorder: {
+					DEFAULT: 'hsl(var(--card-border-form))'
+				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'

@@ -12,7 +12,7 @@ interface RootLayoutProps {
 
 const RootLayout = ({ children }: RootLayoutProps) => {
   const pathname = usePathname();
-  const noLayoutPages = ['/register'];
+  const noLayoutPages = ['/register', '/login', '/recover/account', '/recover/password'];
 
   return (
     <html lang="fr">

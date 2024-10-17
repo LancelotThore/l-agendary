@@ -14,18 +14,8 @@ const ralewayMedium = Raleway({
   variable: '--font-raleway',
 });
 
-export default function RegisterPage() {
+export default function LoginPage() {
   let inputs = [
-    {
-      id: 'name',
-      name: 'Nom',
-      type: 'text'
-    },
-    {
-      id: 'firstname',
-      name: 'Prénom',
-      type: 'text'
-    },
     {
       id: 'email',
       name: 'Email',
@@ -35,14 +25,15 @@ export default function RegisterPage() {
       id: 'password',
       name: 'Mot de passe',
       type: 'password'
-    },
+    }
   ]
   return (
     <div className={`${ralewayMedium.className} flex flex-col h-screen justify-center items-center text-xs`}>
       <img className='w-24 md:w-40' src="./logo2.svg" alt="Logo Icon" />
 
       <form action="" method='POST' className='flex justify-center items-center flex-col w-9/12 shadow-md mt-5 p-4 border border-FormBorder rounded-md md:w-2/4 md:p-6'>
-        <h2 className={`${ralewaySemBold.className} text-base md:text-3xl w-full text-start md:text-center`}>Créer un compte</h2>
+        <h2 className={`${ralewaySemBold.className} text-base md:text-3xl md:text-center`}>Se connecter</h2>
+        <p className='text-xs md:text-base'>Rentrez votre mail pour que nous puissions vous envoyer un email de récupération.</p>
 
         <div className='w-full lg:w-96'>
           {inputs.map((input)=>(
@@ -53,8 +44,7 @@ export default function RegisterPage() {
           ))}
           
           <div className='flex justify-center flex-col'>
-            <Button size="sm" className="mt-4 mx-auto">Créer son compte</Button>
-              <a className='text-center mt-3 hover:underline hover:underline-offset-2 transition-transform md:text-sm' href="/login">Déjà un compte ? Se connecter</a>
+            <Button size="sm" className="mt-4 mx-auto">Se connecter</Button>
           </div>
         </div>
       </form>

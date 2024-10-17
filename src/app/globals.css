@@ -10,6 +10,7 @@
   --blue: 212 60% 58%;
   --red: 355 49% 58%;
   --gray: 215 16% 47%;
+  --light-gray: 220 13% 91%;
   --green: 127 82% 65%;
   --brightred: 0 82% 65%;
   --lightblue: 212 100% 94%;
@@ -42,6 +43,7 @@
     --card-foreground: var(--black);
 
     --card-event-date: var(--gray);
+    --card-border-form: var(--light-gray);
     
     --ring: 0 0% 3.9%;
     --chart-1: 12 76% 61%;
