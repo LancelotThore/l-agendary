@@ -13,9 +13,9 @@ services:
       SYMFONY_VERSION: ${SYMFONY_VERSION:-}
       STABILITY: ${STABILITY:-stable}
     volumes:
-      - caddy_data:/data:delegated          # Utilisation de :delegated pour optimiser les écritures vers le volume caddy_data
-      - caddy_config:/config:delegated      # Utilisation de :delegated pour les écritures vers le volume caddy_config
-      - .:/var/www/html:cached              # Utilisation de :cached pour prioriser les lectures du projet Symfony
+      - caddy_data:/data
+      - caddy_config:/config
+      - .:/app
     ports:
       # HTTP
       - target: 80

@@ -16,14 +16,15 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-
-            # Utiliser les sessions
-            # form_login:
-            #     login_path: auth_login
-            #     check_path: login
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                default_target_path: frontend_home
             logout:
-                path: auth_logout
-                target: / # Redirige après déconnexion
+                path: app_logout
+                # where to redirect after logout
+                target: frontend_home
 
 
             # activate different ways to authenticate
@@ -35,7 +36,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
