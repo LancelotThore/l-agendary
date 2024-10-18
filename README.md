@@ -1,3 +1,1 @@
-Créer un dossier frontend avec l'app Next dedans.
-Mettre le dossier frontend au même niveau que le dossier backend.
-Mettre le dockerfile dedans.
+Pour lancer le projet faites un Docker compose sur le yaml dans Backend.
