@@ -47,8 +47,19 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+			  gradients: {
+				'primary': 'var(--gradient-primary)',
+				'secondary': 'var(--gradient-secondary)',
+			}
   		},
+		fontSize: {
+			'3xs': '0.5rem',
+			'2xs': '0.625rem',
+		},
+		gridTemplateColumns: {
+			'auto-1fr': 'auto 1fr',
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
