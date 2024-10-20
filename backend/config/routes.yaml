@@ -25,6 +25,9 @@ session:
     path: /session-info
     controller: App\Controller\FrontendController::sessionInfo
 
-
 # -------------------------
 # Events
+
+highlighted_events:
+    path: /api/highlighted-events
+    controller: App\Controller\EventController::highlightedEvents

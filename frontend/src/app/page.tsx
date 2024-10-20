@@ -15,7 +15,6 @@ const raleway = Raleway({
   variable: '--font-raleway',
 })
 
-
 let toolCards = [
   {
     title: 'Recherchez un événement',
