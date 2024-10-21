@@ -26,7 +26,7 @@ const EventShare: React.FC = (props) => {
   };
 
   return (
-    <div className='flex flex-col bg-secondary w-full lg:h-full rounded-lg p-1.5 md:px-8 md:py-5 w-fit hidden md:block' {...props}>
+    <div className='flex flex-col bg-secondary w-full lg:h-full rounded-lg p-1.5 md:px-8 md:py-5 w-fit hidden md:block shadow-md'>
       <h4 className='mt-2.5 mb-5 font-bold text-xl md:text-2xl'>Partager</h4>
       <div className='flex gap-12 justify-evenly'>
         <div className='pb-16 pt-10'>
