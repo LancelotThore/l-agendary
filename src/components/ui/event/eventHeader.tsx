@@ -1,4 +1,3 @@
-import React from 'react';
 import { Clock, LocationOn, PeopleFill, LockOpenIcon, LockClosedIcon } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 

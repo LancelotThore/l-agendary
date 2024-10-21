@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function EventDescription({ description }: { description: string }) {
     return (
         <div className='flex flex-col w-full md:bg-secondary rounded-lg md:px-8 md:py-5 lg:h-full'>

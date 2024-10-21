@@ -1,5 +1,5 @@
 import React from 'react';
-import Event from '@/components/ui/event';
+import Event from '@/app/event/';
 
 export default function Home() {
   return (

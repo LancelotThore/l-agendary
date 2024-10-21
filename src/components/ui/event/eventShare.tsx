@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Instagram, Facebook, Whatsapp, Linkedin, Mail, Link } from '@/components/ui/icons';
 
 const EventShare: React.FC = (props) => {
