@@ -94,7 +94,7 @@ export default function Home() {
       {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {cards.map((card, id) => (
-          <Link href='/event/{id}'>
+          <Link href='/event/1'>
           <CardEvent
           key={id}
             id={id + 1}

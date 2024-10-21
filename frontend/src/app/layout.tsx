@@ -17,7 +17,8 @@ const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="fr">
       <head>
-        <title>Mon App Next.js</title>
+        <title>L'agendary</title>
+        <link rel="icon" href="./logo.svg" />
       </head>
       <body>
         {noLayoutPages.includes(pathname) ? (
@@ -27,7 +28,6 @@ const RootLayout = ({ children }: RootLayoutProps) => {
             <Navbar />
             
             <main className='container m-auto w-10/12 my-16'>{children}</main>
-            
             <Footer />
           </>
         )}
