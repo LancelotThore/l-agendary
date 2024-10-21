@@ -42,7 +42,7 @@ export default function EventHeader({ event }: EventProps) {
                 <div className='flex items-center gap-1.5 font-semibold'>
                     <Clock className='w-5 min-w-5'/>
                     <div>
-                        <p>Du {formatDate(event.startDate)} - {event.startTime} au<br />{formatDate(event.endDate)} - {event.endTime}</p>
+                        <p>Du {formatDate(event.startDate)} - {event.startTime} au<br/>{formatDate(event.endDate)} - {event.endTime}</p>
                     </div>
                 </div>
                 <div className='flex items-center gap-1.5 font-semibold'><LocationOn className='w-5 min-w-5'/><p>{event.location}</p></div>
