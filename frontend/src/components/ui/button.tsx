@@ -20,9 +20,9 @@ const buttonVariants = cva(
         private: "bg-destructive text-destructive-foreground rounded-full",
       },
       size: {
-        default: "h-10 text-xs px-4 py-2",
+        default: "px-4 py-2",
         sm: "px-2.5 py-1 text-2xs",
-        lg: "h-11 rounded-md px-8",
+        lg: "px-4 py-2 sm:text-2xl sm:px-16 sm:py-5",
         icon: "h-10 w-10",
       },
     },
