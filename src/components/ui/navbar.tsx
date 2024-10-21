@@ -1,45 +1,84 @@
-let links = [
-    {
-        icon: './logo2.svg',
-        name: 'Accueil',
-    },
-    {
-        icon: './logo2.svg',
-        name: 'Rechercher',
-    },
-    {
-        icon: './logo2.svg',
-        name: 'Calendrier',
-    },
-    {
-        icon: './logo2.svg',
-        name: 'Profil',
-    },
-];
+"use client";
+
+import { useState } from 'react';
+import { Logo, Search, MenuBurger, Home, Close } from "../ui/icons";
+import { Button } from '../ui/button';
 
 export function Navbar() {
-    return (
-        <nav className="bg-white border-gray-200 dark:bg-gray-900">
-            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-                    <img src="./logo2.svg" alt="Logo Icon" />
-                </a>
-                <button data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
-                    <span className="sr-only">Open main menu</span>
-                    <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
-                    </svg>
-                </button>
-                <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-                    <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-                        {links.map((link)=>(
-                            <li>
-                                <a href={link.icon} className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">{link.name}</a>
-                            </li>
-                        ))}
-                    </ul>
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    return (
+        <nav className="bg-secondary text-primary shadow-md">
+            <div className="flex items-center justify-between mx-auto p-4 w-10/12 m-auto">
+                <div className="flex items-center space-x-10 rtl:space-x-reverse">
+                    <a href="/" className="flex items-center">
+                        <Logo className="w-40" />
+                    </a>
+                    <a
+                        href="/"
+                        className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                    >
+                        <span>Rechercher</span>
+                        <Search className="w-5 h-5" aria-hidden="true" />
+                    </a>
                 </div>
+                <div className="hidden md:flex space-x-4 items-center">
+                    <a href="/">
+                    <Button className="hover:bg-primary/70">S'enregistrer</Button>
+                    </a>
+                    <a href="/">
+                    <Button className="hover:bg-primary/70">Se connecter</Button>
+                    </a>
+                </div>
+                <button
+                    type="button"
+                    className="inline-flex items-center p-2 justify-center text-sm text-primary rounded-lg md:hidden transition-all duration-300"
+                    onClick={toggleMenu}
+                >
+                    {isMenuOpen ? <Close className="w-8" /> : <MenuBurger className="w-8" />}
+                </button>
+            </div>
+            <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
+                <ul className="font-medium flex flex-col p-4 rounded-lg bg-secondary items-end w-10/12 m-auto">
+                    <li>
+                        <a
+                            href="/"
+                            className="flex items-center space-x-2 rtl:space-x-reverse block py-1 px-3 rounded font-medium text-xl"
+                        >
+                            <span>Accueil</span>
+                            <Home className="w-5 h-5" aria-hidden="true" />
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="/"
+                            className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
+                        >
+                            <span>Rechercher</span>
+                            <Search className="w-5 h-5" aria-hidden="true" />
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href=""
+                            className="flex items-center block px-3 py-1 rounded font-medium"
+                        >
+                            <Button className="mt-2">S'enregistrer</Button>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href=""
+                            className="flex items-center block px-3 py-1 rounded font-medium"
+                        >
+                            <Button className="mt-2">Se connecter</Button>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </nav>
     );

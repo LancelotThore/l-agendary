@@ -25,9 +25,9 @@ export function ToolCard({ title, description, icon, color, id }: ToolCardProps)
   return (
     <li
       key={id}
-      className={`${color} group flex justify-between items-center bg-white w-60 md:w-96 rounded-2xl shadow-md p-3.5 cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden`}
+      className='group flex justify-between items-center bg-white w-60 md:w-96 rounded-2xl shadow-md p-3.5 cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden'
     >
-      <div className='w-full flex gap-6 flex-col'>
+      <div className={`${color} w-full flex gap-6 flex-col`}>
         <h2 className={`${ralewayBold.className} text-base md:text-2xl`}>{title}</h2>
         <p className={`${ralewayMedium.className} hidden md:block`}>{description}</p>
       </div>
