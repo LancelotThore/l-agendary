@@ -32,8 +32,10 @@ export default function RootLayout({
       >
         <Navbar />
 
-        {children}
-        
+        <main className="container m-auto w-10/12 py-16">
+          {children}
+        </main>
+              
         <Footer />
       </body>
     </html>
