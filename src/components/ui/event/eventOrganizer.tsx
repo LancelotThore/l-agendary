@@ -29,12 +29,12 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
 
     return (
         <div className='flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md'>
-            <div>
-                <img className='rounded-lg aspect-square object-cover md:order-2 h-full' src={`${organisateur.image}`} alt={`Image de profil de ${organisateur.name}`} />
+            <div className="aspect-square w-32 md:w-auto md:order-2">
+                <img className='rounded-lg object-cover h-full w-full' src={`${organisateur.image}`} alt={`Image de profil de ${organisateur.name}`} />
             </div>
-            <div className='flex flex-col w-full overflow-hidden h-fit lg:h-full'>
+            <div className='flex flex-col overflow-hidden h-fit lg:h-full'>
                 <h4 className='hidden md:block ml-3 mt-2.5 mb-8 font-bold text-xl md:text-2xl'>Organisateur</h4>
-                <div className='flex justify-between gap-2 mb-5 font-semibold'>
+                <div className='flex gap-11 mb-5 font-semibold'>
                     <p>{organisateur.name}</p>
                     <p className='mr-6'>{organisateur.age} ans</p>
                 </div>

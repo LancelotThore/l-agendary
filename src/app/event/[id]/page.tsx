@@ -5,27 +5,28 @@ import EventShare from '@/components/ui/event/eventShare';
 import { Button } from '@/components/ui/button';
 
 
-const event = {
-    title: 'Event Title',
-    visibility: true,
-    startDate: '2029-08-17',
-    endDate: '2029-08-18',
-    startTime: '11:00',
-    endTime: '14:00',
-    location: 'Event Location',
-    organisateur: 1,
-    participants: 25,
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat.',
-};
+export default function Event( { params }) {
 
-const organisateur = {
-    name: 'John Doe',
-    age: 25,
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat.',
-    image: './img.png',
-};
-
-export default function Event() {
+    const event = {
+        id: 1,
+        title: 'event 1',
+        visibility: true,
+        startDate: '2029-08-17',
+        endDate: '2029-08-18',
+        startTime: '11:00',
+        endTime: '14:00',
+        location: 'Event Location',
+        organisateur: 1,
+        participants: 25,
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat.',
+    };
+    
+    const organisateur = {
+        name: 'John Doe',
+        age: 25,
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat.',
+        image: '../img.png',
+    };
 
     return (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
