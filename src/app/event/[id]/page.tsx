@@ -45,7 +45,7 @@ export default function Event( { params }) {
             </div>
             <div className='flex items-center justify-center gap-4 lg:col-span-7'>
                 <Button className='md:hidden'>Partager</Button>
-                <Button variant={'accent'}>Rejoindre</Button>
+                <Button variant={'accent'} size={'lg'}>Rejoindre</Button>
             </div>
         </div>
     );
