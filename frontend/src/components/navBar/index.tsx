@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Logo, Search, MenuBurger, Home, Close } from "../ui/icons";
 import { Button } from '../ui/button';
+import Link from 'next/link'
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,24 +16,24 @@ export function Navbar() {
         <nav className="bg-secondary text-primary shadow-md">
             <div className="flex items-center justify-between mx-auto p-4 w-10/12 m-auto">
                 <div className="flex items-center space-x-10 rtl:space-x-reverse">
-                    <a href="/" className="flex items-center">
+                    <Link href="/" className="flex items-center">
                         <Logo className="w-40" />
-                    </a>
-                    <a
-                        href="/"
+                    </Link>
+                    <Link
+                        href="/search"
                         className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
                     >
                         <span>Rechercher</span>
                         <Search className="w-5 h-5" aria-hidden="true" />
-                    </a>
+                    </Link>
                 </div>
                 <div className="hidden md:flex space-x-4 items-center">
-                    <a href="/">
+                    <Link href="/register">
                     <Button className="hover:bg-primary/70">S'enregistrer</Button>
-                    </a>
-                    <a href="/">
+                    </Link>
+                    <Link href="/login">
                     <Button className="hover:bg-primary/70">Se connecter</Button>
-                    </a>
+                    </Link>
                 </div>
                 <button
                     type="button"
@@ -45,38 +46,38 @@ export function Navbar() {
             <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
                 <ul className="font-medium flex flex-col p-4 rounded-lg bg-secondary items-end w-10/12 m-auto">
                     <li>
-                        <a
+                        <Link
                             href="/"
                             className="flex items-center space-x-2 rtl:space-x-reverse block py-1 px-3 rounded font-medium text-xl"
                         >
                             <span>Accueil</span>
                             <Home className="w-5 h-5" aria-hidden="true" />
-                        </a>
+                        </Link>
                     </li>
                     <li>
-                        <a
-                            href="/"
+                        <Link
+                            href="/search"
                             className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
                         >
                             <span>Rechercher</span>
                             <Search className="w-5 h-5" aria-hidden="true" />
-                        </a>
+                        </Link>
                     </li>
                     <li>
-                        <a
-                            href=""
+                        <Link
+                            href="/register"
                             className="flex items-center block px-3 py-1 rounded font-medium"
                         >
                             <Button className="mt-2">S'enregistrer</Button>
-                        </a>
+                        </Link>
                     </li>
                     <li>
-                        <a
-                            href=""
+                        <Link
+                            href="/login"
                             className="flex items-center block px-3 py-1 rounded font-medium"
                         >
                             <Button className="mt-2">Se connecter</Button>
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </div>
