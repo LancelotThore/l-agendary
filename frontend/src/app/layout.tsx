@@ -18,7 +18,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
     <html lang="fr">
       <head>
         <title>L'agendary</title>
-        <link rel="icon" href="./logo.svg" />
+        <link rel="icon" href="/logo.svg" />
       </head>
       <body>
         {noLayoutPages.includes(pathname) ? (
