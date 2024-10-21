@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 export default function Event( { params }) {
 
     const event = {
-        id: 1,
-        title: 'event 1',
+        id: params.id,
+        title: `Event ${params.title}`,
         visibility: true,
         startDate: '2029-08-17',
         endDate: '2029-08-18',
