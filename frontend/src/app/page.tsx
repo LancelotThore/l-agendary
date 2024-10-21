@@ -72,21 +72,22 @@ let cards = [
 
 export default function Home() {
   return (
-    <div className="mx-0 md:mx-20 lg:mx-40">
-      <h1 className={`${agbalumo.className} text-[32px] py-[57px] text-center`}>L'Art de Planifier !</h1>
-
-      <ul className="flex items-center flex-wrap px-10 justify-center gap-[21px]">
-      {toolCards.map((toolcard, id) => (
-          <ToolCard
-            key={id}
-            id={id + 1}
-            title={toolcard.title}
-            description={toolcard.description}
-            icon={toolcard.icon}
-            color={toolcard.color}
-          />
-        ))}
-      </ul>
+    <div className="w-10/12 m-auto">
+      <div className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg" style={{ backgroundImage: "url('./bgToolCards.webp')" }}>
+        <h1 className={`${agbalumo.className} text-[32px] pb-[57px] text-center text-secondary`}>L'Art de Planifier !</h1>
+        <ul className="flex items-center flex-wrap px-10 justify-center gap-[21px]">
+          {toolCards.map((toolcard, id) => (
+            <ToolCard
+              key={id}
+              id={id + 1}
+              title={toolcard.title}
+              description={toolcard.description}
+              icon={toolcard.icon}
+              color={toolcard.color}
+            />
+          ))}
+        </ul>
+      </div>
 
       <h2 className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}>Evénements publics les plus populaires !</h2>
       {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
