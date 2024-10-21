@@ -26,7 +26,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
           <>
             <Navbar />
             
-            <main className='container m-auto w-10/12'>{children}</main>
+            <main className='container m-auto w-10/12 my-16'>{children}</main>
             
             <Footer />
           </>
