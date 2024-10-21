@@ -19,7 +19,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
       <head>
         <title>Mon App Next.js</title>
       </head>
-      <body>
+      <body className=''>
         {noLayoutPages.includes(pathname) ? (
           <>{children}</>
         ) : (

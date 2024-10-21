@@ -26,7 +26,7 @@ export default function LoginPage() {
     <div className={`${ralewayMedium.className} flex flex-col h-screen justify-center items-center text-xs`}>
       <img className='w-24 md:w-40' src="/logo2.svg" alt="Logo Icon" />
 
-      <form action="" method='POST' className='flex justify-center items-center flex-col w-9/12 shadow-md mt-5 p-4 border border-FormBorder rounded-md md:w-2/4 md:p-6'>
+      <form action="" method='POST' className='flex justify-center items-center flex-col w-9/12 shadow-md mt-5 p-4 border border-FormBorder rounded-md md:w-2/4 md:p-6 lg:w-[575px]'>
         <h2 className={`${ralewaySemBold.className} text-base md:text-3xl w-full text-start md:text-center`}>Récupérer le compte</h2>
         <p className='w-full text-start mt-3 text-xs md:text-base md:text-center'>Rentrez votre mail pour que nous puissions vous envoyer un email de récupération.</p>
 

@@ -41,7 +41,7 @@ export default function RegisterPage() {
     <div className={`${ralewayMedium.className} flex flex-col h-screen justify-center items-center text-xs`}>
       <img className='w-24 md:w-40' src="./logo2.svg" alt="Logo Icon" />
 
-      <form action="" method='POST' className='flex justify-center items-center flex-col w-9/12 shadow-md mt-5 p-4 border border-FormBorder rounded-md md:w-2/4 md:p-6'>
+      <form action="" method='POST' className='flex justify-center items-center flex-col w-9/12 shadow-md mt-5 p-4 border border-FormBorder rounded-md md:w-2/4 md:p-6 lg:w-[575px]'>
         <h2 className={`${ralewaySemBold.className} text-base md:text-3xl w-full text-start md:text-center`}>Créer un compte</h2>
 
         <div className='w-full lg:w-96'>
@@ -54,7 +54,7 @@ export default function RegisterPage() {
           
           <div className='flex justify-center flex-col'>
             <Button size="sm" className="mt-4 mx-auto">Créer son compte</Button>
-              <a className='text-center mt-3 hover:underline hover:underline-offset-2 transition-transform md:text-sm' href="/login">Déjà un compte ? Se connecter</a>
+            <a className='text-center mt-3 hover:underline hover:underline-offset-2 transition-transform md:text-sm' href="/login">Déjà un compte ? Se connecter</a>
           </div>
         </div>
       </form>

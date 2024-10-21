@@ -31,7 +31,7 @@ export default function LoginPage() {
     <div className={`${ralewayMedium.className} flex flex-col h-screen justify-center items-center text-xs`}>
       <img className='w-24 md:w-40' src="./logo2.svg" alt="Logo Icon" />
 
-      <form action="" method='POST' className='flex justify-center items-center flex-col w-9/12 shadow-md mt-5 p-4 border border-FormBorder rounded-md md:w-2/4 md:p-6'>
+      <form action="" method='POST' className='flex justify-center items-center flex-col w-9/12 shadow-md mt-5 p-4 border border-FormBorder rounded-md md:w-2/4 md:p-6 lg:w-[515px]'>
         <h2 className={`${ralewaySemBold.className} text-base md:text-3xl md:text-center`}>Se connecter</h2>
         {/* <p className='text-xs md:text-base'>Rentrez votre mail pour que nous puissions vous envoyer un email de récupération.</p> */}
 
@@ -50,6 +50,7 @@ export default function LoginPage() {
           
           <div className='flex justify-center flex-col'>
             <Button size="sm" className="mt-4 mx-auto">Se connecter</Button>
+            <a className='text-center mt-3 hover:underline hover:underline-offset-2 transition-transform md:text-sm' href="/register">Pas encore de compte ? S’inscrire</a>
           </div>
         </div>
       </form>
