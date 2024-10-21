@@ -14,7 +14,7 @@ export function Navbar() {
 
     return (
         <nav className="bg-secondary text-primary shadow-md">
-            <div className="flex items-center justify-between mx-auto p-4 w-10/12 m-auto">
+            <div className="flex items-center justify-between mx-auto py-4 w-10/12 m-auto">
                 <div className="flex items-center space-x-10 rtl:space-x-reverse">
                     <Link href="/" className="flex items-center">
                         <Logo className="w-40" />
@@ -44,7 +44,7 @@ export function Navbar() {
                 </button>
             </div>
             <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
-                <ul className="font-medium flex flex-col p-4 rounded-lg bg-secondary items-end w-10/12 m-auto">
+                <ul className="font-medium flex flex-col py-4 rounded-lg bg-secondary items-end w-10/12 m-auto">
                     <li>
                         <Link
                             href="/"
