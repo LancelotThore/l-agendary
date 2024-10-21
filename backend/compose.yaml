@@ -30,11 +30,11 @@ services:
         published: ${HTTP3_PORT:-443}
         protocol: udp
 
-# Mercure est installé comme un module Caddy, évite d'installer un autre service
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
+  # Mercure est installé comme un module Caddy, évite d'installer un autre service
+  ###> symfony/mercure-bundle ###
+  ###< symfony/mercure-bundle ###
 
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
     environment:
@@ -42,24 +42,32 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
       POSTGRES_USER: ${POSTGRES_USER:-app}
     healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-d",
+          "${POSTGRES_DB:-app}",
+          "-U",
+          "${POSTGRES_USER:-app}",
+        ]
       timeout: 5s
       retries: 5
       start_period: 60s
     volumes:
       - database_data:/var/lib/postgresql/data:rw
       # Utilisation de volumes nommés pour la base de données
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
 
   frontend:
     build:
-      context: ../frontend             # chemin vers le dossier frontend
-      dockerfile: Dockerfile           # chemin vers le Dockerfile
+      context: ../frontend # chemin vers le dossier frontend
+      dockerfile: Dockerfile # chemin vers le Dockerfile
     volumes:
-    - ../frontend:/app                # Monte le dossier frontend sur /app dans le conteneur
-    - /app/node_modules  
+      - ../frontend:/app # Monte le dossier frontend sur /app dans le conteneur
+      - /app/node_modules
     ports:
-      - "3000:3000"  # Port sur lequel Next.js va écouter
+      - "3000:3000" # Port sur lequel Next.js va écouter
     environment:
       - NODE_ENV=development # Ou production, selon ton besoin
     command: sh -c "npm run dev"
