@@ -1,0 +1,70 @@
+services:
+  php:
+    image: ${IMAGES_PREFIX:-}app-php
+    restart: unless-stopped
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
+      MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      DATABASE_URL: mysql://${MYSQL_USER:-user}:${MYSQL_PASSWORD:-password}@database:3306/${MYSQL_DATABASE:-app}
+      MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
+      MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}/.well-known/mercure}
+      MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      SYMFONY_VERSION: ${SYMFONY_VERSION:-}
+      STABILITY: ${STABILITY:-stable}
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - .:/app
+    ports:
+      # HTTP
+      - target: 80
+        published: ${HTTP_PORT:-80}
+        protocol: tcp
+      # HTTPS
+      - target: 443
+        published: ${HTTPS_PORT:-443}
+        protocol: tcp
+      # HTTP/3
+      - target: 443
+        published: ${HTTP3_PORT:-443}
+        protocol: udp
+
+  frontend:
+    build:
+      context: ../frontend # chemin vers le dossier frontend
+      dockerfile: Dockerfile # chemin vers le Dockerfile
+    volumes:
+      - ../frontend:/app # Monte le dossier frontend sur /app dans le conteneur
+      - /app/node_modules
+    ports:
+      - "3000:3000" # Port sur lequel Next.js va écouter
+    environment:
+      - NODE_ENV=development # Ou production, selon ton besoin
+    command: sh -c "npm run dev"
+
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-app}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: database
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - "8080:80"
+
+volumes:
+  caddy_data:
+  caddy_config:
+  database_data:
+  mysql_data:
