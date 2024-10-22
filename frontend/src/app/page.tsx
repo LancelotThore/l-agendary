@@ -3,7 +3,7 @@ import { Agbalumo, Raleway } from 'next/font/google';
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
 import { Button } from '../components/ui/button';
-import Link from 'next/link'
+import Link from 'next/link';
 
 const agbalumo = Agbalumo({
   subsets: ['latin'],
@@ -37,41 +37,24 @@ let cards = [
     lieu: 'Lieu pour voir aussi',
     date: '85 janvier 2077',
     img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
   }
 ];
 
 
 export default function Home() {
+
+  const fetchEvents = async () => {
+    try {
+      const res = await fetch('https://localhost/api/highlighted-events');
+      const data = await res.json();
+      console.log(data);
+
+    } catch (error) {
+      console.error('Error fetching highlighted events:', error);
+    }
+  };
+  fetchEvents();
+
   return (
     <div className="">
       <div className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg" style={{ backgroundImage: "url('./bgToolCards.webp')" }}>
@@ -95,14 +78,14 @@ export default function Home() {
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {cards.map((card, id) => (
           <Link href={`/event/${id}`}>
-          <CardEvent
-          key={id}
-            id={id + 1}
-            nom={card.nom}
-            lieu={card.lieu}
-            date={card.date}
-            img={card.img}
-          />
+            <CardEvent
+              key={id}
+              id={id + 1}
+              nom={card.nom}
+              lieu={card.lieu}
+              date={card.date}
+              img={card.img}
+            />
           </Link>
         ))}
       </ul>
