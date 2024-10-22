@@ -1,57 +1,25 @@
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
+// page.tsx
+import { FormElement } from "@/components/ui/formElement";
+import { FormRadioGroup } from "@/components/ui/FormRadio";
+import { Button } from "@/components/ui/button";
 
 export default function CreateEvent() {
-    return (
-        <form action="POST" className="p-5 md:py-10 md:px-16 bg-secondary flex flex-col items-center justify-center md:w-fit m-auto">
-            <h1 className="text-2xl md:text-3xl">Créer un nouvel événement</h1>
-            <ul className="w-full mt-4 flex flex-col gap-3">
-                <li className="flex flex-col gap-1">
-                    <label htmlFor="title">Titre</label>
-                    <Input placeholder="Titre" type="text" maxLength={40} required name="title" id="title"></Input>
-                </li>
-                <li className="flex flex-col gap-1">
-                    <label htmlFor="description">Description</label>
-                    <textarea className="p-1.5 border-border border rounded-lg focus:border-border bg-background" name="description" id="description" maxLength={500} placeholder="Description" rows={5}></textarea>
-                </li>
-                <li className="flex flex-col gap-1">
-                    <p>Visibilité</p>
-                    <ul className="flex gap-3 flex-wrap">
-                        <li className="flex gap-2 items-center">
-                            <Input type="radio" id="public" name="visibility" className="h-fit"></Input>
-                            <label htmlFor="public">Public</label>
-                        </li>
-                        <li className="flex gap-2 items-center">
-                            <Input type="radio" id="private" name="visibility" className="h-fit"></Input>
-                            <label htmlFor="private">Privé</label>
-                        </li>
-                    </ul>
-                </li>
-                <li className="flex flex-col gap-1">
-                    <label htmlFor="location">Lieu</label>
-                    <Input type="text" maxLength={255} placeholder="Lieu"></Input>
-                </li>
-                <li className="flex flex-col gap-1">
-                    <label htmlFor="statDateTime">Date de début</label>
-                    <Input type="datetime-local" id="statDateTime" name="statDateTime"></Input>
-                </li>
-                <li className="flex flex-col gap-1">
-                    <label htmlFor="endDateTime">Date de fin</label>
-                    <Input type="datetime-local" id="endDateTime" name="endDateTime"></Input>
-                </li>
-                <li className="flex flex-col gap-1">
-                    <p>Image de couverture</p>
-                    <input className="hidden" type="file" id="imageDeCouverture" name="imageDeCouverture" accept="image/png, image/jpeg" />
-                    <label htmlFor="imageDeCouverture" className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md w-fit">
-                        Choisir un fichier
-                    </label>
-                </li>
-                <li className="hidden">
-                    <input type="number" id="creator" name="creator"/>
-                </li>
-                <Input type="hidden"></Input>
-                <Button variant={"accent"} className="m-auto">Publier</Button>
-            </ul>
-        </form>
-    )
+  return (
+    <form action="POST" className="p-5 md:py-10 md:px-16 bg-secondary flex flex-col items-center justify-center md:w-fit m-auto">
+      <h1 className="text-2xl md:text-3xl">Créer un nouvel événement</h1>
+      <ul className="w-full mt-4 flex flex-col gap-3">
+        <FormElement label="Titre" variant="input" type="text" id="title" name="title" placeholder="Titre" maxLength={40} required />
+        <FormElement label="Description" variant="textarea" id="description" name="description" placeholder="Description" maxLength={500} rows={5} />
+        <FormRadioGroup label="Visibilité" name="visibility" options={[{ id: "public", label: "Public" }, { id: "private", label: "Privé" }]} />
+        <FormElement label="Lieu" variant="input" type="text" id="location" name="location" placeholder="Lieu" maxLength={255} />
+        <FormElement label="Date de début" variant="input" type="datetime-local" id="statDateTime" name="statDateTime" />
+        <FormElement label="Date de fin" variant="input" type="datetime-local" id="endDateTime" name="endDateTime" />
+        <FormElement label="Image de couverture" variant="file" id="imageDeCouverture" name="imageDeCouverture" accept="image/png, image/jpeg" />
+        <li className="hidden">
+          <input type="number" id="creator" name="creator" />
+        </li>
+      </ul>
+      <Button variant={"accent"} className="mx-auto mt-6 ">Publier</Button>
+    </form>
+  );
 }
