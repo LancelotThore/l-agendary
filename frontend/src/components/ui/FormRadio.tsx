@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 interface FormRadioGroupProps {
   label: string;
   name: string;
-  options: { id: string; label: string }[];
+  options: { id: string; label: string, required: boolean }[];
 }
 
 export function FormRadioGroup({ label, name, options }: FormRadioGroupProps) {
@@ -13,7 +13,7 @@ export function FormRadioGroup({ label, name, options }: FormRadioGroupProps) {
       <ul className="flex gap-3 flex-wrap">
         {options.map((option) => (
           <li key={option.id} className="flex gap-2 items-center">
-            <Input type="radio" id={option.id} name={name} className="h-fit"></Input>
+            <Input type="radio" id={option.id} name={name} className="h-fit" required={option.required}></Input>
             <label htmlFor={option.id}>{option.label}</label>
           </li>
         ))}
