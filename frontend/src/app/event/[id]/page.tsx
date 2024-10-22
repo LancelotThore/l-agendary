@@ -9,7 +9,7 @@ export default function Event( { params }) {
 
     const event = {
         id: params.id,
-        title: `Event ${params.id}`,
+        title: `event ${params.id}`,
         visibility: true,
         startDate: '2029-08-17',
         endDate: '2029-08-18',
@@ -31,10 +31,10 @@ export default function Event( { params }) {
     return (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
             <img src="https://images.unsplash.com/photo-1680868543815-b8666dba60f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80" alt="Card" className='rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md' />
-            <div className='lg:col-span-2'>
+            <div className='lg:col-span-3'>
                 <EventHeader event={event} />
             </div>
-            <div className='lg:col-span-5'>
+            <div className='lg:col-span-4'>
                 <EventOrganizer organisateur={organisateur} />
             </div>
             <div className='lg:col-span-3 xl:col-span-4'>
@@ -44,7 +44,7 @@ export default function Event( { params }) {
                 <EventShare />
             </div>
             <div className='flex items-center justify-center gap-4 lg:col-span-7'>
-                <Button className='md:hidden'>Partager</Button>
+                <Button className='md:hidden' size={'lg'}>Partager</Button>
                 <Button variant={'accent'} size={'lg'}>Rejoindre</Button>
             </div>
         </div>
