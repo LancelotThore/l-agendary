@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class EventController extends AbstractController
 {
     /**
-     * @Route("//api/highlighted-events", name="highlighted-events")
+     * @Route("/api/highlighted-events", name="highlighted-events")
      */
     public function highlightedEvents(EntityManagerInterface $entityManager): Response
     {
