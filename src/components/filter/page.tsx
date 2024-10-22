@@ -30,27 +30,27 @@ export default function Filter() {
       </div>
       <div className={`w-full flex-col gap-5 ${showFilters ? 'flex' : 'hidden'} md:grid md:grid-cols-4`}>
         <Input
-          img={<Clock className='w-6' />}
+          img={<Clock className='w-4 md:w-6' />}
           type="datetime-local"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
+          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
         />
         <SearchBar
           id="search-lieux"
-          startImg={<LocationOn className='w-6' />}
+          startImg={<LocationOn className='w-4 md:w-6' />}
           placeholder="Lieux"
           type="search"
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
         />
         <SearchBar
           id="search-createur"
-          startImg={<User className='w-6' />}
+          startImg={<User className='w-4 md:w-6' />}
           placeholder="Créateur"
           type="search"
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
         />
         <SearchBar
           id="search-participant"
-          startImg={<PeopleFill className='w-6' />}
+          startImg={<PeopleFill className='w-4 md:w-6' />}
           placeholder="Participants"
           type="search"
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
