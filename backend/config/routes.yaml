@@ -4,7 +4,6 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-
 home:
     path: /
     controller: App\Controller\HomeController::index
@@ -24,10 +23,4 @@ frontend_home:
 session:
     path: /session-info
     controller: App\Controller\FrontendController::sessionInfo
-
 # -------------------------
-# Events
-
-highlighted_events:
-    path: /api/highlighted-events
-    controller: App\Controller\EventController::highlightedEvents
