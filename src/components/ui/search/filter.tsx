@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from "react";
-import { SearchBar } from "../ui/searchBar";
-import { Input } from "../ui/input";
-import { Clock, LocationOn, PeopleFill, User, Filtre } from '../ui/icons';
+import { SearchBar } from "../searchBar";
+import { Input } from "../input";
+import { Clock, LocationOn, PeopleFill, User, Filtre } from '../icons';
 
 export default function Filter() {
   const [showFilters, setShowFilters] = useState(false);
