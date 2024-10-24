@@ -11,7 +11,10 @@
         {% endblock %}
     </head>
     <body>
-    {# {{dump(users)}} #}
+    {# {% for user in users %}
+    {{user.id}}
+    {{user.email}}
+    {% endfor %} #}
         {% block body %}{% endblock %}
     </body>
 </html>
