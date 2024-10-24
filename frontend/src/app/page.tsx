@@ -1,9 +1,11 @@
+'use client'
+
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 import { Agbalumo, Raleway } from 'next/font/google';
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
 import { Button } from '../components/ui/button';
-import Link from 'next/link';
 
 const agbalumo = Agbalumo({
   subsets: ['latin'],
@@ -31,29 +33,37 @@ let toolCards = [
   }
 ];
 
-let cards = [
+/* let cards = [
   {
     nom: 'Nom pour voir bien plus',
     lieu: 'Lieu pour voir aussi',
     date: '85 janvier 2077',
     img: './paysage.webp',
   }
-];
+]; */
 
 
 export default function Home() {
+  const [highlights, setHighlights] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchEvents = async () => {
     try {
       const res = await fetch('https://localhost/api/highlighted-events');
       const data = await res.json();
+      setHighlights(data);
+      setLoading(false);
       console.log(data);
-
     } catch (error) {
       console.error('Error fetching highlighted events:', error);
+      setLoading(false);
     }
   };
-  fetchEvents();
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
 
   return (
     <div className="">
@@ -76,17 +86,15 @@ export default function Home() {
       <h2 className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}>Evénements publics les plus populaires !</h2>
       {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {cards.map((card, id) => (
-          <Link href={`/event/${id}`}>
+        {highlights.map((dt) => (
             <CardEvent
-              key={id}
-              id={id + 1}
-              nom={card.nom}
-              lieu={card.lieu}
-              date={card.date}
-              img={card.img}
+              key={dt.id}
+              id={dt.id}
+              title={dt.title}
+              location={dt.location}
+              startDate={dt.startDate}
+              image={dt.image}
             />
-          </Link>
         ))}
       </ul>
       <div className="text-center">

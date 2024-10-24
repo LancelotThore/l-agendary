@@ -1,3 +1,4 @@
+import { redirect } from 'next/dist/server/api-utils';
 import { Raleway } from 'next/font/google';
 
 const ralewayBold = Raleway({
@@ -14,30 +15,36 @@ const ralewayMedium = Raleway({
 
 interface ToolCardProps {
   id: number;
-  nom: string;
-  lieu: string;
-  date: string;
-  img: string;
+  title: string;
+  location: string;
+  startDate: string;
+  image: string;
 }
 
-export function CardEvent({ nom, lieu, date, img, id }: ToolCardProps) {
+export function CardEvent({ title, location, startDate, image, id }: ToolCardProps) {
+
+  function handleClickEvent(event:number) {
+    console.log(event);
+  }
+
   return (
     <li
       key={id}
+      onClick={handleClickEvent(id)}
       className="flex justify-between items-center bg-white h-32 md:w-full 4xl:w-[480px] rounded-3xl shadow-md cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden"
     >
       <section className='flex flex-col justify-between w-full h-full p-3.5 pr-0'>
         <div className='text-sm md:text-lg'>
-          <p className={`${ralewayBold.className}`}>{nom}</p>
-          <p className={`${ralewayMedium.className}`}>{lieu}</p>
+          <p className={`${ralewayBold.className}`}>{title}</p>
+          <p className={`${ralewayMedium.className}`}>{location}</p>
         </div>
         <div className='flex gap-2 text-cardDate text-xs md:text-sm'>
           <img src="./calendar.svg" alt="calendar Icon" />
-          <p className={`${ralewayMedium.className}`}>{date}</p>
+          <p className={`${ralewayMedium.className}`}>{startDate}</p>
         </div>
       </section>
       <section className='w-5/12 h-full sm:w-6/12'>
-        <img className='object-cover w-full h-full' src={img} alt="Img évènement" />
+        <img className='object-cover w-full h-full' src={image} alt="Img évènement" />
       </section>
     </li>
   );
