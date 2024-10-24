@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Agbalumo, Raleway } from 'next/font/google';
 import { ToolCard } from "../components/ui/toolCard";
@@ -72,6 +75,33 @@ let cards = [
 
 
 export default function Home() {
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+
+  // Utilisation de useEffect pour faire la requête au backend
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("https://localhost:443/api/logged", {
+          method : "GET",
+          credentials: "include", // Inclure les cookies dans la requête
+        });
+
+        if (!response.ok) {
+          throw new Error("User not authenticated");
+        }
+
+        const data = await response.json();
+        setUser(data);
+        console.log(data);
+        
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchUser();
+  }, []);
   return (
     <div className="">
       <div className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg" style={{ backgroundImage: "url('./bgToolCards.webp')" }}>
@@ -96,7 +126,7 @@ export default function Home() {
         {cards.map((card, id) => (
           <Link href={`/event/${id}`}>
           <CardEvent
-          key={id}
+            key={id}
             id={id + 1}
             nom={card.nom}
             lieu={card.lieu}

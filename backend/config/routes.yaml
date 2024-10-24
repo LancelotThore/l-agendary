@@ -25,10 +25,6 @@ logged:
 #     path: /logout
 #     controller: App\Controller\SecurityController::logout
 
-# frontend_home:
-#     path: /fronthome
-#     controller: App\Controller\FrontendController::redirectToHome
-
 
 # -------------------------
 # Events

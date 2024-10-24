@@ -42,7 +42,7 @@ class AuthController extends AbstractController
     $data = json_decode($request->getContent(), true);
     
     // Vérifiez que l'email et le mot de passe sont fournis
-    if (!isset($data['email'], $data['password'])) {
+    if (!isset($data['email'], $data['password'], $data['firstname'], $data['name'])) {
         return new JsonResponse(['error' => 'Tous les champs sont requis.'], 400);
     }
 
@@ -56,6 +56,8 @@ class AuthController extends AbstractController
     $user = new User();
     $user->setEmail($data['email']);
     $user->setPassword(password_hash($data['password'], PASSWORD_BCRYPT)); // Hashage du mot de passe
+    $user->setFirstname($data['firstname']);
+    $user->setLastname($data['name']);
 
     // Persister l'utilisateur
     $this->entityManager->persist($user);
