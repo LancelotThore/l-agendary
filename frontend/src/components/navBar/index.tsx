@@ -86,7 +86,7 @@ export function Navbar() {
                     <div>
                         {isUserLoggedIn ? (
                             <>
-                                <Link href="/event" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded hover:bg-background font-medium text-xl">
+                                <Link href="/event" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
                                     <span>Mes événements</span>
                                     <Calendar className="w-5" aria-hidden="true" />
                                 </Link>
@@ -99,7 +99,7 @@ export function Navbar() {
                         ) : (
                             <Link
                                 href="/search"
-                                className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded hover:bg-background font-medium text-xl"
+                                className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
                             >
                                 <span>Rechercher</span>
                                 <Search className="w-5" aria-hidden="true" />
@@ -109,7 +109,7 @@ export function Navbar() {
                     {isUserLoggedIn ? (
                         <>
                             <div>
-                                <Link href="/profile" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded hover:bg-background font-medium text-xl">
+                                <Link href="/profile" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
                                     <span>Profil</span>
                                     <Profil className="w-8" aria-hidden="true" />
                                 </Link>
