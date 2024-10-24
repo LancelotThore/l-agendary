@@ -15,6 +15,9 @@ COPY . .
 # Installer les dépendances
 RUN npm install
 
+RUN chmod +x node_modules/.bin/next
+
+
 # Exposer le port sur lequel Next.js va écouter
 EXPOSE 3000
 
