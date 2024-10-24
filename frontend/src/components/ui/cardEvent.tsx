@@ -1,4 +1,4 @@
-import { redirect } from 'next/dist/server/api-utils';
+import { redirect } from 'next/navigation'
 import { Raleway } from 'next/font/google';
 
 const ralewayBold = Raleway({
@@ -23,14 +23,14 @@ interface ToolCardProps {
 
 export function CardEvent({ title, location, startDate, image, id }: ToolCardProps) {
 
-  function handleClickEvent(event:number) {
-    console.log(event);
+  function handleClickEvent(id:number) {
+    redirect("/event/" + id);
   }
 
   return (
     <li
       key={id}
-      onClick={handleClickEvent(id)}
+      onClick={() => handleClickEvent(id)}
       className="flex justify-between items-center bg-white h-32 md:w-full 4xl:w-[480px] rounded-3xl shadow-md cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden"
     >
       <section className='flex flex-col justify-between w-full h-full p-3.5 pr-0'>
