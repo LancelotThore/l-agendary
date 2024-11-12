@@ -1,0 +1,34 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+
+home:
+    path: /
+    controller: App\Controller\HomeController::index
+
+auth_login:
+    path: /api/login
+    controller: App\Controller\AuthController::login
+
+auth_register:
+    path: /api/register
+    controller: App\Controller\AuthController::register
+
+logged:
+    path: /api/logged
+    controller: App\Controller\AuthController::logged
+
+# app_logout:
+#     path: /logout
+#     controller: App\Controller\SecurityController::logout
+
+
+# -------------------------
+# Events
+
+highlighted_events:
+    path: /api/highlighted-events
+    controller: App\Controller\EventController::highlightedEvents
