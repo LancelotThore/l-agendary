@@ -5,6 +5,6 @@ export async function fetchEvents() {
         return data;
     } catch (error) {
         console.error('Error fetching highlighted events:', error);
-        return [];
+        return null;
     }
 };

@@ -47,7 +47,7 @@ let toolCards = [
 
 export default function Home() {
   const [highlights, setHighlights] = useState([]);
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
