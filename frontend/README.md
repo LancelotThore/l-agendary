@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:frontend/README.md
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -37,3 +38,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 https://heroicons.dev/?strictJsx=true&exportComponent=true&typescript=true
+========
+Pour lancer le projet faites un Docker compose sur le yaml dans Backend.
+>>>>>>>> Josue:README.md

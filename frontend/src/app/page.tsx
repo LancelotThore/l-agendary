@@ -34,44 +34,14 @@ let toolCards = [
   }
 ];
 
-let cards = [
+/* let cards = [
   {
     nom: 'Nom pour voir bien plus',
     lieu: 'Lieu pour voir aussi',
     date: '85 janvier 2077',
     img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  },
-  {
-    nom: 'Nom pour voir',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
   }
-];
+]; */
 
 
 export default function Home() {
