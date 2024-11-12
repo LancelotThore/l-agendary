@@ -6,6 +6,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { login } from "@/app/api/login";
 
 const ralewaySemBold = Raleway({
   subsets: ['latin'],
@@ -25,29 +26,9 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter(); // Pour la redirection
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
-
-    try {
-      const response = await fetch('https://localhost:443/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Change to 'application/json'
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include', // Include cookies
-      });
-
-      if (response.ok) {
-        // Connexion réussie, rediriger vers la page d'accueil
-        router.push('/');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.errors || 'Erreur de connexion'); // Affiche une erreur si la connexion échoue
-      }
-    } catch (error) {
-      setError('Erreur du serveur, veuillez réessayer plus tard.');
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login(email, password, router).catch((err) => setError(err.message));
   };
 
   let inputs = [

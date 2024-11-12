@@ -8,6 +8,7 @@ import { CardEvent } from "../components/ui/cardEvent";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import fetchEvents from "../request/fetch-event-request";
+import { fetchUser } from "@/app/api/data";
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -53,6 +54,10 @@ export default function Home() {
       setHighlights(dataEvents);
     };
     fetchData();
+
+  useEffect(() => {
+    const user = fetchUser();
+    setUser(user);
   }, []);
 
   return (

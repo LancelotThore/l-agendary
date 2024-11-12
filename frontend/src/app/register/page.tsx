@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "../../components/ui/button";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { register } from "@/app/api/login";
 
 const ralewaySemBold = Raleway({
   subsets: ['latin'],
@@ -27,29 +28,12 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
 
-    try {
-      const response = await fetch('https://localhost/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, firstname, email, password }), // Envoyer les données du formulaire
-      });
-
-      if (response.ok) {
-        // Rediriger vers la page d'accueil après l'inscription réussie
-        router.push('/');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Erreur lors de la création du compte');
-      }
-    } catch (error) {
-      setError('Erreur du serveur, veuillez réessayer plus tard.');
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    register(email, name, firstname,  password, router).catch((err) => setError(err.message));
   };
+
 
   // Inputs liés aux états
   let inputs = [
