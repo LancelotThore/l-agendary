@@ -7,6 +7,7 @@ import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
 import { Button } from '../components/ui/button';
 import Link from 'next/link'
+import fetchEvents from "../request/fetch-event-request";
 
 const agbalumo = Agbalumo({
   subsets: ['latin'],
@@ -45,33 +46,15 @@ let toolCards = [
 
 
 export default function Home() {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
+  const [highlights, setHighlights] = useState([]);
 
-  // Utilisation de useEffect pour faire la requête au backend
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("https://localhost:443/api/logged", {
-          method : "GET",
-          credentials: "include", // Inclure les cookies dans la requête
-        });
-
-        if (!response.ok) {
-          throw new Error("User not authenticated");
-        }
-
-        const data = await response.json();
-        setUser(data);
-        console.log(data);
-        
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
-    fetchUser();
+    const fetchData = async () => {
+      const dataEvents = await fetchEvents();
+      setHighlights(dataEvents);
+    }; fetchData();
   }, []);
+
   return (
     <div className="">
       <div className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg" style={{ backgroundImage: "url('./bgToolCards.webp')" }}>
