@@ -1,11 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Agbalumo, Raleway } from 'next/font/google';
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
 import { Button } from '../components/ui/button';
+import { fetchUser } from "@/app/api/data";
+import Link from 'next/link';
 
 const agbalumo = Agbalumo({
   subsets: ['latin'],
@@ -77,59 +79,43 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
 
-  // Utilisation de useEffect pour faire la requête au backend
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("https://localhost:443/api/logged", {
-          method : "GET",
-          credentials: "include", // Inclure les cookies dans la requête
-        });
-
-        if (!response.ok) {
-          throw new Error("User not authenticated");
-        }
-
-        const data = await response.json();
-        setUser(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
-    fetchUser();
+    const user = fetchUser();
+    setUser(user);
   }, []);
-  
+
   return (
-
-    <div className="mx-0 md:mx-20 lg:mx-40">
-      <h1 className={`${agbalumo.className} text-[32px] py-[57px] text-center`}>L'Art de Planifier !</h1>
-
-      <ul className="flex items-center flex-wrap px-10 justify-center gap-[21px]">
-      {toolCards.map((toolcard, id) => (
-          <ToolCard
-            key={id}
-            id={id + 1}
-            title={toolcard.title}
-            description={toolcard.description}
-            icon={toolcard.icon}
-            color={toolcard.color}
-          />
-        ))}
-      </ul>
+    <div className="">
+      <div className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg" style={{ backgroundImage: "url('./bgToolCards.webp')" }}>
+        <h1 className={`${agbalumo.className} text-3xl md:text-4xl pb-14 text-center text-secondary`}>L'Art de Planifier !</h1>
+        <ul className="flex items-center flex-wrap justify-center gap-5">
+          {toolCards.map((toolcard, id) => (
+            <ToolCard
+              key={id}
+              id={id + 1}
+              title={toolcard.title}
+              description={toolcard.description}
+              icon={toolcard.icon}
+              color={toolcard.color}
+            />
+          ))}
+        </ul>
+      </div>
 
       <h2 className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}>Evénements publics les plus populaires !</h2>
       {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {cards.map((card, id) => (
+          <Link key={id} href={`/event/${id}`}>
           <CardEvent
-            key={id}
             id={id + 1}
             nom={card.nom}
             lieu={card.lieu}
             date={card.date}
             img={card.img}
           />
+          </Link>
         ))}
       </ul>
       <div className="text-center">

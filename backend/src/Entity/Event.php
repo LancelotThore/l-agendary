@@ -3,14 +3,34 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\EventController;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            name: 'highlighted-events',
+            uriTemplate: '/highlighted-events',
+            controller: EventController::class . '::highlightedEvents',
+            // outputFormats: ['json' => ['application/ld+json']],
+        ),
+        new Get(), // Get one event by ID
+        new GetCollection(), // Get all events
+        new Post(), // Create a new event
+        new Patch(), // Patch an event
+        new Delete(), // Delete an event
+    ]
+)]
 class Event
 {
     #[ORM\Id]

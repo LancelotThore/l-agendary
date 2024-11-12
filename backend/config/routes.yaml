@@ -21,13 +21,9 @@ logged:
     path: /api/logged
     controller: App\Controller\AuthController::logged
 
-# app_logout:
-#     path: /logout
-#     controller: App\Controller\SecurityController::logout
-
-# frontend_home:
-#     path: /fronthome
-#     controller: App\Controller\FrontendController::redirectToHome
+auth_logout:
+    path: /api/logout
+    controller: App\Controller\AuthController::logout
 
 
 # -------------------------
