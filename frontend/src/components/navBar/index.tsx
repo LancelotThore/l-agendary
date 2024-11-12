@@ -64,7 +64,7 @@ export function Navbar() {
                         <>
                         <Link href="/profile" className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
                             <span>Profil</span>
-                            <Profil className="w-8" aria-hidden="true" />
+                            <Profil className="w-5 h-5" aria-hidden="true" />
                         </Link>
                         <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
                         </>
