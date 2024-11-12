@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import Image from "next/image";
 import { Agbalumo, Raleway } from 'next/font/google';
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
 import { Button } from '../components/ui/button';
+import fetchEvents from "../request/fetch-event-request";
 
 const agbalumo = Agbalumo({
   subsets: ['latin'],
@@ -45,23 +45,12 @@ let toolCards = [
 
 export default function Home() {
   const [highlights, setHighlights] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchEvents = async () => {
-    try {
-      const res = await fetch('https://localhost/api/highlighted-events');
-      const data = await res.json();
-      setHighlights(data);
-      setLoading(false);
-      console.log(data);
-    } catch (error) {
-      console.error('Error fetching highlighted events:', error);
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchEvents();
+    const fetchData = async () => {
+      const dataEvents = await fetchEvents();
+      setHighlights(dataEvents);
+    }; fetchData();
   }, []);
 
 
@@ -87,14 +76,14 @@ export default function Home() {
       {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {highlights.map((dt) => (
-            <CardEvent
-              key={dt.id}
-              id={dt.id}
-              title={dt.title}
-              location={dt.location}
-              startDate={dt.startDate}
-              image={dt.image}
-            />
+          <CardEvent
+            key={dt.id}
+            id={dt.id}
+            title={dt.title}
+            location={dt.location}
+            startDate={dt.startDate}
+            image={dt.image}
+          />
         ))}
       </ul>
       <div className="text-center">
