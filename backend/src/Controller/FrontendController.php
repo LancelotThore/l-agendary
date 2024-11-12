@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class FrontendController extends AbstractController
 {
+
     public function redirectToHome(): Response
     {
         return $this->redirect('http://localhost:3000/');
