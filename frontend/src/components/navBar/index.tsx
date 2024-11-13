@@ -1,15 +1,43 @@
 "use client";
 
-import { useState } from 'react';
-import { Logo, Search, MenuBurger, Home, Close } from "../ui/icons";
+import { useState, useEffect } from 'react';
+import { Logo, Search, MenuBurger, Home, Close, Profil } from "../ui/icons";
 import { Button } from '../ui/button';
+import { fetchUser } from "@/app/api/data";
 import Link from 'next/link'
+import { useRouter } from 'next/navigation';
+import { logout } from "@/app/api/login";
+
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); // État de chargement
+    const router = useRouter(); // Pour la redirection
+
+
+    useEffect(() => {
+        // Fonction pour charger l'utilisateur
+        const loadUser = async () => {
+            try {
+                const userData = await fetchUser();
+                setUser(userData); // userData sera null si non connecté
+            } catch (err) {
+                console.error("Erreur lors de la récupération de l'utilisateur :", err);
+            } finally {
+                setIsLoading(false); // Fin du chargement, que ce soit avec ou sans utilisateur
+            }
+        };
+
+        loadUser();
+    }, []);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleLogout = async () => {
+        logout( router ).then(() => setUser(null));
     };
 
     return (
@@ -27,13 +55,29 @@ export function Navbar() {
                         <Search className="w-5 h-5" aria-hidden="true" />
                     </Link>
                 </div>
+
+
+
                 <div className="hidden md:flex space-x-4 items-center">
-                    <Link href="/register">
-                    <Button className="hover:bg-primary/70">S'enregistrer</Button>
-                    </Link>
-                    <Link href="/login">
-                    <Button className="hover:bg-primary/70">Se connecter</Button>
-                    </Link>
+                    {/* Condition pour afficher les boutons en fonction de l'état de l'utilisateur */}
+                    {user ? (
+                        <>
+                        <Link href="/profile" className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
+                            <span>Profil</span>
+                            <Profil className="w-5 h-5" aria-hidden="true" />
+                        </Link>
+                        <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="/register">
+                                <Button className="hover:bg-primary/70">S'enregistrer</Button>
+                            </Link>
+                            <Link href="/login">
+                                <Button className="hover:bg-primary/70">Se connecter</Button>
+                            </Link>
+                        </>
+                    )}
                 </div>
                 <button
                     type="button"
