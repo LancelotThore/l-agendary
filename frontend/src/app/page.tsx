@@ -72,6 +72,24 @@ let cards = [
 
 
 export default function Home() {
+<<<<<<< Updated upstream
+=======
+  const [highlights, setHighlights] = useState([]);
+  const [user, setUser] = useState(null);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      const dataEvents = await fetchEvents();
+      setHighlights(dataEvents);
+    };
+    fetchData();
+
+    const user = fetchUser();
+    setUser(user);
+
+  }, []);
+
+>>>>>>> Stashed changes
   return (
     <div className="">
       <div className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg" style={{ backgroundImage: "url('./bgToolCards.webp')" }}>
