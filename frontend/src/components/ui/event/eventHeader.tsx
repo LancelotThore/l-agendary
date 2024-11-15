@@ -37,7 +37,7 @@ export default function EventHeader({ event }: EventProps) {
             <div className='w-full flex flex-col mt-48 md:mt-0 mb-6 gap-2 lg:justify-between lg:h-full'>
                 <div className='flex items-center md:items-start md:flex-col gap-2 mb-1'>
                     <h1 className='text-xl md:text-2xl font-bold'>{event.title}</h1>
-                    <Button variant={event.visibility ? 'public' : 'private'} size='sm'>{event.visibility ? 'Public' : 'Private'}{event.visibility ? <LockOpenIcon className='w-4 ml-2' /> : <LockClosedIcon className='w-4 ml-2' /> }</Button>
+                    <Button variant={event.visibility ? 'private' : 'public'} size='sm'>{event.visibility ? 'private' : 'public'}{event.visibility ?  <LockClosedIcon className='w-4 ml-2' /> : <LockOpenIcon className='w-4 ml-2' />}</Button>
                 </div>
                 <div className='flex items-center gap-1.5 font-semibold'>
                     <Clock className='w-5 min-w-5'/>
