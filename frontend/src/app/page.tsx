@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import Link from "next/link";
 import { fetchHighlightedEvents } from "@/app/api/event";
 import { fetchUser } from "@/app/api/data";
+import { link } from "fs";
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -27,23 +28,16 @@ let toolCards = [
     description: "Trouvez ce qui vous convient !",
     icon: "./research-red.svg",
     color: "text-cardResearchPrimary",
+    link: "/search"
   },
   {
     title: "Créez un nouvel événement",
     description: "Faisons de nouvelles choses, ensemble.",
     icon: "./plus-blue.svg",
     color: "text-cardCreatePrimary",
+    link: "/event/create"
   },
 ];
-
-/* let cards = [
-  {
-    nom: 'Nom pour voir bien plus',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  }
-]; */
 
 export default function Home() {
   const [highlights, setHighlights] = useState([]);
@@ -80,6 +74,7 @@ export default function Home() {
               description={toolcard.description}
               icon={toolcard.icon}
               color={toolcard.color}
+              link={toolcard.link}
             />
           ))}
         </ul>
