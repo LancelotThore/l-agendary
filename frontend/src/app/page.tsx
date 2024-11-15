@@ -127,7 +127,7 @@ export default function Home() {
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {highlights.length > 0 ? (
           highlights.map((card, index) => (
-            <Link key={index} href={`/event/${card.id}`}>
+            <Link className="w-full" key={index} href={`/event/${card.id}`}>
               <CardEvent
                 id={card.id}
                 nom={card.title}

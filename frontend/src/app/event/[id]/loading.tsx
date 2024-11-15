@@ -52,7 +52,7 @@ export default function PageEventSkeleton() {
                     <div className='flex gap-12 justify-evenly'>
                         <div className='pb-16 pt-10'>
                             <p className='mb-8 bg-slate-200 text-slate-200 rounded-2xl'>Animate</p>
-                            <ul className='flex gap-5'>
+                            <ul className='flex gap-5 flex-wrap'>
                                 <li className="w-[40px] h-[40px] bg-slate-200 text-slate-200 rounded-2xl"></li>
                                 <li className="w-[40px] h-[40px] bg-slate-200 text-slate-200 rounded-2xl"></li>
                                 <li className="w-[40px] h-[40px] bg-slate-200 text-slate-200 rounded-2xl"></li>

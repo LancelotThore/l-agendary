@@ -3,7 +3,7 @@ import { Skeleton } from "@nextui-org/react";
 export function CardEventSkeleton() {
     return (
         <li
-            className="flex justify-between items-center gap-10 h-32 md:w-full 4xl:w-[480px] rounded-3xl bg-slate-100 cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden animate-pulse"
+            className="flex justify-between items-center gap-10 h-32 w-full 4xl:w-[480px] rounded-3xl bg-slate-100 cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden animate-pulse"
         >
           <section className='flex flex-col justify-between w-full h-full p-3.5 pr-0'>
             <div className='text-sm md:text-lg bg-slate-200 text-slate-200 rounded-2xl'>
