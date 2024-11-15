@@ -2,12 +2,15 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  img?: React.ReactNode;
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, img, type, ...props }, ref) => {
     return (
+      <div className="relative flex items-center w-full">
+      {img && <div className="absolute left-3">{img}</div>}
       <input
         type={type}
         className={cn(
@@ -17,9 +20,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         {...props}
       />
-    )
+      </div>
+    );
   }
-)
+);
 Input.displayName = "Input"
 
 export { Input }
