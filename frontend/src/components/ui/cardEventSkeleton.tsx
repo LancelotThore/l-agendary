@@ -1,22 +1,22 @@
-import { Skeleton } from "@nextui-org/skeleton";
+import { Skeleton } from "@nextui-org/react";
 
 export function CardEventSkeleton() {
     return (
-        <div className="w-[200px] space-y-5 p-4">
-            <Skeleton className="rounded-lg">
-                <div className="h-24 rounded-lg bg-default-300"></div>
-            </Skeleton>
-            <div className="space-y-3">
-                <Skeleton className="w-3/5 rounded-lg">
-                    <div className="h-3 w-3/5 rounded-lg bg-default-200"></div>
-                </Skeleton>
-                <Skeleton className="w-4/5 rounded-lg">
-                    <div className="h-3 w-4/5 rounded-lg bg-default-200"></div>
-                </Skeleton>
-                <Skeleton className="w-2/5 rounded-lg">
-                    <div className="h-3 w-2/5 rounded-lg bg-default-300"></div>
-                </Skeleton>
+        <li
+            className="flex justify-between items-center h-32 md:w-full 4xl:w-[480px] rounded-3xl bg-slate-100 cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 overflow-hidden animate-pulse"
+        >
+          <section className='flex flex-col justify-between w-full h-full p-3.5 pr-0 '>
+            <div className='text-sm md:text-lg bg-slate-200'>
+              <p className='w-full'>animate</p>
+              <p className='w-full'>animate</p>
             </div>
-        </div>
-    );
+            <div className='flex gap-2 text-cardDate text-xs md:text-sm bg-slate-200'>
+              <p className='w-full'>animate</p>
+            </div>
+          </section>
+          <section className='w-5/12 h-full sm:w-6/12'>
+            <span className='object-cover w-full h-full'></span>
+          </section>
+        </li>
+      );
 }

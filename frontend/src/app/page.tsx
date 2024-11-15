@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
+import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import { fetchEvents } from "@/app/api/event";
@@ -36,20 +37,59 @@ let toolCards = [
   },
 ];
 
-/* let cards = [
+let cards = [
   {
-    nom: 'Nom pour voir bien plus',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
   }
-]; */
+];
 
 export default function Home() {
   const [highlights, setHighlights] = useState([]);
   const [user, setUser] = useState(null);
+  const [showCards, setShowCards] = useState(false);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCards(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* useEffect(() => {
     const fetchData = async () => {
       const dataEvents = await fetchEvents();
       setHighlights(dataEvents);
@@ -58,8 +98,7 @@ export default function Home() {
 
     const user = fetchUser();
     setUser(user);
-  }, []);
-
+  }, []); */
   return (
     <div className="">
       <div
@@ -92,18 +131,29 @@ export default function Home() {
       </h2>
       {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {highlights.map((card: any, index: number) => (
-          <Link key={index} href={`/event/${card.id}`}>
-            <CardEvent
-              id={card.id}
-              nom={card.title}
-              lieu={card.location}
-              date={card.start_date}
-              img={card.image}
-            />
-          </Link>
-        ))}
+        {showCards ? (
+          <>
+            {cards.map((card: any, index: number) => (
+              <Link key={index} href={`/event/${card.id}`}>
+                <CardEvent
+                  id={card.id}
+                  nom={card.title}
+                  lieu={card.location}
+                  date={card.start_date}
+                  img={card.image}
+                />
+              </Link>
+            ))}
+          </>
+        ) : (
+          <>
+            {cards.map((card: any, index: number) => (
+              <CardEventSkeleton key={index} />
+            ))}
+          </>
+        )}
       </ul>
+        <CardEventSkeleton />
       <div className="text-center">
         <Button className="mt-10">Voir Plus</Button>
       </div>
