@@ -24,7 +24,6 @@ export async function fetchEvent(id : number) {
   try {
     const res = await fetch("https://localhost/api/events/" + id);
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching highlighted events:", error);

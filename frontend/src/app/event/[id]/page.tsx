@@ -34,19 +34,19 @@ export default function Event({ params }) {
         alt="Card"
         className="rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md"
       />
-      <div className="lg:col-span-3">
+      <div className="lg:col-span-3 lg:h-full">
         <EventHeader event={event} />
       </div>
-      <div className="lg:col-span-4">
+      <div className="lg:col-span-4 lg:h-full">
         <EventOrganizer organisateur={creator} />
       </div>
-      <div className="lg:col-span-3 xl:col-span-4">
+      <div className="lg:col-span-3 xl:col-span-4 lg:h-full">
         <EventDescription description={event.description} />
       </div>
-      <div className="lg:col-span-4 xl:col-span-3">
+      <div className="lg:col-span-4 xl:col-span-3 lg:h-full">
         <EventShare />
       </div>
-      <div className="flex items-center justify-center gap-4 lg:col-span-7">
+      <div className="flex items-center justify-center gap-4 lg:col-span-7 lg:h-full">
         <Button className="md:hidden" size={"lg"}>
           Partager
         </Button>
