@@ -87,28 +87,36 @@ export default function Home() {
       <h2
         className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}
       >
-        Evénements publics les plus populaires !
+        Événements publics les plus populaires !
       </h2>
-      <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {highlights.length > 0 ? (
-          highlights.map((card, index) => (
-            <Link key={index} href={`/event/${card.id}`}>
-              <CardEvent
-                id={card.id}
-                nom={card.title}
-                lieu={card.location}
-                startDate={card.start_date}
-                endDate={card.end_date}
-                img={card.image}
-              />
-            </Link>
-          ))
+        {highlights ? (
+          highlights.length > 0 ? (
+            <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
+              {highlights.map((card: any, index: number) => (
+                <Link key={index} href={`/event/${card.id}`}>
+                  <CardEvent
+                    id={card.id}
+                    nom={card.title}
+                    lieu={card.location}
+                    startDate={card.start_date}
+                    endDate={card.end_date}
+                    img={card.image}
+                  />
+                </Link>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center">Aucun événement à afficher</p>
+          )
         ) : (
-          Array.from({ length: 6 }).map((_, index) => <CardEventSkeleton key={index} />)
+          <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <CardEventSkeleton key={index} />
+            ))}
+          </ul>
         )}
-      </ul>
       <div className="text-center">
-        <Button className="mt-10">Voir Plus</Button>
+        <Link href="/search"><Button className="mt-10">Voir Plus</Button></Link>
       </div>
 
       <h2

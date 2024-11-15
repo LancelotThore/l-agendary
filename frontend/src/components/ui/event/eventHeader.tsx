@@ -60,7 +60,7 @@ import {
     return (
       <div className="flex w-full rounded-lg px-3 md:px-8 md:py-5 bg-gradient-to-b from-transparent from-45% to-primary min-h-72 md:min-h-fit relative overflow-hidden items-end md:bg-none md:bg-secondary text-primary-foreground md:text-secondary-foreground lg:h-full lg:items-start shadow-md">
         <img
-          src="https://images.unsplash.com/photo-1680868543815-b8666dba60f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+          src={`/uploads/event_images/${event.img}`}
           alt="Card"
           className="absolute z-[-10] w-full h-full left-0 object-cover rounded-lg md:hidden"
         />

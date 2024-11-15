@@ -37,11 +37,12 @@ export default function SearchPage() {
         {selectedEvents.map((event, index) => (
           <Link href={`/event/${event.id}`} key={index}>
             <CardEvent
-              id={event.id}
-              nom={event.titre}
+              nom={event.title}
               lieu={event.location}
-              date={event.start_date}
+              startDate={event.start_date}
+              endDate={event.end_date}
               img={event.image}
+              id={event.id}
             />
           </Link>
         ))}
