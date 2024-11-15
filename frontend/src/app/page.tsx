@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
+import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import { fetchHighlightedEvents } from "@/app/api/event";
@@ -50,8 +51,11 @@ export default function Home() {
     };
     fetchData();
 
-    const user = fetchUser();
-    setUser(user);
+    const fetchUserData = async () => {
+      const userData = await fetchUser();
+      setUser(userData);
+    };
+    fetchUserData();
   }, []);
 
   return (
@@ -85,19 +89,22 @@ export default function Home() {
       >
         Evénements publics les plus populaires !
       </h2>
-      {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {highlights.map((card: any, index: number) => (
-          <Link key={index} href={`/event/${card.id}`}>
-            <CardEvent
-              id={card.id}
-              nom={card.title}
-              lieu={card.location}
-              date={card.start_date}
-              img={card.image}
-            />
-          </Link>
-        ))}
+        {highlights.length > 0 ? (
+          highlights.map((card, index) => (
+            <Link key={index} href={`/event/${card.id}`}>
+              <CardEvent
+                id={card.id}
+                nom={card.title}
+                lieu={card.location}
+                date={card.start_date}
+                img={card.image}
+              />
+            </Link>
+          ))
+        ) : (
+          Array.from({ length: 6 }).map((_, index) => <CardEventSkeleton key={index} />)
+        )}
       </ul>
       <div className="text-center">
         <Button className="mt-10">Voir Plus</Button>
