@@ -7,7 +7,7 @@ import { CardEvent } from "@/components/ui/cardEvent";
 import Pagination from "@/components/ui/search/pagination";
 import { fetchEvents } from "../api/event";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 9;
 
 export default function SearchPage() {
   const [events, setEvents] = useState([]);
