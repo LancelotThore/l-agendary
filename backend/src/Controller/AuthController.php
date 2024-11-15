@@ -122,11 +122,12 @@ class AuthController extends AbstractController
         'firstname' => $user->getFirstname(),
         'lastname' => $user->getLastname(),
         'email' => $user->getEmail(),
-        'roles' => $user->getRoles()
-        // Ajoute d'autres propriétés si nécessaire
+        'age' => $user->getAge(),
+        'bio' => $user->getBio(),
+        'roles' => $user->getRoles(),
+        'profile_pic' => $user->getProfilePicture()
     ]);
 
-    return new JsonResponse($data);
 }
 
 }

@@ -107,22 +107,32 @@ export function Navbar() {
                             <Search className="w-5 h-5" aria-hidden="true" />
                         </Link>
                     </li>
-                    <li>
-                        <Link
-                            href="/register"
-                            className="flex items-center block px-3 py-1 rounded font-medium"
-                        >
-                            <Button className="mt-2">S'enregistrer</Button>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            href="/login"
-                            className="flex items-center block px-3 py-1 rounded font-medium"
-                        >
-                            <Button className="mt-2">Se connecter</Button>
-                        </Link>
-                    </li>
+                    {user ? (
+                        <>
+                        <li>
+                            <Link href="/profile" className="flex items-center flex-row space-x-2 py-2 px-3 rounded hover:bg-background font-medium text-base">
+                                <span>Profil</span>
+                                <Profil className="w-8" aria-hidden="true" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
+                        </li>
+                        </>
+                    ) : (
+                        <>
+                            <li>
+                                <Link href="/register">
+                                    <Button className="hover:bg-primary/70">S'enregistrer</Button>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/login">
+                                    <Button className="hover:bg-primary/70">Se connecter</Button>
+                                </Link>
+                            </li>
+                        </>
+                    )}
                 </ul>
             </div>
         </nav>
