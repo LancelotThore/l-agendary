@@ -7,7 +7,7 @@ import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
-import { fetchEvents } from "@/app/api/event";
+import { fetchHighlightedEvents } from "@/app/api/event";
 import { fetchUser } from "@/app/api/data";
 
 const agbalumo = Agbalumo({
@@ -51,7 +51,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dataEvents = await fetchEvents();
+      const dataEvents = await fetchHighlightedEvents();
       setHighlights(dataEvents);
     };
     fetchData();
