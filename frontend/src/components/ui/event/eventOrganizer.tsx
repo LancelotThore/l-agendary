@@ -18,7 +18,7 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
         <img
           className="rounded-lg object-cover h-full w-full"
           src={`${organisateur.image}`}
-          alt={`Image de profil de ${organisateur.name}`}
+          alt={`Image de profil de ${organisateur.firstname + ' ' + organisateur.lastname}`}
         />
       </div>
       <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
@@ -26,7 +26,7 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
           Organisateur
         </h4>
         <div className="flex gap-11 mb-5 font-semibold">
-          <p>{organisateur.name}</p>
+          <p>{organisateur.firstname + ' ' + organisateur.lastname}</p>
           <p className="mr-6">{organisateur.age} ans</p>
         </div>
         <p className="hidden md:block font-semibold">Bio :</p>
