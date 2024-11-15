@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import Link from 'next/link';
 import Filter from "@/components/ui/search/filter";
 import { CardEvent } from "@/components/ui/cardEvent";
-import Pagination from "@/components/ui//search/pagination";
+import Pagination from "@/components/ui/search/pagination";
 import { fetchEvents } from "../api/event";
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 10;
 
 export default function SearchPage() {
   const [events, setEvents] = useState([]);
@@ -18,16 +18,23 @@ export default function SearchPage() {
     const fetchData = async () => {
       const dataEvents = await fetchEvents();
       setEvents(dataEvents);
+      setTotalPages(Math.ceil(dataEvents.length / ITEMS_PER_PAGE));
     };
     fetchData();
-
   }, []);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const selectedEvents = events.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className='w-full'>
       <Filter />
       <ul className="flex items-center gap-5 my-10 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {events.map((event, index) => (
+        {selectedEvents.map((event, index) => (
           <Link href={`/event/${event.id}`} key={index}>
             <CardEvent
               id={event.id}
@@ -42,7 +49,7 @@ export default function SearchPage() {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={setCurrentPage}
+        onPageChange={handlePageChange}
       />
     </div>
   );
