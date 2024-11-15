@@ -27,11 +27,15 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
         </h4>
         <div className="flex gap-11 mb-5 font-semibold">
           <p>{organisateur.firstname + ' ' + organisateur.lastname}</p>
-          <p className="mr-6">{organisateur.age} ans</p>
+          {organisateur.age ? (
+            <p className="mr-6">{organisateur.age} ans</p>
+          ) : (
+            <p className="mr-6">Âge non connu</p>
+          )}
         </div>
         <p className="hidden md:block font-semibold">Bio :</p>
         <p className="line-clamp-3 md:line-clamp-none text-sm">
-          {organisateur.description}
+          {organisateur.bio}
         </p>
       </div>
     </div>
