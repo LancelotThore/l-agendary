@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
-import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import { fetchEvents } from "@/app/api/event";
@@ -47,7 +46,7 @@ let toolCards = [
 ]; */
 
 export default function Home() {
-  const [highlights, setHighlights] = useState(null);
+  const [highlights, setHighlights] = useState([]);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -93,25 +92,18 @@ export default function Home() {
       </h2>
       {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {highlights ? (
-          highlights.map((card: any, index: number) => (
-            <Link key={index} href={`/event/${card.id}`}>
-              <CardEvent
-                id={card.id}
-                nom={card.title}
-                lieu={card.location}
-                date={card.start_date}
-                img={card.image}
-              />
-            </Link>
-          ))
-        ) : (
-          <>
-            <CardEventSkeleton />
-          </>
-        )}
+        {highlights.map((card: any, index: number) => (
+          <Link key={index} href={`/event/${card.id}`}>
+            <CardEvent
+              id={card.id}
+              nom={card.title}
+              lieu={card.location}
+              date={card.start_date}
+              img={card.image}
+            />
+          </Link>
+        ))}
       </ul>
-
       <div className="text-center">
         <Button className="mt-10">Voir Plus</Button>
       </div>

@@ -316,4 +316,36 @@ function Link(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, Logo, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, Link };
+function User(props: React.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+    data-slot="icon"
+    viewBox="0 0 16 16"
+    {...props}
+  >
+    <path d="M8 8a3 3 0 100-6 3 3 0 000 6zm4.735 6c.618 0 1.093-.561.872-1.139a6.002 6.002 0 00-11.215 0c-.22.578.254 1.139.872 1.139h9.47z"></path>
+  </svg>
+  );
+}
+
+function Filtre(props: React.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="17"
+      height="15"
+      fill="none"
+      viewBox="0 0 17 15"
+      {...props}
+    >
+      <path
+        fill="#1B1B1B"
+        d="M16.035 12.477a.565.565 0 01-.566.565h-3.842a2.207 2.207 0 01-4.265 0H1.53a.565.565 0 010-1.13h5.832a2.207 2.207 0 014.265 0h3.842a.565.565 0 01.566.565zm0-9.953a.565.565 0 01-.566.565h-1.846a2.207 2.207 0 01-4.264 0H1.53a.565.565 0 010-1.13H9.36a2.208 2.208 0 014.264 0h1.846a.558.558 0 01.566.565zm0 4.973a.559.559 0 01-.566.565H6.654a2.208 2.208 0 01-4.265 0H1.53a.565.565 0 010-1.13h.86a2.208 2.208 0 014.264 0h8.815a.565.565 0 01.566.565z"
+      ></path>
+    </svg>
+  );
+}
+
+export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, Logo, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, Link, User, Filtre };
