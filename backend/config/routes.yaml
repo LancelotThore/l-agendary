@@ -32,3 +32,19 @@ auth_logout:
 highlighted_events:
     path: /api/highlighted-events
     controller: App\Controller\EventController::highlightedEvents
+
+
+# -------------------------
+# Users
+
+user_profile_update:
+    path: /api/user/update/profile
+    controller: App\Controller\UserController::updateProfile
+
+user_settings_update:
+    path: /api/user/update/settings
+    controller: App\Controller\UserController::updateSettings
+
+user_image_update:
+    path: /api/user/update/image
+    controller: App\Controller\UserController::updateImage
