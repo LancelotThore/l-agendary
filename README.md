@@ -44,4 +44,6 @@ _(Inclut les fonctionnalités présentes avant cette semaine)_
 - Création de compte
 - Création d'événement
 - Squelettes des cartes d'événements
+- Squelettes de la page d'événement
+- Spinner de chargement dans les boutons de login et register
 

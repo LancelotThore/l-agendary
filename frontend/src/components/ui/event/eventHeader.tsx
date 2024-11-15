@@ -64,7 +64,7 @@ import {
           alt="Card"
           className="absolute z-[-10] w-full h-full left-0 object-cover rounded-lg md:hidden"
         />
-        <div className="w-full flex flex-col mt-48 md:mt-0 mb-6 gap-2 lg:justify-between lg:h-full">
+        <div className="w-full flex flex-col mt-48 md:mt-0 gap-2 lg:justify-between lg:h-full">
           <div className="flex items-center md:items-start md:flex-col gap-2 mb-1">
             <h1 className="text-xl md:text-2xl font-bold">{event.title}</h1>
             <Button variant={event.privacy ? "public" : "private"} size="sm">

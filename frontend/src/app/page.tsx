@@ -37,45 +37,6 @@ let toolCards = [
   },
 ];
 
-/* let cards = [
-  {
-    title: 'Nom pour voir bien plus',
-    location: 'Lieu pour voir aussi',
-    start_date: '85 janvier 2077',
-    image: './paysage.webp',
-  },
-  {
-    title: 'Nom pour voir bien plus',
-    location: 'Lieu pour voir aussi',
-    start_date: '85 janvier 2077',
-    image: './paysage.webp',
-  },
-  {
-    title: 'Nom pour voir bien plus',
-    location: 'Lieu pour voir aussi',
-    start_date: '85 janvier 2077',
-    image: './paysage.webp',
-  },
-  {
-    title: 'Nom pour voir bien plus',
-    location: 'Lieu pour voir aussi',
-    start_date: '85 janvier 2077',
-    image: './paysage.webp',
-  },
-  {
-    title: 'Nom pour voir bien plus',
-    location: 'Lieu pour voir aussi',
-    start_date: '85 janvier 2077',
-    image: './paysage.webp',
-  },
-  {
-    title: 'Nom pour voir bien plus',
-    location: 'Lieu pour voir aussi',
-    start_date: '85 janvier 2077',
-    image: './paysage.webp',
-  }
-]; */
-
 export default function Home() {
   const [highlights, setHighlights] = useState([]);
   const [user, setUser] = useState(null);
