@@ -39,9 +39,9 @@ _(Inclut les fonctionnalités présentes avant cette semaine)_
 - Page d’accueil : Affichage des événements mis en avant.
 - Page profil : Modification des informations utilisateur.
 - Page événement : Requêtes de données pour l'événement et son organisateur.
-- Déconnexion : Fonctionnalité de déconnexion utilisateur.
-- Connexion : Fonctionnalité d’authentification.
-- Création de compte : Interface d’inscription utilisateur.
-- Création d'événement : Interface pour créer un nouvel événement.
-- Squelettes des cartes d'événements : Base de la présentation visuelle des cartes.
+- Déconnexion
+- Connexion
+- Création de compte
+- Création d'événement
+- Squelettes des cartes d'événements
 
