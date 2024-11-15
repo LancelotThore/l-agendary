@@ -97,7 +97,8 @@ export default function Home() {
                 id={card.id}
                 nom={card.title}
                 lieu={card.location}
-                date={card.start_date}
+                startDate={card.start_date}
+                endDate={card.end_date}
                 img={card.image}
               />
             </Link>

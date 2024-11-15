@@ -12,15 +12,52 @@ const ralewayMedium = Raleway({
   variable: '--font-raleway',
 });
 
-interface ToolCardProps {
+interface CardProps {
   id: number;
   nom: string;
   lieu: string;
-  date: string;
+  startDate: string;
+  endDate: string;
   img: string;
 }
 
-export function CardEvent({ nom, lieu, date, img, id }: ToolCardProps) {
+export function CardEvent({ nom, lieu, startDate, endDate, img, id }: CardProps) {
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const daysOfWeek = [
+      "dimanche",
+      "lundi",
+      "mardi",
+      "mercredi",
+      "jeudi",
+      "vendredi",
+      "samedi",
+    ];
+    const months = [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre",
+    ];
+
+    const dayOfWeek = daysOfWeek[date.getDay()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    return `${dayOfWeek} ${day} ${month} ${year}, ${hours}h${minutes}`;
+  };
+
   return (
     <li
       key={id}
@@ -33,11 +70,11 @@ export function CardEvent({ nom, lieu, date, img, id }: ToolCardProps) {
         </div>
         <div className='flex gap-2 text-cardDate text-xs md:text-sm'>
           <img src="./calendar.svg" alt="calendar Icon" />
-          <p className={`${ralewayMedium.className}`}>{date}</p>
+          <p className={`${ralewayMedium.className}`}>Du <strong>{formatDateTime(startDate)}</strong> Au <strong>{formatDateTime(endDate)}</strong></p>
         </div>
       </section>
       <section className='w-5/12 h-full sm:w-6/12'>
-        <img className='object-cover w-full h-full' src={`/uploads/event_images/${img}`} alt="Img évènement" />
+        <img className='object-cover w-full h-full' src={img} alt="Img évènement" />
       </section>
     </li>
   );
