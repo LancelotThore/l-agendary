@@ -30,32 +30,32 @@ export default function Event({ params }) {
   return (
     <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
       <img
-        src="https://images.unsplash.com/photo-1680868543815-b8666dba60f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+        src={`/uploads/event_images/${event.image}`}
         alt="Card"
         className="rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md"
       />
       <div className="lg:col-span-3">
-        <EventHeader event={event} />
+      <EventHeader event={event} />
       </div>
       <div className="lg:col-span-4">
-        <EventOrganizer organisateur={creator} />
+      <EventOrganizer organisateur={creator} />
       </div>
       <div className="lg:col-span-3 xl:col-span-4">
-        <EventDescription description={event.description} />
+      <EventDescription description={event.description} />
       </div>
       <div className="lg:col-span-4 xl:col-span-3">
-        <EventShare />
+      <EventShare />
       </div>
       <div className="flex items-center justify-center gap-4 lg:col-span-7">
-        <Button className="md:hidden" size={"lg"}>
-          Partager
-        </Button>
-        <Button variant={"accent"} size={"lg"}>
-          Rejoindre
-        </Button>
-        {user && user.id === creator.id && (
-          <Button size={"lg"}>Modifier l'événement</Button>
-        )}
+      <Button className="md:hidden" size={"lg"}>
+        Partager
+      </Button>
+      <Button variant={"accent"} size={"lg"}>
+        Rejoindre
+      </Button>
+      {user && user.id === creator.id && (
+        <Button size={"lg"}>Modifier l'événement</Button>
+      )}
       </div>
     </div>
   );

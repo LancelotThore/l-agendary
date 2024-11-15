@@ -24,6 +24,12 @@ use App\Controller\EventController;
             controller: EventController::class . '::highlightedEvents',
             // outputFormats: ['json' => ['application/ld+json']],
         ),
+        new GetCollection(
+            name: 'privated-events',
+            uriTemplate: '/privated-events',
+            controller: EventController::class . '::privatedEvents',
+            // outputFormats: ['json' => ['application/ld+json']],
+        ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
         new Post(), // Create a new event

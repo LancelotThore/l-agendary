@@ -67,9 +67,9 @@ import {
         <div className="w-full flex flex-col mt-48 md:mt-0 mb-6 gap-2 lg:justify-between lg:h-full">
           <div className="flex items-center md:items-start md:flex-col gap-2 mb-1">
             <h1 className="text-xl md:text-2xl font-bold">{event.title}</h1>
-            <Button variant={event.visibility ? "public" : "private"} size="sm">
-              {event.visibility ? "Public" : "Private"}
-              {event.visibility ? (
+            <Button variant={event.privacy ? "public" : "private"} size="sm">
+              {event.privacy ? "Public" : "Private"}
+              {event.privacy ? (
                 <LockOpenIcon className="w-4 ml-2" />
               ) : (
                 <LockClosedIcon className="w-4 ml-2" />

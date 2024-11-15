@@ -9,6 +9,17 @@ export async function fetchEvents() {
   }
 }
 
+export async function fetchPrivatedEvents() {
+  try {
+    const res = await fetch("https://localhost/api/privated-events");
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return null;
+  }
+}
+
 export async function fetchHighlightedEvents() {
   try {
     const res = await fetch("https://localhost/api/highlighted-events");
@@ -24,7 +35,6 @@ export async function fetchEvent(id : number) {
   try {
     const res = await fetch("https://localhost/api/events/" + id);
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching highlighted events:", error);
