@@ -34,7 +34,8 @@ export default function SearchPage() {
                 id={event.id}
                 nom={event.titre}
                 lieu={event.location}
-                date={event.start_date}
+                startDate={event.start_date}
+                endDate={event.end_date}
                 img={event.image}
               />
             </Link>
