@@ -24,38 +24,11 @@ interface CardProps {
 export function CardEvent({ nom, lieu, startDate, endDate, img, id }: CardProps) {
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
-    const daysOfWeek = [
-      "dimanche",
-      "lundi",
-      "mardi",
-      "mercredi",
-      "jeudi",
-      "vendredi",
-      "samedi",
-    ];
-    const months = [
-      "janvier",
-      "février",
-      "mars",
-      "avril",
-      "mai",
-      "juin",
-      "juillet",
-      "août",
-      "septembre",
-      "octobre",
-      "novembre",
-      "décembre",
-    ];
-
-    const dayOfWeek = daysOfWeek[date.getDay()];
-    const day = date.getDate();
-    const month = months[date.getMonth()];
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
 
-    return `${dayOfWeek} ${day} ${month} ${year}, ${hours}h${minutes}`;
+    return `${day}/${month}/${year}`;
   };
 
   return (
