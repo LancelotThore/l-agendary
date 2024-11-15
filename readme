@@ -1,0 +1,7 @@
+
+15/11/2024 :
+  - enregistrement d'un nouvel utilisateur
+  - connection d'un utilisateur
+  - création d'un événement
+  - modification des informations de l'utilisateur sur la page de profil
+  - squelette des cartes events
