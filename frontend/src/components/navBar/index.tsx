@@ -1,56 +1,76 @@
 "use client";
 
-import { useState } from 'react';
-import { Logo, Search, MenuBurger, Home, Close, Profil, Calendar } from "../ui/icons";
+import { useState, useEffect } from 'react';
+import { Logo, Search, MenuBurger, Home, Close, Profil } from "../ui/icons";
 import { Button } from '../ui/button';
-import Link from 'next/link';
-
-
-const commonLinkClasses = "hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base";
-const buttonClasses = "hover:bg-primary/70";
+import { fetchUser } from "@/app/api/data";
+import Link from 'next/link'    
+import { useRouter } from 'next/navigation';
+import { logout } from "@/app/api/login";
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); // État de chargement
+    const router = useRouter(); // Pour la redirection
+
+    useEffect(() => {
+        // Fonction pour charger l'utilisateur
+        const loadUser = async () => {
+            try {
+                const userData = await fetchUser();
+                setUser(userData); // userData sera null si non connecté
+            } catch (err) {
+                console.error("Erreur lors de la récupération de l'utilisateur :", err);
+            } finally {
+                setIsLoading(false); // Fin du chargement, que ce soit avec ou sans utilisateur
+            }
+        };
+
+        loadUser();
+    }, []);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
+    const handleLogout = async () => {
+        logout(router).then(() => setUser(null));
+    };
+
     return (
         <nav className="bg-secondary text-primary shadow-md">
             <div className="flex items-center justify-between mx-auto py-4 w-10/12 m-auto">
-                <div className="flex items-center space-x-10">
+                <div className="flex items-center space-x-10 rtl:space-x-reverse">
                     <Link href="/" className="flex items-center">
                         <Logo className="w-40" />
                     </Link>
-                    {isUserLoggedIn && (
-                        <Link href="/event" className={commonLinkClasses}>
-                            <span>Mes événements</span>
-                            <Calendar className="w-5" aria-hidden="true" />
-                        </Link>
-                    )}
-                    <Link href="/search" className={commonLinkClasses}>
+                    <Link
+                        href="/search"
+                        className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                    >
                         <span>Rechercher</span>
-                        <Search className="w-5" aria-hidden="true" />
+                        <Search className="w-5 h-5" aria-hidden="true" />
                     </Link>
                 </div>
+
                 <div className="hidden md:flex space-x-4 items-center">
-                    {isUserLoggedIn ? (
+                    {/* Condition pour afficher les boutons en fonction de l'état de l'utilisateur */}
+                    {user ? (
                         <>
-                            <Link href="/profile" className={commonLinkClasses}>
+                            <Link href="/profile" className="md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
                                 <span>Profil</span>
-                                <Profil className="w-8" aria-hidden="true" />
+                                <Profil className="w-5 h-5" aria-hidden="true" />
                             </Link>
-                            <Button className={buttonClasses} onClick={() => setIsUserLoggedIn(false)}>Se déconnecter</Button>
+                            <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
                         </>
                     ) : (
                         <>
                             <Link href="/register">
-                                <Button className={buttonClasses}>S'enregistrer</Button>
+                                <Button className="hover:bg-primary/70">S'enregistrer</Button>
                             </Link>
                             <Link href="/login">
-                                <Button className={buttonClasses}>Se connecter</Button>
+                                <Button className="hover:bg-primary/70">Se connecter</Button>
                             </Link>
                         </>
                     )}
@@ -64,60 +84,58 @@ export function Navbar() {
                 </button>
             </div>
             <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
-                <div className="font-medium flex flex-col py-4 rounded-lg bg-secondary items-end w-10/12 m-auto">
-                    <Link
-                        href="/"
-                        className="flex items-center space-x-2 rtl:space-x-reverse block py-1 px-3 rounded font-medium text-xl"
-                    >
-                        <span>Accueil</span>
-                        <Home className="w-5" aria-hidden="true" />
-                    </Link>
-                    {isUserLoggedIn ? (
-
-                        <Link href="/event" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
-                            <span>Mes événements</span>
-                            <Calendar className="w-5" aria-hidden="true" />
+                <ul className="font-medium flex flex-col py-4 rounded-lg bg-secondary items-end w-10/12 m-auto">
+                    <li>
+                        <Link
+                            href="/"
+                            className="flex items-center space-x-2 rtl:space-x-reverse block py-1 px-3 rounded font-medium text-xl"
+                        >
+                            <span>Accueil</span>
+                            <Home className="w-5 h-5" aria-hidden="true" />
                         </Link>
-
-                    ) : (
-                        <></>
-                    )}
-                    <Link
-                        href="/search"
-                        className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
-                    >
-                        <span>Rechercher</span>
-                        <Search className="w-5" aria-hidden="true" />
-                    </Link>
-                    {isUserLoggedIn ? (
+                    </li>
+                    <li>
+                        <Link
+                            href="/search"
+                            className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
+                        >
+                            <span>Rechercher</span>
+                            <Search className="w-5 h-5" aria-hidden="true" />
+                        </Link>
+                    </li>
+                    {user ? (
                         <>
-                            <Link href="/profile" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
-                                <span>Profil</span>
-                                <Profil className="w-8" aria-hidden="true" />
-                            </Link>
-
-                            <Button className="mt-2" onClick={() => setIsUserLoggedIn(false)}>Se déconnecter</Button>
-
+                            <li>
+                                <Link href="/profile" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
+                                    <span>Profil</span>
+                                    <Profil className="w-5 h-5" aria-hidden="true" />
+                                </Link>
+                            </li>
+                            <li>
+                                <Button onClick={handleLogout} className="hover:bg-primary/70 mt-2">Se déconnecter</Button>
+                            </li>
                         </>
                     ) : (
                         <>
-                            <Link
-                                href="/register"
-                                className="flex items-center block px-3 py-1 rounded font-medium"
-                            >
-                                <Button className="mt-2">S'enregistrer</Button>
-                            </Link>
-
-                            <Link
-                                href="/login"
-                                className="flex items-center block px-3 py-1 rounded font-medium"
-                            >
-                                <Button className="mt-2">Se connecter</Button>
-                            </Link>
-
+                            <li>
+                                <Link
+                                    href="/register"
+                                    className="flex items-center block px-3 py-1 rounded font-medium"
+                                >
+                                    <Button className="mt-2">S'enregistrer</Button>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/login"
+                                    className="flex items-center block px-3 py-1 rounded font-medium"
+                                >
+                                    <Button className="mt-2">Se connecter</Button>
+                                </Link>
+                            </li>
                         </>
                     )}
-                </div>
+                </ul>
             </div>
         </nav>
     );

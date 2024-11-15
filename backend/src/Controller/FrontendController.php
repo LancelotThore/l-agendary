@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class FrontendController extends AbstractController
 {
+
     public function redirectToHome(): Response
     {
         return $this->redirect('http://localhost:3000/');
@@ -16,12 +17,28 @@ class FrontendController extends AbstractController
 
     public function sessionInfo(Request $request): Response
     {
-        $user = $request->getSession()->get('user');
+        // Récupération de la session depuis la requête
+        $session = $request->getSession();
 
-        if (!$user) {
+
+        return $this->json($request);
+
+        return $this->json(unserialize($session->get('_security_main')));
+
+        // Vérifiez si la session contient les données de l'utilisateur
+        if (!$session->has('_security_main')) {
             return $this->json(['error' => 'No user found in session'], 401);
         }
 
-        return $this->json($user);
+        // Récupération des données de l'utilisateur depuis la session
+        $userData = unserialize($session->get('_security_main'));
+
+        // Vérifiez si les données de l'utilisateur sont présentes
+        if (!$userData) {
+            return $this->json(['error' => 'No user data found in session'], 401);
+        }
+
+        // Retourner les informations de l'utilisateur avec un code HTTP 200
+        return $this->json($userData, 200);
     }
 }

@@ -18,6 +18,8 @@ function LocationOn(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
+
+
 function PeopleFill(props: React.SVGAttributes<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" {...props}>
@@ -35,16 +37,16 @@ function PeopleFill(props: React.SVGAttributes<SVGSVGElement>) {
 
 function LockClosedIcon(props: SVGAttributes<SVGElement>) {
   return (
-    <svg data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" stroke-linecap="round" stroke-linejoin="round"></path>
+    <svg data-slot="icon" aria-hidden="true" fill="none" strokeWidth="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" strokeLinecap="round" strokeLinejoin="round"></path>
     </svg>
   );
 }
 
 function LockOpenIcon(props: SVGAttributes<SVGElement>) {
   return (
-    <svg data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <path d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" stroke-linecap="round" stroke-linejoin="round"></path>
+    <svg data-slot="icon" aria-hidden="true" fill="none" strokeWidth="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" strokeLinecap="round" strokeLinejoin="round"></path>
     </svg>
   );
 }
@@ -156,15 +158,17 @@ function Profil(props: SVGAttributes<SVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
       data-slot="icon"
-      viewBox="0 0 16 16"
+      viewBox="0 0 24 24"
       {...props}
     >
       <path
-        fillRule="evenodd"
-        d="M15 8A7 7 0 111 8a7 7 0 0114 0zm-5-2a2 2 0 11-4 0 2 2 0 014 0zM8 9a4.998 4.998 0 00-4.295 2.437A5.49 5.49 0 008 13.5a5.49 5.49 0 004.294-2.063A4.997 4.997 0 008 9z"
-        clipRule="evenodd"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
       ></path>
     </svg>
   );
@@ -312,46 +316,6 @@ function Link(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function SelectDown(props: React.SVGAttributes<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      data-slot="icon"
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-      ></path>
-    </svg>
-  );
-}
-
-function SelectUp(props: React.SVGAttributes<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      data-slot="icon"
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M4.5 15.75l7.5-7.5 7.5 7.5"
-      ></path>
-    </svg>
-  );
-}
-
 function User(props: React.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
@@ -384,4 +348,4 @@ function Filtre(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, Logo, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Mail, Link, Facebook, Instagram, Linkedin, Whatsapp, SelectDown, SelectUp, User, Filtre };
+export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, Logo, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, Link, User, Filtre };
