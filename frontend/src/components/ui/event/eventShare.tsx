@@ -31,7 +31,7 @@ const EventShare: React.FC = (props) => {
       <div className='flex gap-12 justify-evenly'>
         <div className='pb-16 pt-10'>
           <p className='mb-8'>Via les réseaux</p>
-          <ul className='flex gap-5'>
+          <ul className='flex gap-5 flex-wrap'>
             <li><a href={`https://www.instagram.com/yourprofile`} target="_blank" rel="noopener noreferrer"><Instagram className="w-10" /></a></li>
             <li><a href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener noreferrer"><Facebook className='w-10' /></a></li>
             <li><a href={`https://api.whatsapp.com/send?text=${shareText}%20${shareUrl}`} target="_blank" rel="noopener noreferrer"><Whatsapp className='w-10' /></a></li>

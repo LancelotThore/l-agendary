@@ -8,9 +8,8 @@ import { CardEvent } from "../components/ui/cardEvent";
 import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
-import { fetchHighlightedEvents } from "@/app/api/event";
+import { fetchEvents } from "@/app/api/event";
 import { fetchUser } from "@/app/api/data";
-import { link } from "fs";
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -29,16 +28,53 @@ let toolCards = [
     description: "Trouvez ce qui vous convient !",
     icon: "./research-red.svg",
     color: "text-cardResearchPrimary",
-    link: "/search"
   },
   {
     title: "Créez un nouvel événement",
     description: "Faisons de nouvelles choses, ensemble.",
     icon: "./plus-blue.svg",
     color: "text-cardCreatePrimary",
-    link: "/event/create"
   },
 ];
+
+/* let cards = [
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  },
+  {
+    title: 'Nom pour voir bien plus',
+    location: 'Lieu pour voir aussi',
+    start_date: '85 janvier 2077',
+    image: './paysage.webp',
+  }
+]; */
 
 export default function Home() {
   const [highlights, setHighlights] = useState([]);
@@ -46,7 +82,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dataEvents = await fetchHighlightedEvents();
+      const dataEvents = await fetchEvents();
       setHighlights(dataEvents);
     };
     fetchData();
@@ -78,7 +114,6 @@ export default function Home() {
               description={toolcard.description}
               icon={toolcard.icon}
               color={toolcard.color}
-              link={toolcard.link}
             />
           ))}
         </ul>
@@ -87,36 +122,27 @@ export default function Home() {
       <h2
         className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}
       >
-        Événements publics les plus populaires !
+        Evénements publics les plus populaires !
       </h2>
-        {highlights ? (
-          highlights.length > 0 ? (
-            <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-              {highlights.map((card: any, index: number) => (
-                <Link key={index} href={`/event/${card.id}`}>
-                  <CardEvent
-                    id={card.id}
-                    nom={card.title}
-                    lieu={card.location}
-                    startDate={card.start_date}
-                    endDate={card.end_date}
-                    img={card.image}
-                  />
-                </Link>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-center">Aucun événement à afficher</p>
-          )
+      <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
+        {highlights.length > 0 ? (
+          highlights.map((card, index) => (
+            <Link className="w-full" key={index} href={`/event/${card.id}`}>
+              <CardEvent
+                id={card.id}
+                nom={card.title}
+                lieu={card.location}
+                date={card.start_date}
+                img={card.image}
+              />
+            </Link>
+          ))
         ) : (
-          <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <CardEventSkeleton key={index} />
-            ))}
-          </ul>
+          Array.from({ length: 6 }).map((_, index) => <CardEventSkeleton key={index} />)
         )}
+      </ul>
       <div className="text-center">
-        <Link href="/search"><Button className="mt-10">Voir Plus</Button></Link>
+        <Button className="mt-10">Voir Plus</Button>
       </div>
 
       <h2

@@ -7,6 +7,7 @@ import { Button } from "../../components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { register } from "@/app/api/login";
+import Image from "next/image";
 
 const ralewaySemBold = Raleway({
   subsets: ["latin"],
@@ -26,13 +27,19 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [spinnerActive, setSpinnerActive] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    register(email, name, firstname, password, router).catch((err) =>
-      setError(err.message)
-    );
+    try {
+      setSpinnerActive(true);
+      await register(email, name, firstname, password, router);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSpinnerActive(false);
+    }
   };
 
   // Inputs liés aux états
@@ -109,6 +116,7 @@ export default function RegisterPage() {
 
           <div className="flex justify-center flex-col">
             <Button size="default" className="mt-4 mx-auto">
+              <Image width={5} height={5} className={`animate-spin h-5 w-5 mr-3 ${spinnerActive ? '' : 'hidden'}`} src="./spinner.svg" alt="Spiner svg" />
               Créer son compte
             </Button>
             <a

@@ -7,6 +7,7 @@ import { Button } from "../../components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/app/api/login";
+import Image from "next/image";
 
 const ralewaySemBold = Raleway({
   subsets: ["latin"],
@@ -24,11 +25,19 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [spinnerActive, setSpinnerActive] = useState(false);
   const router = useRouter(); // Pour la redirection
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(email, password, router).catch((err) => setError(err.message));
+    try {
+      setSpinnerActive(true);
+      await login(email, password, router);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSpinnerActive(false);
+    }
   };
 
   let inputs = [
@@ -98,6 +107,7 @@ export default function LoginPage() {
 
           <div className="flex justify-center flex-col">
             <Button size="default" className="mt-4 mx-auto">
+              <Image width={5} height={5} className={`animate-spin h-5 w-5 mr-3 ${spinnerActive ? '' : 'hidden'}`} src="./spinner.svg" alt="Spiner svg" />
               Se connecter
             </Button>
           </div>
