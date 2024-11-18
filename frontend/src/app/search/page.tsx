@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Filter from "@/components/ui/search/filter";
 import { CardEvent } from "@/components/ui/cardEvent";
 import Pagination from "@/components/ui/search/pagination";
-import { fetchPrivatedEvents } from "../api/event";
+import { fetchPaginatedEvents, fetchNbEvents } from "../api/event";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -16,27 +16,25 @@ export default function SearchPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dataEvents = await fetchPrivatedEvents();
-      console.log("fetch", dataEvents);
+      const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+      const dataEvents = await fetchPaginatedEvents(ITEMS_PER_PAGE, offset);
+      const nbEvents = await fetchNbEvents();
       setEvents(dataEvents);
-      setTotalPages(Math.ceil(dataEvents.length / ITEMS_PER_PAGE));
+      // Assuming the API returns the total number of events
+      setTotalPages(Math.ceil(nbEvents / ITEMS_PER_PAGE));
     };
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  console.log(events);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const selectedEvents = events.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
   return (
     <div className='w-full'>
       <Filter />
       <ul className="flex items-center gap-5 my-10 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {selectedEvents.map((event, index) => (
+        {events.map((event, index) => (
           <Link href={`/event/${event.id}`} key={index}>
             <CardEvent
               nom={event.title}
