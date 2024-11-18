@@ -30,6 +30,12 @@ use App\Controller\EventController;
             controller: EventController::class . '::privatedEvents',
             // outputFormats: ['json' => ['application/ld+json']],
         ),
+        new GetCollection(
+            name: 'paginated-events',
+            uriTemplate: '/paginated-events',
+            controller: EventController::class . '::paginatedEvents',
+            // outputFormats: ['json' => ['application/ld+json']],
+        ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
         new Post(), // Create a new event

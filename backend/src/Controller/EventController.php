@@ -41,4 +41,19 @@ class EventController extends AbstractController
 
         return $this->json($privated_events);
     }
+
+    /**
+    * @Route("/api/paginated-events", name="paginated-events")
+    */
+    public function paginatedEvents(Request $request, EntityManagerInterface $entityManager): Response
+    {
+    $paginated_events = $entityManager->getRepository(Event::class)
+        ->createQueryBuilder('e')
+        ->setFirstResult($request->query->getInt('offset', 0))
+        ->setMaxResults($request->query->getInt('limit', 9))
+        ->getQuery()
+        ->getResult();
+
+    return $this->json($paginated_events);
+    }
 }

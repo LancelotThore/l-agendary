@@ -9,6 +9,17 @@ export async function fetchEvents() {
   }
 }
 
+export async function fetchPaginatedEvents(limit: number = 9, offset: number = 0) {
+  try {
+    const res = await fetch(`https://localhost/api/paginated-events?limit=${limit}&offset=${offset}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return null;
+  }
+}
+
 export async function fetchPrivatedEvents() {
   try {
     const res = await fetch("https://localhost/api/privated-events");
