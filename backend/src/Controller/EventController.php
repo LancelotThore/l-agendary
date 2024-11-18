@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class EventController extends AbstractController
 {
@@ -28,32 +29,37 @@ class EventController extends AbstractController
         return $this->json($highlighted_events);
     }
 
-    /** 
-     * @Route("/api/privated-events", name="privated-events")
-     */
-    public function privatedEvents(EntityManagerInterface $entityManager): Response
-    {
-        $privated_events = $entityManager->getRepository(Event::class)
-            ->createQueryBuilder('e')
-            ->where('e.privacy = 1')
-            ->getQuery()
-            ->getResult();
+/**
+ * @Route("/api/paginated-events", name="paginated-events", methods={"GET"})
+ */
+public function paginatedEvents(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $limit = $request->query->getInt('limit', 9); // Default limit to 10 if not provided
+    $offset = $request->query->getInt('offset', 0); // Default offset to 0 if not provided
 
-        return $this->json($privated_events);
-    }
-
-    /**
-    * @Route("/api/paginated-events", name="paginated-events")
-    */
-    public function paginatedEvents(Request $request, EntityManagerInterface $entityManager): Response
-    {
     $paginated_events = $entityManager->getRepository(Event::class)
         ->createQueryBuilder('e')
-        ->setFirstResult($request->query->getInt('offset', 0))
-        ->setMaxResults($request->query->getInt('limit', 9))
+        ->setFirstResult($offset)
+        ->setMaxResults($limit)
+        ->where('e.privacy = 1')
         ->getQuery()
         ->getResult();
 
     return $this->json($paginated_events);
-    }
+}
+
+/**
+ * @Route("/api/nb-public-events", name="nb-public-events", methods={"GET"})
+ */
+public function nbPublicEvents(EntityManagerInterface $entityManager): Response
+{
+    $nb_events = $entityManager->getRepository(Event::class)
+        ->createQueryBuilder('e')
+        ->select('COUNT(e.id)')
+        ->where('e.privacy = 1')
+        ->getQuery()
+        ->getSingleScalarResult();
+
+    return $this->json($nb_events);
+}
 }

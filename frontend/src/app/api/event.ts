@@ -9,7 +9,7 @@ export async function fetchEvents() {
   }
 }
 
-export async function fetchPaginatedEvents(limit: number = 9, offset: number = 0) {
+export async function fetchPaginatedEvents(limit: number, offset: number) {
   try {
     const res = await fetch(`https://localhost/api/paginated-events?limit=${limit}&offset=${offset}`);
     const data = await res.json();
@@ -20,9 +20,9 @@ export async function fetchPaginatedEvents(limit: number = 9, offset: number = 0
   }
 }
 
-export async function fetchPrivatedEvents() {
+export async function fetchNbEvents(){
   try {
-    const res = await fetch("https://localhost/api/privated-events");
+    const res = await fetch(`https://localhost/api/nb-public-events`);
     const data = await res.json();
     return data;
   } catch (error) {

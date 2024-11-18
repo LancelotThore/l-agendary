@@ -29,10 +29,6 @@ auth_logout:
 # -------------------------
 # Events
 
-highlighted_events:
-    path: /api/highlighted-events
-    controller: App\Controller\EventController::highlightedEvents
-
 
 # -------------------------
 # Users

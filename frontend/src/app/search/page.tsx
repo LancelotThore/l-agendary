@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Filter from "@/components/ui/search/filter";
 import { CardEvent } from "@/components/ui/cardEvent";
 import Pagination from "@/components/ui/search/pagination";
-import { fetchPaginatedEvents } from "../api/event";
+import { fetchPaginatedEvents, fetchNbEvents } from "../api/event";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -18,9 +18,10 @@ export default function SearchPage() {
     const fetchData = async () => {
       const offset = (currentPage - 1) * ITEMS_PER_PAGE;
       const dataEvents = await fetchPaginatedEvents(ITEMS_PER_PAGE, offset);
+      const nbEvents = await fetchNbEvents();
       setEvents(dataEvents);
       // Assuming the API returns the total number of events
-      setTotalPages(Math.ceil(dataEvents.total / ITEMS_PER_PAGE));
+      setTotalPages(Math.ceil(nbEvents / ITEMS_PER_PAGE));
     };
     fetchData();
   }, [currentPage]);
