@@ -224,7 +224,7 @@ export default function ProfilePage() {
     {/* Edit User Setting */}
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="hover:bg-primary/70 mb-2 mr-2">Modifier les paramètres</Button>
+        <Button className="hover:bg-primary/70 mb-2">Modifier les paramètres</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[750px]">
         <DialogHeader>
@@ -320,27 +320,22 @@ export default function ProfilePage() {
       <div className="aspect-square w-32 md:w-auto lg:order-2">
         <img
           className="rounded-lg object-cover h-full w-full"
-          src={`/${image}`}
+          src={image || 'img.png'}
           alt={`Image de profil de ${firstname}`}
         />
       </div>
       <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
-        <h4 className="hidden md:block mt-2.5 mb-8 font-bold text-xl md:text-2xl">
+        <h4 className="hidden md:block ml-3 mt-2.5 mb-8 font-bold text-xl md:text-2xl">
           Mon Profil
         </h4>
         <div className="flex gap-11 mb-5 font-semibold">
           <p>{firstname} {lastname}</p>
-          {age ? (
-            <p className="mr-6">{age} ans</p>
-          ) : (
-            <p className="mr-6">Âge non renseigné</p>
-          )}
+          <p className="mr-6">{age} ans</p>
         </div>
         <p className="hidden md:block font-semibold">Biographie :</p>
         <p className="line-clamp-3 md:line-clamp-none text-sm">
-        { bio ? ( bio ) : ( 'Pas de biographie' ) }
+          {bio}
         </p>
-
       </div>
     </div>
     </>

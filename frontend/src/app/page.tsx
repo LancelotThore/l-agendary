@@ -28,12 +28,14 @@ let toolCards = [
     description: "Trouvez ce qui vous convient !",
     icon: "./research-red.svg",
     color: "text-cardResearchPrimary",
+    link: "/search",
   },
   {
     title: "Créez un nouvel événement",
     description: "Faisons de nouvelles choses, ensemble.",
     icon: "./plus-blue.svg",
     color: "text-cardCreatePrimary",
+    link: "/event/create",
   },
 ];
 
@@ -75,6 +77,7 @@ export default function Home() {
               description={toolcard.description}
               icon={toolcard.icon}
               color={toolcard.color}
+              link={toolcard.link}
             />
           ))}
         </ul>
@@ -93,7 +96,8 @@ export default function Home() {
                 id={card.id}
                 nom={card.title}
                 lieu={card.location}
-                date={card.start_date}
+                startDate={card.start_date}
+                endDate={card.end_date}
                 img={card.image}
               />
             </Link>

@@ -129,10 +129,10 @@ export default function CreateEvent() {
                     variant="input" 
                     type="datetime-local" 
                     id="start_date" 
-                    name="startDate" 
+                    name="startDate"
                     required 
                     value={formData.startDate} 
-                    onChange={handleChange} 
+                    onChange={handleChange}
                 />
                 <FormElement 
                     label="Date de fin" 
