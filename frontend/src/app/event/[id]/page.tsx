@@ -1,52 +1,71 @@
-import EventHeader from '@/components/ui/event/eventHeader';
-import EventOrganizer from '@/components/ui/event/eventOrganizer';
-import EventDescription from '@/components/ui/event/eventDescription';
-import EventShare from '@/components/ui/event/eventShare';
-import { Button } from '@/components/ui/button';
+"use client";
 
+import EventHeader from "@/components/ui/event/eventHeader";
+import EventOrganizer from "@/components/ui/event/eventOrganizer";
+import EventDescription from "@/components/ui/event/eventDescription";
+import EventShare from "@/components/ui/event/eventShare";
+import { Button } from "@/components/ui/button";
+import { fetchEvent, fetchCreator } from "@/app/api/event";
+import { fetchUser } from "@/app/api/data";
+import { useEffect, useState } from "react";
+import PageEventSkeleton from "./loading";
 
-export default function Event( { params }) {
+export default function Event({ params }) {
+  const [event, setEvent] = useState(null);
+  const [creator, setCreator] = useState(null);
+  const [user, setUser] = useState(null);
 
-    const event = {
-        id: params.id,
-        title: `event ${params.id}`,
-        visibility: true,
-        startDate: '2029-08-17',
-        endDate: '2029-08-18',
-        startTime: '11:00',
-        endTime: '14:00',
-        location: 'Event Location',
-        organisateur: 1,
-        participants: 25,
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat.',
+  useEffect(() => {
+    const fetchData = async () => {
+      const dataEvents = await fetchEvent(params.id);
+      setEvent(dataEvents);
+      const dataCreator = await fetchCreator(dataEvents.creator);
+      setCreator(dataCreator);
     };
+    fetchData();
+
+    const user = fetchUser();
+    setUser(user);
+
     
-    const organisateur = {
-        name: 'John Doe',
-        age: 25,
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat.',
-        image: '../img.png',
-    };
-
-    return (
+  }, []);
+  
+  return (
+    <>
+      {event && creator ? (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
-            <img src="https://images.unsplash.com/photo-1680868543815-b8666dba60f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80" alt="Card" className='rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md' />
-            <div className='lg:col-span-3'>
-                <EventHeader event={event} />
-            </div>
-            <div className='lg:col-span-4'>
-                <EventOrganizer organisateur={organisateur} />
-            </div>
-            <div className='lg:col-span-3 xl:col-span-4'>
-                <EventDescription description={event.description} />
-            </div>
-            <div className='lg:col-span-4 xl:col-span-3'>
-                <EventShare />
-            </div>
-            <div className='flex items-center justify-center gap-4 lg:col-span-7'>
-                <Button className='md:hidden' size={'lg'}>Partager</Button>
-                <Button variant={'accent'} size={'lg'}>Rejoindre</Button>
-            </div>
+          <img
+            src="https://images.unsplash.com/photo-1680868543815-b8666dba60f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+            alt="Card"
+            className="rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md"
+          />
+          <div className="lg:col-span-3">
+            <EventHeader event={event} />
+          </div>
+          <div className="lg:col-span-4">
+            <EventOrganizer organisateur={creator} />
+          </div>
+          <div className="lg:col-span-3 xl:col-span-4">
+            <EventDescription description={event.description} />
+          </div>
+          <div className="lg:col-span-4 xl:col-span-3">
+            <EventShare />
+          </div>
+          <div className="flex items-center justify-center gap-4 lg:col-span-7">
+            <Button className="md:hidden" size={"lg"}>
+              Partager
+            </Button>
+            <Button variant={"accent"} size={"lg"}>
+              Rejoindre
+            </Button>
+            {user && user.id === creator.id && (
+              <Button size={"lg"}>Modifier l'événement</Button>
+            )}
+          </div>
         </div>
-    );
+      ) : (
+        <PageEventSkeleton />
+      )}
+    </>
+  );
 }

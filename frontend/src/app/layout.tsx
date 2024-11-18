@@ -20,14 +20,17 @@ const RootLayout = ({ children }: RootLayoutProps) => {
         <title>L'agendary</title>
         <link rel="icon" href="/logo.svg" />
       </head>
-      <body>
+      <body className='flex flex-col min-h-screen'>
         {noLayoutPages.includes(pathname) ? (
           <>{children}</>
         ) : (
           <>
             <Navbar />
             
-            <main className='container m-auto w-10/12 my-16'>{children}</main>
+            <main className='container m-auto w-10/12 my-16'>
+              {children}
+            </main>
+
             <Footer />
           </>
         )}

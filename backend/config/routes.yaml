@@ -4,23 +4,47 @@ controllers:
         namespace: App\Controller
     type: attribute
 
+
 home:
     path: /
     controller: App\Controller\HomeController::index
 
-app_login:
-    path: /login
-    controller: App\Controller\SecurityController::login
+auth_login:
+    path: /api/login
+    controller: App\Controller\AuthController::login
 
-app_logout:
-    path: /logout
-    controller: App\Controller\SecurityController::logout
+auth_register:
+    path: /api/register
+    controller: App\Controller\AuthController::register
 
-frontend_home:
-    path: /fronthome
-    controller: App\Controller\FrontendController::redirectToHome
+logged:
+    path: /api/logged
+    controller: App\Controller\AuthController::logged
 
-session:
-    path: /session-info
-    controller: App\Controller\FrontendController::sessionInfo
+auth_logout:
+    path: /api/logout
+    controller: App\Controller\AuthController::logout
+
+
 # -------------------------
+# Events
+
+highlighted_events:
+    path: /api/highlighted-events
+    controller: App\Controller\EventController::highlightedEvents
+
+
+# -------------------------
+# Users
+
+user_profile_update:
+    path: /api/user/update/profile
+    controller: App\Controller\UserController::updateProfile
+
+user_settings_update:
+    path: /api/user/update/settings
+    controller: App\Controller\UserController::updateSettings
+
+user_image_update:
+    path: /api/user/update/image
+    controller: App\Controller\UserController::updateImage

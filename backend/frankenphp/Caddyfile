@@ -44,4 +44,14 @@
 	header ?Permissions-Policy "browsing-topics=()"
 
 	php_server
+	
 }
+
+# Configuration pour le frontend Next.js
+# https://localhost:3000 {
+# 	reverse_proxy frontend:3000  # Proxifie vers le service frontend
+# 	log {
+# 		output stdout
+# 		format json
+# 	}
+# }
