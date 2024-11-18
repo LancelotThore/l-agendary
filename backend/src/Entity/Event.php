@@ -41,6 +41,12 @@ use App\Controller\EventController;
             controller: EventController::class . '::searchEvents',
             // outputFormats: ['json' => ['application/ld+json']],
         ),
+        new GetCollection(
+            name: 'unique-locations',
+            uriTemplate: '/unique-locations',
+            controller: EventController::class . '::getUniqueLocations',
+            // outputFormats: ['json' => ['application/ld+json']],
+        ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
         new Post(), // Create a new event

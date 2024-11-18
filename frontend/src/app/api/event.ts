@@ -53,6 +53,28 @@ export async function fetchHighlightedEvents() {
   }
 }
 
+export async function fetchUniqueLocations() {
+  try {
+    const res = await fetch("https://localhost/api/unique-locations");
+    const data = await res.json();
+    return data.map((location: { location: string }) => location.location);
+  } catch (error) {
+    console.error("Error fetching unique locations:", error);
+    return [];
+  }
+}
+
+export async function fetchUniqueUserNames() {
+  try {
+    const res = await fetch("https://localhost/api/unique-user-names");
+    const data = await res.json();
+    return data.map((user: { firstname: string }) => String(user.firstname));
+  } catch (error) {
+    console.error("Error fetching unique user names:", error);
+    return [];
+  }
+}
+
 export async function fetchEvent(id : number) {
   try {
     const res = await fetch("https://localhost/api/events/" + id);

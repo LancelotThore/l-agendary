@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { SearchBar } from "../searchBar";
+import { SearchInput } from "../searchInput";
 import { Input } from "../input";
 import { Clock, LocationOn, PeopleFill, User, Filtre } from '../icons';
-import { fetchSearchEvents } from "@/app/api/event";
+import { fetchSearchEvents, fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";
 
 export default function Filter({ onSearchResults }) {
   const [showFilters, setShowFilters] = useState(false);
@@ -48,26 +49,20 @@ export default function Filter({ onSearchResults }) {
           type="datetime-local"
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
         />
-        <SearchBar
-          id="search-lieux"
-          startImg={<LocationOn className='w-4 md:w-6' />}
-          placeholder="Lieux"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
+        <SearchInput
+        img={<LocationOn className='w-4 md:w-6' />}
+        fetchOptions={fetchUniqueLocations}
+        placeholder="Lieu"
         />
-        <SearchBar
-          id="search-createur"
-          startImg={<User className='w-4 md:w-6' />}
-          placeholder="Créateur"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
+        <SearchInput
+        img={<User className='w-4 md:w-6' />}
+        fetchOptions={fetchUniqueUserNames}
+        placeholder="Créateur"
         />
-        <SearchBar
-          id="search-participant"
-          startImg={<PeopleFill className='w-4 md:w-6' />}
-          placeholder="Participants"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
+        <SearchInput
+        img={<PeopleFill className='w-4 md:w-6' />}
+        fetchOptions={fetchUniqueUserNames}
+        placeholder="Participants"
         />
       </div>
     </div>
