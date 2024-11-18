@@ -72,7 +72,7 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
     $queryBuilder = $entityManager->getRepository(Event::class)
         ->createQueryBuilder('e')
-        ->where('e.title LIKE :searchTerm OR e.description LIKE :searchTerm')
+        ->where('(e.title LIKE :searchTerm OR e.description LIKE :searchTerm) AND e.privacy = 1')
         ->setParameter('searchTerm', '%' . $searchTerm . '%');
 
     $events = $queryBuilder->getQuery()->getResult();
