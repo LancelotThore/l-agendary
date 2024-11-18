@@ -45,6 +45,7 @@ export default function RegisterPage() {
   // Inputs liés aux états
   let inputs = [
     {
+      required: true,
       id: "name",
       name: "Nom",
       type: "text",
@@ -52,6 +53,7 @@ export default function RegisterPage() {
       onChange: (e) => setName(e.target.value),
     },
     {
+      required: true,
       id: "firstname",
       name: "Prénom",
       type: "text",
@@ -59,6 +61,7 @@ export default function RegisterPage() {
       onChange: (e) => setFirstname(e.target.value),
     },
     {
+      required: true,
       id: "email",
       name: "Email",
       type: "email",
@@ -66,6 +69,7 @@ export default function RegisterPage() {
       onChange: (e) => setEmail(e.target.value),
     },
     {
+      required: true,
       id: "password",
       name: "Mot de passe",
       type: "password",
@@ -99,6 +103,7 @@ export default function RegisterPage() {
                 {input.name}
               </label>
               <Input
+                required={input.required}
                 id={input.id}
                 placeholder={input.name}
                 type={input.type}
