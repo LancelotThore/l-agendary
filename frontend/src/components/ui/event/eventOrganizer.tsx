@@ -16,10 +16,10 @@ console.log(organisateur.profilePicture)
 
   return (
     <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">
-      <div className="aspect-square w-32 md:w-auto lg:order-2">
+      <div className="aspect-square w-32 md:w-full lg:order-2">
         <img
           className="rounded-lg object-cover h-full w-full"
-          src={`/${organisateur.profilePicture}`}
+          src={`${organisateur.profilePicture}`}
           alt={`Image de profil de ${organisateur.firstname + ' ' + organisateur.lastname}`}
         />
       </div>
