@@ -62,4 +62,21 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
 
     return $this->json($nb_events);
 }
+
+/**
+ * @Route("/api/search-events", name="search-events", methods={"GET"})
+ */
+public function searchEvents(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $searchTerm = $request->query->get('q', '');
+
+    $queryBuilder = $entityManager->getRepository(Event::class)
+        ->createQueryBuilder('e')
+        ->where('e.title LIKE :searchTerm OR e.description LIKE :searchTerm')
+        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+
+    $events = $queryBuilder->getQuery()->getResult();
+
+    return $this->json($events);
+}
 }

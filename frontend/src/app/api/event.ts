@@ -31,6 +31,17 @@ export async function fetchNbEvents(){
   }
 }
 
+export async function fetchSearchEvents(query: string) {
+  try {
+    const res = await fetch(`https://localhost/api/search-events?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error searching events:", error);
+    return null;
+  }
+}
+
 export async function fetchHighlightedEvents() {
   try {
     const res = await fetch("https://localhost/api/highlighted-events");

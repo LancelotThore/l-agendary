@@ -35,6 +35,12 @@ use App\Controller\EventController;
             uriTemplate: '/nb-public-events',
             controller: EventController::class . '::nbPublicEvents',
         ),
+        new GetCollection(
+            name: 'search-events',
+            uriTemplate: '/search-events',
+            controller: EventController::class . '::searchEvents',
+            // outputFormats: ['json' => ['application/ld+json']],
+        ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
         new Post(), // Create a new event

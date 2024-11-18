@@ -30,9 +30,14 @@ export default function SearchPage() {
     setCurrentPage(page);
   };
 
+  const handleSearchResults = (results) => {
+    setEvents(results);
+    setTotalPages(1); // Assuming search results fit on one page
+  };
+
   return (
     <div className='w-full'>
-      <Filter />
+     <Filter onSearchResults={handleSearchResults} />
       <ul className="flex items-center gap-5 my-10 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {events.map((event, index) => (
           <Link href={`/event/${event.id}`} key={index}>
