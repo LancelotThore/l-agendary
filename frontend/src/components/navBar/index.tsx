@@ -4,17 +4,15 @@ import { useState, useEffect } from 'react';
 import { Logo, Search, MenuBurger, Home, Close, Profil } from "../ui/icons";
 import { Button } from '../ui/button';
 import { fetchUser } from "@/app/api/data";
-import Link from 'next/link'
+import Link from 'next/link'    
 import { useRouter } from 'next/navigation';
 import { logout } from "@/app/api/login";
-
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // État de chargement
     const router = useRouter(); // Pour la redirection
-
 
     useEffect(() => {
         // Fonction pour charger l'utilisateur
@@ -37,7 +35,7 @@ export function Navbar() {
     };
 
     const handleLogout = async () => {
-        logout( router ).then(() => setUser(null));
+        logout(router).then(() => setUser(null));
     };
 
     return (
@@ -56,17 +54,15 @@ export function Navbar() {
                     </Link>
                 </div>
 
-
-
                 <div className="hidden md:flex space-x-4 items-center">
                     {/* Condition pour afficher les boutons en fonction de l'état de l'utilisateur */}
                     {user ? (
                         <>
-                        <Link href="/profile" className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
-                            <span>Profil</span>
-                            <Profil className="w-8" aria-hidden="true" />
-                        </Link>
-                        <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
+                            <Link href="/profile" className="md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
+                                <span>Profil</span>
+                                <Profil className="w-5 h-5" aria-hidden="true" />
+                            </Link>
+                            <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
                         </>
                     ) : (
                         <>
@@ -109,26 +105,32 @@ export function Navbar() {
                     </li>
                     {user ? (
                         <>
-                        <li>
-                            <Link href="/profile" className="flex items-center flex-row space-x-2 py-2 px-3 rounded hover:bg-background font-medium text-base">
-                                <span>Profil</span>
-                                <Profil className="w-8" aria-hidden="true" />
-                            </Link>
-                        </li>
-                        <li>
-                            <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
-                        </li>
+                            <li>
+                                <Link href="/profile" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
+                                    <span>Profil</span>
+                                    <Profil className="w-5 h-5" aria-hidden="true" />
+                                </Link>
+                            </li>
+                            <li>
+                                <Button onClick={handleLogout} className="hover:bg-primary/70 mt-2">Se déconnecter</Button>
+                            </li>
                         </>
                     ) : (
                         <>
                             <li>
-                                <Link href="/register">
-                                    <Button className="hover:bg-primary/70">S'enregistrer</Button>
+                                <Link
+                                    href="/register"
+                                    className="flex items-center block px-3 py-1 rounded font-medium"
+                                >
+                                    <Button className="mt-2">S'enregistrer</Button>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/login">
-                                    <Button className="hover:bg-primary/70">Se connecter</Button>
+                                <Link
+                                    href="/login"
+                                    className="flex items-center block px-3 py-1 rounded font-medium"
+                                >
+                                    <Button className="mt-2">Se connecter</Button>
                                 </Link>
                             </li>
                         </>

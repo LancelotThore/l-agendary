@@ -2,7 +2,7 @@ export async function fetchUser() {
     try {
         const response = await fetch("https://localhost:443/api/logged", {
         method : "GET",
-        credentials: "include", // Inclure les cookies dans la requête
+        credentials: "include",
         });
 
         if (!response.ok) {
@@ -15,7 +15,6 @@ export async function fetchUser() {
     } catch (error) {
         return null;
     }
-  
 }
 
 

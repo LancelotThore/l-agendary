@@ -142,13 +142,12 @@ export default function ProfilePage() {
     formData.append('file', profilePicture);
 
     try {
-      const response = await fetch('/api/upload', {
+      const response = await fetch('/api/upload/profile_pic', {
         method: 'POST',
         body: formData,
       });
       const data = await response.json();
       const imageUrl = data.url;
-      console.log(imageUrl);
 
       await updateUserProfilePicture(imageUrl );
       setSuccessImage('Image de profil mise à jour avec succès');
@@ -174,7 +173,7 @@ export default function ProfilePage() {
       <DialogTrigger asChild>
         <Button className="hover:bg-primary/70 mb-2 mr-2">Modifier le profil</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Modifier mon profil</DialogTitle>
           <DialogDescription>
@@ -224,7 +223,7 @@ export default function ProfilePage() {
     {/* Edit User Setting */}
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="hover:bg-primary/70 mb-2">Modifier les paramètres</Button>
+        <Button className="hover:bg-primary/70 mb-2 mr-2">Modifier les paramètres</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[750px]">
         <DialogHeader>
@@ -281,7 +280,7 @@ export default function ProfilePage() {
 
 
     {/* Edit User Image */}
-    <Dialog>
+    {/* <Dialog>
       <DialogTrigger asChild>
         <Button className="hover:bg-primary/70 mb-2">Modifier la photo de profil</Button>
       </DialogTrigger>
@@ -314,16 +313,51 @@ export default function ProfilePage() {
           <Button onClick={handleUploadProfilePicture}>Sauvegarder</Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+    </Dialog> */}
 
     <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">
-      <div className="aspect-square w-32 md:w-auto lg:order-2">
-        <img
-          className="rounded-lg object-cover h-full w-full"
-          src={image || 'img.png'}
-          alt={`Image de profil de ${firstname}`}
-        />
-      </div>
+      
+      <Dialog>
+        <DialogTrigger asChild>
+          {/* <Button className="hover:bg-primary/70 mb-2">Modifier la photo de profil</Button> */}
+          <div className="aspect-square w-32 md:w-64 hover:cursor-pointer  lg:order-2">
+            <img
+              className="rounded-lg object-cover hover:opacity-75  h-full w-full"
+              src={image || 'img.png'}
+              alt={`Image de profil de ${firstname}`}
+            />
+          </div>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[750px]">
+          <DialogHeader>
+            <DialogTitle>Modifier ma photo de profil</DialogTitle>
+            <DialogDescription>
+              Sélectionnez une nouvelle photo de profil.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="image" className="text-right">
+                Image de profil
+              </label>
+              <Input id="image" type="file" onChange={handleProfilePictureChange} className="col-span-3" />
+              {errorImage && (
+                <div className="col-span-4 text-red-500 text-start">
+                  {errorImage}
+                </div>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            {successImage && (
+              <div className="col-span-4 text-green-500 text-center">
+                {successImage}
+              </div>
+            )}
+            <Button onClick={handleUploadProfilePicture}>Sauvegarder</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
         <h4 className="hidden md:block ml-3 mt-2.5 mb-8 font-bold text-xl md:text-2xl">
           Mon Profil
