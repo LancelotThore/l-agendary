@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 interface Organisateur {
   name: string;
@@ -12,17 +12,15 @@ interface EventOrganizerProps {
 }
 
 export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
-  console.log(organisateur.profilePicture);
+console.log(organisateur.profilePicture)
 
   return (
     <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">
-      <div className="aspect-square w-32 md:w-full lg:order-2">
+      <div className="aspect-square w-32 md:w-auto lg:order-2">
         <img
-          className="rounded-lg object-cover h-52 w-52"
+          className="rounded-lg object-cover h-32 w-32 md:h-52 md:w-52"
           src={`${organisateur.profilePicture}`}
-          alt={`Image de profil de ${
-            organisateur.firstname + " " + organisateur.lastname
-          }`}
+          alt={`Image de profil de ${organisateur.firstname + ' ' + organisateur.lastname}`}
         />
       </div>
       <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
@@ -30,14 +28,18 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
           Organisateur
         </h4>
         <div className="flex gap-11 mb-5 font-semibold">
-          <p>{organisateur.firstname + " " + organisateur.lastname}</p>
+          <p>{organisateur.firstname + ' ' + organisateur.lastname}</p>
           <p className="mr-6">
-            {organisateur.age ? `${organisateur.age} ans` : "Âge non connu"}
+          {organisateur.age ? (
+            `${organisateur.age} ans`
+          ) : (
+            'Âge non connu'
+          )}
           </p>
         </div>
         <p className="hidden md:block font-semibold">Bio :</p>
         <p className="line-clamp-3 md:line-clamp-none text-sm">
-          {organisateur.bio ? organisateur.bio : "Pas de biographie"}
+          { organisateur.bio ? ( organisateur.bio ) : ( 'Pas de biographie' ) }
         </p>
       </div>
     </div>

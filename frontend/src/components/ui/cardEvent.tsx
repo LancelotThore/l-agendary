@@ -47,7 +47,7 @@ export function CardEvent({ nom, lieu, startDate, endDate, img, id }: CardProps)
         </div>
       </section>
       <section className='w-5/12 h-full sm:w-6/12'>
-        <img className='object-cover w-full h-full' src={`/uploads/event_images/${img}`} alt="Img évènement" />
+        <img className='object-cover w-full h-full' src={img} alt="Img évènement" />
       </section>
     </li>
   );

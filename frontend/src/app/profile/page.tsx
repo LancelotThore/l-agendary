@@ -316,41 +316,6 @@ export default function ProfilePage() {
       </Dialog>
 
       {/* Edit User Image */}
-      {/* <Dialog>
-      <DialogTrigger asChild>
-        <Button className="hover:bg-primary/70 mb-2">Modifier la photo de profil</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[750px]">
-        <DialogHeader>
-          <DialogTitle>Modifier ma photo de profil</DialogTitle>
-          <DialogDescription>
-            Sélectionnez une nouvelle photo de profil.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="image" className="text-right">
-              Image de profil
-            </label>
-            <Input id="image" type="file" onChange={handleProfilePictureChange} className="col-span-3" />
-            {errorImage && (
-              <div className="col-span-4 text-red-500 text-start">
-                {errorImage}
-              </div>
-            )}
-          </div>
-        </div>
-        <DialogFooter>
-          {successImage && (
-            <div className="col-span-4 text-green-500 text-center">
-              {successImage}
-            </div>
-          )}
-          <Button onClick={handleUploadProfilePicture}>Sauvegarder</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog> */}
-
       <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">
         <Dialog>
           <DialogTrigger asChild>
@@ -398,13 +363,6 @@ export default function ProfilePage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <div className="aspect-square w-32 md:w-auto lg:order-2">
-          <img
-            className="rounded-lg object-cover h-52 w-52"
-            src={`${image}`}
-            alt={`Image de profil de ${firstname}`}
-          />
-        </div>
         <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
           <h4 className="hidden md:block mt-2.5 mb-8 font-bold text-xl md:text-2xl">
             Mon Profil
