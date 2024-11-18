@@ -45,13 +45,7 @@ export default function RegisterPage() {
   // Inputs liés aux états
   let inputs = [
     {
-      id: "firstname",
-      name: "Prénom",
-      type: "text",
-      value: firstname,
-      onChange: (e) => setFirstname(e.target.value),
-    },
-    {
+      required: true,
       id: "name",
       name: "Nom",
       type: "text",
@@ -59,6 +53,15 @@ export default function RegisterPage() {
       onChange: (e) => setName(e.target.value),
     },
     {
+      required: true,
+      id: "firstname",
+      name: "Prénom",
+      type: "text",
+      value: firstname,
+      onChange: (e) => setFirstname(e.target.value),
+    },
+    {
+      required: true,
       id: "email",
       name: "Email",
       type: "email",
@@ -66,18 +69,12 @@ export default function RegisterPage() {
       onChange: (e) => setEmail(e.target.value),
     },
     {
+      required: true,
       id: "password",
       name: "Mot de passe",
       type: "password",
       value: password,
       onChange: (e) => setPassword(e.target.value),
-    },
-    {
-      id: "passwordValidator",
-      name: "Confirmation du mot de passe",
-      type: "password",
-      value: passwordValidator,
-      onChange: (e) => setPasswordValidator(e.target.value),
     },
   ];
 
@@ -106,7 +103,7 @@ export default function RegisterPage() {
                 {input.name}
               </label>
               <Input
-                required
+                required={input.required}
                 id={input.id}
                 placeholder={input.name}
                 type={input.type}
@@ -116,9 +113,6 @@ export default function RegisterPage() {
               />
             </div>
           ))}
-          {errorPassword && (
-            <div className="text-red-500 text-center mt-4">{errorPassword}</div>
-          )}
 
           {/* Affichage conditionnel de l'erreur */}
           {error && (

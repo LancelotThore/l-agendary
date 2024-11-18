@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Filter from "@/components/ui/search/filter";
 import { CardEvent } from "@/components/ui/cardEvent";
 import Pagination from "@/components/ui/search/pagination";
-import { fetchEvents } from "../api/event";
+import { fetchPrivatedEvents } from "../api/event";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -16,7 +16,8 @@ export default function SearchPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dataEvents = await fetchEvents();
+      const dataEvents = await fetchPrivatedEvents();
+      console.log("fetch", dataEvents);
       setEvents(dataEvents);
       setTotalPages(Math.ceil(dataEvents.length / ITEMS_PER_PAGE));
     };
@@ -27,6 +28,7 @@ export default function SearchPage() {
     setCurrentPage(page);
   };
 
+  console.log(events);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const selectedEvents = events.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
