@@ -119,3 +119,36 @@ export async function createEvent(
         throw new Error('Erreur lors de la création de l\'événement');
     }
 }
+
+export async function createEventRegistration(email: string, event: string) {
+  const formData = {
+      event,
+      email,
+  };
+
+  try {
+      const response = await fetch('https://localhost:443/api/event-registrations-with-mail', {
+          method: 'POST',
+          headers: {
+              'accept': 'application/ld+json',
+              'Content-Type': 'application/ld+json'
+          },
+          body: JSON.stringify(formData),
+          credentials: 'include'
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          return data;
+      } else {
+          const errorData = await response.json();
+          if (response.status === 409) { // Conflict status code for duplicate unique data
+              throw new Error('Erreur: Données dupliquées');
+          }
+          throw new Error(`Erreur lors de l'inscription à l'événement: ${response.status} ${response.statusText} - ${errorData.errors || 'Données incorrectes'}`);
+      }
+  } catch (error) {
+      console.error('Error creating event registration:', error);
+      throw new Error(`Erreur lors de l'inscription à l'événement: ${error.message}`);
+  }
+}
