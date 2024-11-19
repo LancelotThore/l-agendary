@@ -25,9 +25,20 @@ use App\Controller\EventController;
             // outputFormats: ['json' => ['application/ld+json']],
         ),
         new GetCollection(
-            name: 'privated-events',
-            uriTemplate: '/privated-events',
-            controller: EventController::class . '::privatedEvents',
+            name: 'paginated-events',
+            uriTemplate: '/paginated-events',
+            controller: EventController::class . '::paginatedEvents',
+            // outputFormats: ['json' => ['application/ld+json']],
+        ),
+        new Get(
+            name: 'nb-public-events',
+            uriTemplate: '/nb-public-events',
+            controller: EventController::class . '::nbPublicEvents',
+        ),
+        new GetCollection(
+            name: 'search-events',
+            uriTemplate: '/search-events',
+            controller: EventController::class . '::searchEvents',
             // outputFormats: ['json' => ['application/ld+json']],
         ),
         new Get(), // Get one event by ID

@@ -8,7 +8,7 @@ import { CardEvent } from "../components/ui/cardEvent";
 import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
-import { fetchEvents } from "@/app/api/event";
+import { fetchHighlightedEvents } from "@/app/api/event";
 import { fetchUser } from "@/app/api/data";
 
 const agbalumo = Agbalumo({
@@ -28,14 +28,14 @@ let toolCards = [
     description: "Trouvez ce qui vous convient !",
     icon: "./research-red.svg",
     color: "text-cardResearchPrimary",
-    link: "/search",
+    link: "/search"
   },
   {
     title: "Créez un nouvel événement",
     description: "Faisons de nouvelles choses, ensemble.",
     icon: "./plus-blue.svg",
     color: "text-cardCreatePrimary",
-    link: "/event/create",
+    link: "/event/create"
   },
 ];
 
@@ -45,7 +45,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dataEvents = await fetchEvents();
+      const dataEvents = await fetchHighlightedEvents();
       setHighlights(dataEvents);
     };
     fetchData();
@@ -107,7 +107,7 @@ export default function Home() {
         )}
       </ul>
       <div className="text-center">
-        <Button className="mt-10">Voir Plus</Button>
+        <Link href="/search"><Button className="mt-10">Voir Plus</Button></Link>
       </div>
 
       <h2

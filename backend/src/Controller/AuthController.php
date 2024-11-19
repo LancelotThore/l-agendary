@@ -61,7 +61,10 @@ class AuthController extends AbstractController
         $user->setPassword(password_hash($data['password'], PASSWORD_BCRYPT)); // Hashage du mot de passe
         $user->setFirstname($data['firstname']);
         $user->setLastname($data['name']);
-        $user->setProfilePicture('img.png');
+        $user->setBio('Je m\'appelle ' . $user->getFirstname() . ' ' . $user->getLastname() . ', et je suis un utilisateur de l\'application.');
+        $user->setAge('?');
+
+
 
         // Persister l'utilisateur
         $this->entityManager->persist($user);

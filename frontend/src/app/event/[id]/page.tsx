@@ -35,7 +35,7 @@ export default function Event({ params }) {
       {event && creator ? (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
           <img
-            src="https://images.unsplash.com/photo-1680868543815-b8666dba60f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+            src={event.image}
             alt="Card"
             className="rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md"
           />

@@ -33,6 +33,7 @@ export default function CreateEvent() {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        
         const { title, description, privacy, location, startDate, endDate, image, creator } = formData;
 
         if (!image) {
@@ -45,10 +46,17 @@ export default function CreateEvent() {
             return;
         }
 
-        const imageUrl = `${image.name}`;
+        const imageData = new FormData();
+        imageData.append('file', image);
 
         try {
-            const response = await createEvent(
+            const response = await fetch('/api/upload/event_pic', {
+                method: 'POST',
+                body: imageData,
+            });
+            const data = await response.json();
+            const imageUrl = data.url;
+            await createEvent(
                 title, 
                 description, 
                 privacy, 
@@ -129,10 +137,10 @@ export default function CreateEvent() {
                     variant="input" 
                     type="datetime-local" 
                     id="start_date" 
-                    name="startDate"
+                    name="startDate" 
                     required 
                     value={formData.startDate} 
-                    onChange={handleChange}
+                    onChange={handleChange} 
                 />
                 <FormElement 
                     label="Date de fin" 
