@@ -32,7 +32,7 @@ security:
     access_control:
         # - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        # - { path: ^/api/secure-data, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
     security:

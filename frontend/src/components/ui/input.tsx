@@ -9,7 +9,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, img, type, ...props }, ref) => {
     return (
-      <div className="relative flex items-center col-span-2 w-full">
+      <div className="relative flex items-center w-full">
         {img && <div className="absolute left-3">{img}</div>}
         <input
           type={type}

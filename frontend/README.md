@@ -1,3 +1,6 @@
+<<<<<<<< HEAD:README.md
+Pour lancer le projet faites un Docker compose sur le yaml dans Backend.
+========
 <<<<<<<< HEAD:frontend/README.md
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
@@ -41,3 +44,4 @@ https://heroicons.dev/?strictJsx=true&exportComponent=true&typescript=true
 ========
 Pour lancer le projet faites un Docker compose sur le yaml dans Backend.
 >>>>>>>> Josue:README.md
+>>>>>>>> main:frontend/README.md

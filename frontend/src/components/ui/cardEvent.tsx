@@ -12,15 +12,25 @@ const ralewayMedium = Raleway({
   variable: '--font-raleway',
 });
 
-interface ToolCardProps {
+interface CardProps {
   id: number;
   nom: string;
   lieu: string;
-  date: string;
+  startDate: string;
+  endDate: string;
   img: string;
 }
 
-export function CardEvent({ nom, lieu, date, img, id }: ToolCardProps) {
+export function CardEvent({ nom, lieu, startDate, endDate, img, id }: CardProps) {
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <li
       key={id}
@@ -33,7 +43,7 @@ export function CardEvent({ nom, lieu, date, img, id }: ToolCardProps) {
         </div>
         <div className='flex gap-2 text-cardDate text-xs md:text-sm'>
           <img src="./calendar.svg" alt="calendar Icon" />
-          <p className={`${ralewayMedium.className}`}>{date}</p>
+          <p className={`${ralewayMedium.className}`}>Du <strong>{formatDateTime(startDate)}</strong> Au <strong>{formatDateTime(endDate)}</strong></p>
         </div>
       </section>
       <section className='w-5/12 h-full sm:w-6/12'>

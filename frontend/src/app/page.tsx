@@ -5,10 +5,12 @@ import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
 import { ToolCard } from "../components/ui/toolCard";
 import { CardEvent } from "../components/ui/cardEvent";
+import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import { fetchHighlightedEvents } from "@/app/api/event";
-import { fetchUser } from "@/app/api/data";
+import { fetchUser, isAdmin } from "@/app/api/data";
+import { useRouter } from "next/navigation";
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -27,27 +29,23 @@ let toolCards = [
     description: "Trouvez ce qui vous convient !",
     icon: "./research-red.svg",
     color: "text-cardResearchPrimary",
+    link: "/search"
   },
   {
     title: "Créez un nouvel événement",
     description: "Faisons de nouvelles choses, ensemble.",
     icon: "./plus-blue.svg",
     color: "text-cardCreatePrimary",
+    link: "/event/create"
   },
 ];
-
-/* let cards = [
-  {
-    nom: 'Nom pour voir bien plus',
-    lieu: 'Lieu pour voir aussi',
-    date: '85 janvier 2077',
-    img: './paysage.webp',
-  }
-]; */
 
 export default function Home() {
   const [highlights, setHighlights] = useState([]);
   const [user, setUser] = useState(null);
+  const [error, setError] = useState("");
+  const router = useRouter();
+  // const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,12 +54,37 @@ export default function Home() {
     };
     fetchData();
 
-    const user = fetchUser();
-    setUser(user);
+    // const isAdmin = async () => {
+    //   const adminStatus = await isAdmin();
+    //   setIsAdmin(adminStatus.is_admin);
+    // }
+
+    const fetchUserData = async () => {
+      const userData = await fetchUser();
+      setUser(userData);
+    };
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorParam = urlParams.get('error');
+    if (errorParam) {
+      setError(errorParam);
+      setTimeout(() => {
+        setError("");
+      }, 5000);
+    }
+    
   }, []);
 
   return (
     <div className="">
+      {error && (
+        <div className="bg-red-500 rounded-lg mb-2 text-white text-center p-2">
+          {error}
+        </div>
+      )}
       <div
         className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg"
         style={{ backgroundImage: "url('./bgToolCards.webp')" }}
@@ -80,6 +103,7 @@ export default function Home() {
               description={toolcard.description}
               icon={toolcard.icon}
               color={toolcard.color}
+              link={toolcard.link}
             />
           ))}
         </ul>
@@ -90,22 +114,26 @@ export default function Home() {
       >
         Evénements publics les plus populaires !
       </h2>
-      {/* <ul className="flex items-center flex-col md:flex-row md:justify-center gap-[21px]"> */}
       <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {highlights.map((card: any, index: number) => (
-          <Link key={index} href={`/event/${card.id}`}>
-            <CardEvent
-              id={card.id}
-              nom={card.title}
-              lieu={card.location}
-              date={card.start_date}
-              img={card.image}
-            />
-          </Link>
-        ))}
+        {highlights.length > 0 ? (
+          highlights.map((card, index) => (
+            <Link className="w-full" key={index} href={`/event/${card.id}`}>
+              <CardEvent
+                id={card.id}
+                nom={card.title}
+                lieu={card.location}
+                startDate={card.start_date}
+                endDate={card.end_date}
+                img={card.image}
+              />
+            </Link>
+          ))
+        ) : (
+          Array.from({ length: 6 }).map((_, index) => <CardEventSkeleton key={index} />)
+        )}
       </ul>
       <div className="text-center">
-        <Button className="mt-10">Voir Plus</Button>
+        <Link href="/search"><Button className="mt-10">Voir Plus</Button></Link>
       </div>
 
       <h2

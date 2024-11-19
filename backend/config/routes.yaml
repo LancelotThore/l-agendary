@@ -21,6 +21,10 @@ logged:
     path: /api/logged
     controller: App\Controller\AuthController::logged
 
+is_admin:
+    path: /api/isadmin
+    controller: App\Controller\AuthController::isAdmin
+
 auth_logout:
     path: /api/logout
     controller: App\Controller\AuthController::logout
@@ -28,11 +32,6 @@ auth_logout:
 
 # -------------------------
 # Events
-
-highlighted_events:
-    path: /api/highlighted-events
-    controller: App\Controller\EventController::highlightedEvents
-
 
 # -------------------------
 # Users
@@ -48,3 +47,11 @@ user_settings_update:
 user_image_update:
     path: /api/user/update/image
     controller: App\Controller\UserController::updateImage
+
+
+# -------------------------
+# Admin
+
+# admin_dashboard:
+#     path: /dashboard
+#     controller: App\Controller\Admin\AdminController::dashboard

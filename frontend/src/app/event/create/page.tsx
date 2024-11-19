@@ -79,7 +79,7 @@ export default function CreateEvent() {
     return (
         <form 
             onSubmit={handleSubmit} 
-            className="p-5 md:py-10 md:px-16 bg-secondary flex flex-col items-center justify-center md:w-fit m-auto"
+            className="p-5 md:py-10 md:px-16 bg-secondary flex flex-col items-center justify-center md:w-fit m-auto shadow-lg rounded-lg"
         >
             <h1 className="text-2xl md:text-3xl md:px-16">Créer un nouvel événement</h1>
             <ul className="w-full mt-4 flex flex-col gap-3">

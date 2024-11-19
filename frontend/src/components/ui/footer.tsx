@@ -15,7 +15,7 @@ const ralewayMedium = Raleway({
 
 export function Footer() {
   return (
-    <footer className="flex items-center flex-col p-5 bg-foreground text-background">
+    <footer className="flex items-center flex-col p-5 bg-foreground text-background mt-auto">
       <Logo className="w-40" />
 
       <div className={`${ralewayBold.className} flex my-5 text-sm md:text-xl`}>

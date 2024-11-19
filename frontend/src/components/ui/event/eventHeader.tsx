@@ -9,7 +9,7 @@ import {
   
   interface Event {
     title: string;
-    visibility: boolean;
+    privacy: boolean;
     startDate: string; // datetime string
     endDate: string; // datetime string
     location: string;
@@ -60,16 +60,16 @@ import {
     return (
       <div className="flex w-full rounded-lg px-3 md:px-8 md:py-5 bg-gradient-to-b from-transparent from-45% to-primary min-h-72 md:min-h-fit relative overflow-hidden items-end md:bg-none md:bg-secondary text-primary-foreground md:text-secondary-foreground lg:h-full lg:items-start shadow-md">
         <img
-          src="https://images.unsplash.com/photo-1680868543815-b8666dba60f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+          src={event.image}
           alt="Card"
           className="absolute z-[-10] w-full h-full left-0 object-cover rounded-lg md:hidden"
         />
-        <div className="w-full flex flex-col mt-48 md:mt-0 mb-6 gap-2 lg:justify-between lg:h-full">
+        <div className="w-full flex flex-col mt-48 md:mt-0 gap-2 lg:justify-between lg:h-full">
           <div className="flex items-center md:items-start md:flex-col gap-2 mb-1">
             <h1 className="text-xl md:text-2xl font-bold">{event.title}</h1>
-            <Button variant={event.visibility ? "public" : "private"} size="sm">
-              {event.visibility ? "Public" : "Private"}
-              {event.visibility ? (
+            <Button variant={event.privacy ? "public" : "private"} size="sm">
+              {event.privacy ? "Public" : "Privé"}
+              {event.privacy ? (
                 <LockOpenIcon className="w-4 ml-2" />
               ) : (
                 <LockClosedIcon className="w-4 ml-2" />
