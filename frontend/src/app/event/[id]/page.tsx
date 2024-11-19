@@ -41,7 +41,7 @@ export default function Event({ params }) {
     if (event) {
       try {
         const response = await joinEvent(event.id);
-        toast("Inscription à l'événement réussie.");
+        toast("Vous avez rejoint l'événement");
         setIsRegistered(true); // Mettre à jour l'état pour actualiser le bouton
       } catch (error) {
         toast('Erreur lors de l\'inscription à l\'événement.');
@@ -74,8 +74,8 @@ export default function Event({ params }) {
             <Button className="md:hidden" size={"lg"}>
               Partager
             </Button>
-            <Button variant={"accent"} size={"lg"} onClick={handleJoinEvent} disabled={isRegistered}>
-              {isRegistered ? "Inscrit" : "Rejoindre"}
+            <Button variant={isRegistered ? "destructive" : "accent"} size={"lg"} onClick={isRegistered ? undefined : handleJoinEvent}>
+              {isRegistered ? "Quitter l'événement" : "Rejoindre"}
             </Button>
             {user && user.id === creator.id && (
               <Button size={"lg"}>Modifier l'événement</Button>
