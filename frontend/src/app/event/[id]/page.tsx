@@ -5,7 +5,7 @@ import EventOrganizer from "@/components/ui/event/eventOrganizer";
 import EventDescription from "@/components/ui/event/eventDescription";
 import EventShare from "@/components/ui/event/eventShare";
 import { Button } from "@/components/ui/button";
-import { fetchEvent, fetchCreator, joinEvent, isUserRegistered } from "@/app/api/event";
+import { fetchEvent, fetchCreator, joinEvent, isUserRegistered, leaveEvent } from "@/app/api/event";
 import { fetchUser } from "@/app/api/data";
 import { useEffect, useState } from "react";
 import PageEventSkeleton from "./loading";
@@ -49,6 +49,18 @@ export default function Event({ params }) {
     }
   };
 
+  const handleLeaveEvent = async () => {
+    if (event) {
+      try {
+        const response = await leaveEvent(event.id);
+        toast("Vous avez quitté l'événement");
+        setIsRegistered(false); // Mettre à jour l'état pour actualiser le bouton
+      } catch (error) {
+        toast('Erreur lors de la désinscription de l\'événement.');
+      }
+    }
+  };
+
   return (
     <>
       {event && creator ? (
@@ -74,7 +86,7 @@ export default function Event({ params }) {
             <Button className="md:hidden" size={"lg"}>
               Partager
             </Button>
-            <Button variant={isRegistered ? "destructive" : "accent"} size={"lg"} onClick={isRegistered ? undefined : handleJoinEvent}>
+            <Button variant={isRegistered ? "destructive" : "accent"} size={"lg"} onClick={isRegistered ? handleLeaveEvent : handleJoinEvent}>
               {isRegistered ? "Quitter l'événement" : "Rejoindre"}
             </Button>
             {user && user.id === creator.id && (

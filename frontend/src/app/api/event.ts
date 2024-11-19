@@ -144,6 +144,30 @@ export async function joinEvent(eventId: string) {
   }
 }
 
+export async function leaveEvent(eventId: string) {
+  try {
+    const response = await fetch(`https://localhost:443/api/events/leave/${eventId}`, {
+      method: 'DELETE',
+      headers: {
+        'accept': 'application/ld+json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.errors || 'Erreur lors de la désinscription de l\'événement');
+    }
+  } catch (error) {
+    console.error('Error leaving event:', error);
+    throw new Error('Erreur lors de la désinscription de l\'événement');
+  }
+}
+
 export async function isUserRegistered(eventId: number) {
   try {
     const response = await fetch(`https://localhost/api/users/is-registered/${eventId}`, {

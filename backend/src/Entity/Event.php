@@ -47,6 +47,11 @@ use App\Controller\UserController;
             uriTemplate: '/events/join/{id}',
             controller: EventController::class . '::joinEvent',
         ),
+        new Delete(
+            name: 'leave-event',
+            uriTemplate: '/events/leave/{id}',
+            controller: EventController::class . '::leaveEvent',
+        ),
         new Get(
             name: 'is-user-registered',
             uriTemplate: '/users/is-registered/{id}',

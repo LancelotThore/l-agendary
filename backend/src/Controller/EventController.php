@@ -132,4 +132,43 @@ class EventController extends AbstractController
 
         return $this->json(['success' => 'User registered to event successfully']);
     }
+
+    /**
+     * @Route("/api/events/leave/{id}", name="leave-event", methods={"DELETE"})
+     */
+    public function leaveEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Récupérer le token depuis le cookie
+        $token = $request->cookies->get('token');
+
+        if (!$token) {
+            return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Décoder le token pour obtenir les informations de l'utilisateur
+        $data = $this->jwtEncoder->decode($token);
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
+
+        if (!$user) {
+            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Trouver l'événement par ID
+        $event = $entityManager->getRepository(Event::class)->find($id);
+
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            // Retirer l'utilisateur de l'événement
+            $event->removeRegisteredUser($user);
+            $entityManager->persist($event);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->json(['success' => 'User unregistered from event successfully']);
+    }
 }
