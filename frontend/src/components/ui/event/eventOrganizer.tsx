@@ -12,7 +12,6 @@ interface EventOrganizerProps {
 }
 
 export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
-console.log(organisateur.profilePicture)
 
   return (
     <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">

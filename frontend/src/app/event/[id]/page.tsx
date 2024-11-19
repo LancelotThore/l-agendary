@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { log } from "console";
 
 export default function Event({ params }) {
   const [id, setId] = useState(null);
@@ -40,10 +41,20 @@ export default function Event({ params }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  function extractDateAndTime(isoString: string) {
+  function extractDateAndTime(isoString) {
     const date = new Date(isoString);
-    const formattedDate = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
-    const formattedTime = date.toTimeString().split(" ")[0].slice(0, 5); // Format HH:mm
+  
+    // Obtenir la date locale au format YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+  
+    // Obtenir l'heure locale au format HH:mm
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const formattedTime = `${hours}:${minutes}`;
+  
     return { formattedDate, formattedTime };
   }
 
@@ -80,8 +91,10 @@ export default function Event({ params }) {
 
   const handleEditEvent = async (e) => {
     e.preventDefault();
+    const combinedStartDateTime = new Date(`${startDate}T${startHour}:00`).toISOString();
+    const combinedEndDateTime = new Date(`${endDate}T${endHour}:00`).toISOString();
     try {
-      await updateEvent(id, title, description, location, etat, startDate, startHour, endDate, endHour, image);
+      await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, image);
       setSuccess("Evènement mis à jour avec succès");
       upEvent();
     } catch (err) {

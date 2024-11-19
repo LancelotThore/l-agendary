@@ -121,33 +121,29 @@ export async function createEvent(
 }
 
 export async function updateEvent(
-  id: number,
+  id: string,
   title: string,
   description: string,
   location: string,
-  etat: boolean,
+  privacy: boolean,
   start_date: string,
-  start_hour: string,
   end_date: string,
-  end_hour: string,
   image: string
 ) {
   try {
-    const response = await fetch("https://localhost:443/api/events/"+ id, {
-      method: "POST",
+    const response = await fetch("https://localhost:443/api/events/" + id, {
+      method: "PATCH",
       credentials: "include",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/merge-patch+json",
       },
       body: JSON.stringify({
         title,
         description,
         location,
-        etat,
+        privacy,
         start_date,
-        start_hour,
         end_date,
-        end_hour,
         image
       }),
     });
