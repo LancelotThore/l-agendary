@@ -20,7 +20,7 @@ export async function fetchPaginatedEvents(limit: number, offset: number) {
   }
 }
 
-export async function fetchSearchEvents(query: string, location: string, date: string, limit: number, offset: number) {
+export async function fetchSearchEvents(query: string, location: string, startDate: string, endDate: string, creatorFirstname: string, limit: number, offset: number) {
   try {
     const url = new URL(`https://localhost/api/search-events`);
     if (query) {
@@ -29,8 +29,14 @@ export async function fetchSearchEvents(query: string, location: string, date: s
     if (location) {
       url.searchParams.append('location', location);
     }
-    if (date) {
-      url.searchParams.append('date', date);
+    if (startDate) {
+      url.searchParams.append('startDate', startDate);
+    }
+    if (endDate) {
+      url.searchParams.append('endDate', endDate);
+    }
+    if (creatorFirstname) {
+      url.searchParams.append('creatorFirstname', creatorFirstname);
     }
     url.searchParams.append('limit', limit.toString());
     url.searchParams.append('offset', offset.toString());

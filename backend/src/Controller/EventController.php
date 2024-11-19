@@ -85,12 +85,15 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 {
     $searchTerm = $request->query->get('q', '');
     $location = $request->query->get('location', '');
-    $date = $request->query->get('date', '');
-    $limit = $request->query->get('limit', 10); // Default limit
-    $offset = $request->query->get('offset', 0); // Default offset
+    $startDate = $request->query->get('startDate', '');
+    $endDate = $request->query->get('endDate', '');
+    $creatorFirstname = $request->query->get('creatorFirstname', '');
+    $limit = $request->query->get('limit', 9);
+    $offset = $request->query->get('offset', 0);
 
     $queryBuilder = $entityManager->getRepository(Event::class)
         ->createQueryBuilder('e')
+        ->leftJoin('e.creator', 'c')
         ->where('(e.title LIKE :searchTerm OR e.description LIKE :searchTerm) AND e.privacy = 1')
         ->setParameter('searchTerm', '%' . $searchTerm . '%');
 
@@ -99,9 +102,19 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
             ->setParameter('location', $location);
     }
 
-    if (!empty($date)) {
-        $queryBuilder->andWhere('e.start_date LIKE :date OR e.end_date LIKE :date')
-            ->setParameter('date', $date . '%');
+    if (!empty($startDate)) {
+        $queryBuilder->andWhere('e.start_date LIKE :startDate')
+            ->setParameter('startDate', $startDate . '%');
+    }
+    
+    if (!empty($endDate)) {
+        $queryBuilder->andWhere('e.end_date LIKE :endDate')
+            ->setParameter('endDate', $endDate . '%');
+    }
+
+    if (!empty($creatorFirstname)) {
+        $queryBuilder->andWhere('c.firstname LIKE :creatorFirstname')
+            ->setParameter('creatorFirstname', '%' . $creatorFirstname . '%');
     }
 
     $queryBuilder->setMaxResults($limit)

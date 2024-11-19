@@ -12,7 +12,8 @@ const ITEMS_PER_PAGE = 9;
 export default function SearchPage() {
   const [events, setEvents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isSearching, setIsSearching] = useState(false);
 
   const fetchData = async (page) => {
     const offset = (page - 1) * ITEMS_PER_PAGE;
@@ -23,8 +24,10 @@ export default function SearchPage() {
   };
 
   useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage]);
+    if (!isSearching) {
+      fetchData(currentPage);
+    }
+  }, [currentPage, isSearching]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -32,13 +35,12 @@ export default function SearchPage() {
 
   const handleSearchResults = (results) => {
     setEvents(results);
-    setTotalPages(Math.ceil(results.length / ITEMS_PER_PAGE));
     setCurrentPage(1);
   };
 
   return (
     <div className='w-full'>
-      <Filter onSearchResults={handleSearchResults} />
+      <Filter onSearchResults={handleSearchResults}/>
       <ul className="flex items-center gap-5 my-10 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {events.map((event, index) => (
           <Link href={`/event/${event.id}`} key={index}>

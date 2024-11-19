@@ -14,7 +14,6 @@ export interface SelectInputProps extends React.HTMLAttributes<HTMLDivElement> {
 const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
   ({ className, img = <Search className="w-4 md:w-6" />, placeholder = "Select an option", fetchOptions, onSelect, ...props }, ref) => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [location, setLocation] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState("");
     const [dynamicOptions, setDynamicOptions] = useState<string[]>([]);
@@ -46,20 +45,10 @@ const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
     const clearSelection = () => {
       setSelectedOption("");
       setSearchTerm("");
-      setLocation("");
       if (onSelect) {
         onSelect("");
       }
     };
-
-    const handleSearch = async () => {
-      const events = await fetchSearchEvents(searchTerm, location);
-      // Handle the fetched events as needed
-    };
-
-    useEffect(() => {
-      handleSearch();
-    }, [searchTerm, location]);
 
     const filteredOptions = dynamicOptions.filter(option =>
       option.toLowerCase().includes(searchTerm.toLowerCase())
