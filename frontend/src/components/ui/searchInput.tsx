@@ -1,37 +1,24 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Search } from "./icons";
+import { Search, Close } from "./icons";
+import { fetchSearchEvents } from "@/app/api/event";
 
 export interface SelectInputProps extends React.HTMLAttributes<HTMLDivElement> {
-  options?: string[];
   img?: React.ReactNode;
   placeholder?: string;
   fetchOptions?: () => Promise<string[]>;
+  onSelect?: (selected: string) => void;
 }
 
 const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
-  ({ className, options = [], img = <Search className="w-4 md:w-6" />, placeholder = "Select an option", fetchOptions, ...props }, ref) => {
+  ({ className, img = <Search className="w-4 md:w-6" />, placeholder = "Select an option", fetchOptions, onSelect, ...props }, ref) => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [location, setLocation] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState("");
-    const [dynamicOptions, setDynamicOptions] = useState<string[]>(options);
+    const [dynamicOptions, setDynamicOptions] = useState<string[]>([]);
     const dropdownRef = useRef<HTMLDivElement>(null);
-
-    const filteredOptions = dynamicOptions.filter(option =>
-      typeof option === 'string' && option.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    useEffect(() => {
-      if (fetchOptions) {
-        fetchOptions().then(fetchedOptions => {
-          console.log("Fetched options:", fetchedOptions); // Debugging log
-          setDynamicOptions(fetchedOptions);
-        }).catch(error => {
-          console.error("Error fetching options:", error);
-        });
-      }
-    }, [fetchOptions]);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -45,6 +32,38 @@ const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }, []);
+
+    useEffect(() => {
+      if (fetchOptions) {
+        fetchOptions().then(fetchedOptions => {
+          setDynamicOptions(fetchedOptions);
+        }).catch(error => {
+          console.error("Error fetching options:", error);
+        });
+      }
+    }, [fetchOptions]);
+
+    const clearSelection = () => {
+      setSelectedOption("");
+      setSearchTerm("");
+      setLocation("");
+      if (onSelect) {
+        onSelect("");
+      }
+    };
+
+    const handleSearch = async () => {
+      const events = await fetchSearchEvents(searchTerm, location);
+      // Handle the fetched events as needed
+    };
+
+    useEffect(() => {
+      handleSearch();
+    }, [searchTerm, location]);
+
+    const filteredOptions = dynamicOptions.filter(option =>
+      option.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
       <div className="relative flex flex-col items-center w-full md:max-w-lg" ref={dropdownRef}>
@@ -61,6 +80,14 @@ const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
         >
           {img && <div className="absolute left-3 z-10">{img}</div>}
           <span className="flex-grow">{selectedOption || placeholder}</span>
+          {selectedOption && (
+            <div className="absolute right-3 z-10 cursor-pointer" onClick={(e) => {
+              e.stopPropagation();
+              clearSelection();
+            }}>
+              <Close className="w-4 md:w-6" />
+            </div>
+          )}
         </div>
         {isDropdownOpen && (
           <div className="absolute top-full left-0 mt-1 w-full md:max-w-lg rounded-md border border-input bg-secondary px-3 py-2 text-sm ring-offset-background z-20">
@@ -75,19 +102,26 @@ const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <div className="max-h-60 overflow-y-auto">
-              {filteredOptions.map((option, index) => (
-                <div
-                  key={index}
-                  className="cursor-pointer py-2 px-3 hover:bg-gray-200"
-                  onClick={() => {
-                    setSelectedOption(option);
-                    setSearchTerm("");
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  {option}
+              {fetchOptions && (
+                <div>
+                  {filteredOptions.map((option, index) => (
+                    <div
+                      key={index}
+                      className="cursor-pointer py-2 px-3 hover:bg-gray-200"
+                      onClick={() => {
+                        setSelectedOption(option);
+                        setSearchTerm("");
+                        setIsDropdownOpen(false);
+                        if (onSelect) {
+                          onSelect(option);
+                        }
+                      }}
+                    >
+                      {option}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           </div>
         )}

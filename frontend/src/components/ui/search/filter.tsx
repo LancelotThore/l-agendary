@@ -1,28 +1,45 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SearchBar } from "../searchBar";
 import { SearchInput } from "../searchInput";
 import { Input } from "../input";
 import { Clock, LocationOn, PeopleFill, User, Filtre } from '../icons';
 import { fetchSearchEvents, fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";
 
+const ITEMS_PER_PAGE = 9;
+
 export default function Filter({ onSearchResults }) {
   const [showFilters, setShowFilters] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [limit] = useState(ITEMS_PER_PAGE);
+  const [offset] = useState(0);
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleSearch = async (searchTerm) => {
-    const results = await fetchSearchEvents(searchTerm);
+  const handleSearch = async () => {
+    const results = await fetchSearchEvents(searchTerm, location, date, limit, offset);
     onSearchResults(results);
   };
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    handleSearch();
+  }, [searchTerm, location, date, limit, offset]);
+
+  const handleSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
-    handleSearch(e.target.value);
+  };
+
+  const handleLocationSelect = async (selectedLocation: string) => {
+    setLocation(selectedLocation);
+  };
+
+  const handleDateChange = (e) => {
+    setDate(e.target.value);
   };
 
   return (
@@ -33,7 +50,7 @@ export default function Filter({ onSearchResults }) {
           placeholder="Rechercher"
           type="search"
           value={searchTerm}
-          onChange={handleChange}
+          onChange={handleSearchTermChange}
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base w-full'
         />
         <button
@@ -46,23 +63,25 @@ export default function Filter({ onSearchResults }) {
       <div className={`w-full flex-col gap-5 ${showFilters ? 'flex' : 'hidden'} md:grid md:grid-cols-4`}>
         <Input
           img={<Clock className='w-4 md:w-6' />}
-          type="datetime-local"
+          type="date"
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
+          onChange={handleDateChange}
         />
         <SearchInput
-        img={<LocationOn className='w-4 md:w-6' />}
-        fetchOptions={fetchUniqueLocations}
-        placeholder="Lieu"
+          img={<LocationOn className='w-4 md:w-6' />}
+          fetchOptions={fetchUniqueLocations}
+          placeholder="Lieu"
+          onSelect={handleLocationSelect}
         />
         <SearchInput
-        img={<User className='w-4 md:w-6' />}
-        fetchOptions={fetchUniqueUserNames}
-        placeholder="Créateur"
+          img={<User className='w-4 md:w-6' />}
+          fetchOptions={fetchUniqueUserNames}
+          placeholder="Créateur"
         />
         <SearchInput
-        img={<PeopleFill className='w-4 md:w-6' />}
-        fetchOptions={fetchUniqueUserNames}
-        placeholder="Participants"
+          img={<PeopleFill className='w-4 md:w-6' />}
+          fetchOptions={fetchUniqueUserNames}
+          placeholder="Participants"
         />
       </div>
     </div>

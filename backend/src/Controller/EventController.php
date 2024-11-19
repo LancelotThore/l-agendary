@@ -64,33 +64,51 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
 }
 
 /**
- * @Route("/api/search-events", name="search-events", methods={"GET"})
- */
-public function searchEvents(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $searchTerm = $request->query->get('q', '');
-
-    $queryBuilder = $entityManager->getRepository(Event::class)
-        ->createQueryBuilder('e')
-        ->where('(e.title LIKE :searchTerm OR e.description LIKE :searchTerm) AND e.privacy = 1')
-        ->setParameter('searchTerm', '%' . $searchTerm . '%');
-
-    $events = $queryBuilder->getQuery()->getResult();
-
-    return $this->json($events);
-}
-
-/**
  * @Route("/api/unique-locations", name="unique-locations", methods={"GET"})
  */
 public function getUniqueLocations(EntityManagerInterface $entityManager): Response
 {
     $queryBuilder = $entityManager->getRepository(Event::class)
         ->createQueryBuilder('e')
-        ->select('DISTINCT e.location');
+        ->select('DISTINCT e.location')
+        ->where('e.privacy = 1');
 
     $locations = $queryBuilder->getQuery()->getResult();
 
     return $this->json($locations);
+}
+
+/**
+ * @Route("/api/search-events", name="search-events", methods={"GET"})
+ */
+public function searchEvents(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $searchTerm = $request->query->get('q', '');
+    $location = $request->query->get('location', '');
+    $date = $request->query->get('date', '');
+    $limit = $request->query->get('limit', 10); // Default limit
+    $offset = $request->query->get('offset', 0); // Default offset
+
+    $queryBuilder = $entityManager->getRepository(Event::class)
+        ->createQueryBuilder('e')
+        ->where('(e.title LIKE :searchTerm OR e.description LIKE :searchTerm) AND e.privacy = 1')
+        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+
+    if (!empty($location)) {
+        $queryBuilder->andWhere('e.location = :location')
+            ->setParameter('location', $location);
+    }
+
+    if (!empty($date)) {
+        $queryBuilder->andWhere('e.start_date LIKE :date OR e.end_date LIKE :date')
+            ->setParameter('date', $date . '%');
+    }
+
+    $queryBuilder->setMaxResults($limit)
+                 ->setFirstResult($offset);
+
+    $events = $queryBuilder->getQuery()->getResult();
+
+    return $this->json($events);
 }
 }

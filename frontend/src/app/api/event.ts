@@ -20,9 +20,22 @@ export async function fetchPaginatedEvents(limit: number, offset: number) {
   }
 }
 
-export async function fetchNbEvents(){
+export async function fetchSearchEvents(query: string, location: string, date: string, limit: number, offset: number) {
   try {
-    const res = await fetch(`https://localhost/api/nb-public-events`);
+    const url = new URL(`https://localhost/api/search-events`);
+    if (query) {
+      url.searchParams.append('q', query);
+    }
+    if (location) {
+      url.searchParams.append('location', location);
+    }
+    if (date) {
+      url.searchParams.append('date', date);
+    }
+    url.searchParams.append('limit', limit.toString());
+    url.searchParams.append('offset', offset.toString());
+
+    const res = await fetch(url.toString());
     const data = await res.json();
     return data;
   } catch (error) {
@@ -31,13 +44,13 @@ export async function fetchNbEvents(){
   }
 }
 
-export async function fetchSearchEvents(query: string) {
+export async function fetchNbEvents(){
   try {
-    const res = await fetch(`https://localhost/api/search-events?q=${encodeURIComponent(query)}`);
+    const res = await fetch(`https://localhost/api/nb-public-events`);
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error searching events:", error);
+    console.error("Error fetching events:", error);
     return null;
   }
 }

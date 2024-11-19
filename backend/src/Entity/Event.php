@@ -36,15 +36,15 @@ use App\Controller\EventController;
             controller: EventController::class . '::nbPublicEvents',
         ),
         new GetCollection(
-            name: 'search-events',
-            uriTemplate: '/search-events',
-            controller: EventController::class . '::searchEvents',
-            // outputFormats: ['json' => ['application/ld+json']],
-        ),
-        new GetCollection(
             name: 'unique-locations',
             uriTemplate: '/unique-locations',
             controller: EventController::class . '::getUniqueLocations',
+            // outputFormats: ['json' => ['application/ld+json']],
+        ),
+        new GetCollection(
+            name: 'search-events',
+            uriTemplate: '/search-events',
+            controller: EventController::class . '::searchEvents',
             // outputFormats: ['json' => ['application/ld+json']],
         ),
         new Get(), // Get one event by ID

@@ -14,16 +14,16 @@ export default function SearchPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
+  const fetchData = async (page) => {
+    const offset = (page - 1) * ITEMS_PER_PAGE;
+    const dataEvents = await fetchPaginatedEvents(ITEMS_PER_PAGE, offset);
+    const nbEvents = await fetchNbEvents();
+    setEvents(dataEvents);
+    setTotalPages(Math.ceil(nbEvents / ITEMS_PER_PAGE));
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-      const dataEvents = await fetchPaginatedEvents(ITEMS_PER_PAGE, offset);
-      const nbEvents = await fetchNbEvents();
-      setEvents(dataEvents);
-      // Assuming the API returns the total number of events
-      setTotalPages(Math.ceil(nbEvents / ITEMS_PER_PAGE));
-    };
-    fetchData();
+    fetchData(currentPage);
   }, [currentPage]);
 
   const handlePageChange = (page) => {
@@ -32,12 +32,13 @@ export default function SearchPage() {
 
   const handleSearchResults = (results) => {
     setEvents(results);
-    setTotalPages(1); // Assuming search results fit on one page
+    setTotalPages(Math.ceil(results.length / ITEMS_PER_PAGE));
+    setCurrentPage(1);
   };
 
   return (
     <div className='w-full'>
-     <Filter onSearchResults={handleSearchResults} />
+      <Filter onSearchResults={handleSearchResults} />
       <ul className="flex items-center gap-5 my-10 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {events.map((event, index) => (
           <Link href={`/event/${event.id}`} key={index}>
