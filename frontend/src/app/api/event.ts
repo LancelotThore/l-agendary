@@ -20,7 +20,7 @@ export async function fetchPaginatedEvents(limit: number, offset: number) {
   }
 }
 
-export async function fetchNbEvents(){
+export async function fetchNbEvents() {
   try {
     const res = await fetch(`https://localhost/api/nb-public-events`);
     const data = await res.json();
@@ -53,7 +53,7 @@ export async function fetchHighlightedEvents() {
   }
 }
 
-export async function fetchEvent(id : number) {
+export async function fetchEvent(id: number) {
   try {
     const res = await fetch("https://localhost/api/events/" + id);
     const data = await res.json();
@@ -64,7 +64,7 @@ export async function fetchEvent(id : number) {
   }
 }
 
-export async function fetchCreator(url : string) {
+export async function fetchCreator(url: string) {
   try {
     const res = await fetch("https://localhost" + url);
     const data = await res.json();
@@ -76,46 +76,91 @@ export async function fetchCreator(url : string) {
 }
 
 export async function createEvent(
-    title: string,
-    description: string,
-    privacy: boolean,
-    location: string,
-    start_date: string,
-    end_date: string,
-    imageUrl: string,
-    creator: string
+  title: string,
+  description: string,
+  privacy: boolean,
+  location: string,
+  start_date: string,
+  end_date: string,
+  imageUrl: string,
+  creator: string
 ) {
-    const formData = {
+  const formData = {
+    title,
+    description,
+    privacy,
+    location,
+    start_date,
+    end_date,
+    image: imageUrl,
+    creator
+  };
+
+  try {
+    const response = await fetch('https://localhost:443/api/events', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/ld+json',
+        'Content-Type': 'application/ld+json'
+      },
+      body: JSON.stringify(formData),
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.errors || 'Erreur lors de la création de l\'événement');
+    }
+  } catch (error) {
+    console.error('Error creating event:', error);
+    throw new Error('Erreur lors de la création de l\'événement');
+  }
+}
+
+export async function updateEvent(
+  id: number,
+  title: string,
+  description: string,
+  location: string,
+  etat: boolean,
+  start_date: string,
+  start_hour: string,
+  end_date: string,
+  end_hour: string,
+  image: string
+) {
+  try {
+    const response = await fetch("https://localhost:443/api/events/"+ id, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         title,
         description,
-        privacy,
         location,
+        etat,
         start_date,
+        start_hour,
         end_date,
-        image: imageUrl,
-        creator
-    };
+        end_hour,
+        image
+      }),
+    });
 
-    try {
-        const response = await fetch('https://localhost:443/api/events', {
-            method: 'POST',
-            headers: {
-                'accept': 'application/ld+json',
-                'Content-Type': 'application/ld+json'
-            },
-            body: JSON.stringify(formData),
-            credentials: 'include'
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            return data;
-        } else {
-            const errorData = await response.json();
-            throw new Error(errorData.errors || 'Erreur lors de la création de l\'événement');
-        }
-    } catch (error) {
-        console.error('Error creating event:', error);
-        throw new Error('Erreur lors de la création de l\'événement');
+    if (!response.ok) {
+      return null;
     }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    return null;
+  }
+
 }

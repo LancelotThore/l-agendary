@@ -5,7 +5,7 @@ import EventOrganizer from "@/components/ui/event/eventOrganizer";
 import EventDescription from "@/components/ui/event/eventDescription";
 import EventShare from "@/components/ui/event/eventShare";
 import { Button } from "@/components/ui/button";
-import { fetchEvent, fetchCreator } from "@/app/api/event";
+import { fetchEvent, fetchCreator, updateEvent } from "@/app/api/event";
 import { ArrowLeft, LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
 import { fetchUser } from "@/app/api/data";
 import { useEffect, useState } from "react";
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 
 export default function Event({ params }) {
+  const [id, setId] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [etat, setEtat] = useState(null);
@@ -36,43 +37,57 @@ export default function Event({ params }) {
   const [creator, setCreator] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleToggle = (isPublic: boolean) => {
-    const privateRadio = document.getElementById("etat-prive") as HTMLInputElement;
-    const publicRadio = document.getElementById("etat-public") as HTMLInputElement;
-  
-    if (isPublic) {
-      publicRadio.checked = true;
-    } else {
-      privateRadio.checked = true;
+  function extractDateAndTime(isoString: string) {
+    const date = new Date(isoString);
+    const formattedDate = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+    const formattedTime = date.toTimeString().split(" ")[0].slice(0, 5); // Format HH:mm
+    return { formattedDate, formattedTime };
+  }
+
+  const upEvent = async () => {
+    const dataEvents = await fetchEvent(params.id);
+    setEvent(dataEvents);
+    const dataCreator = await fetchCreator(dataEvents.creator);
+    setCreator(dataCreator);
+
+    if (dataEvents) {
+      const { formattedDate: startDate, formattedTime: startHour } = extractDateAndTime(dataEvents.start_date);
+      const { formattedDate: endDate, formattedTime: endHour } = extractDateAndTime(dataEvents.end_date);
+
+      setId(dataEvents.id);
+      setTitle(dataEvents.title);
+      setDescription(dataEvents.description);
+      setLocation(dataEvents.location);
+      setEtat(dataEvents.privacy);
+      setStartDate(startDate);
+      setStartHour(startHour);
+      setEndDate(endDate);
+      setEndHour(endHour);
+      setImage(dataEvents.image);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const dataEvents = await fetchEvent(params.id);
-      setEvent(dataEvents);
-      const dataCreator = await fetchCreator(dataEvents.creator);
-      setCreator(dataCreator);
-
-      if (dataEvents) {
-        setTitle(dataEvents.title);
-        setDescription(dataEvents.description);
-        setLocation(dataEvents.location);
-        setEtat(dataEvents.privacy);
-        setStartDate(dataEvents.start_date);
-        setEndDate(dataEvents.end_date);
-        setImage(dataEvents.img);
-      }
-      setLoading(false)
-    };
-    fetchData();
+    upEvent();
 
     const user = fetchUser();
     setUser(user);
-
-
   }, []);
+
+  const handleEditEvent = async (e) => {
+    e.preventDefault();
+    try {
+      await updateEvent(id, title, description, location, etat, startDate, startHour, endDate, endHour, image);
+      setSuccess("Evènement mis à jour avec succès");
+      upEvent();
+    } catch (err) {
+      setError("Erreur lors de la mise à jour des informations de l'évènement");
+    }
+  };
 
   return (
     <>
@@ -139,7 +154,7 @@ export default function Event({ params }) {
           <DialogHeader>
             <DialogTitle className="text-2xl text-center">Modifier l'évènement</DialogTitle>
           </DialogHeader>
-          <div className="sm:px-10 px-0">
+          <div className="sm:px-10 px-0 h-[516px] overflow-y-scroll">
             <div className="flex flex-col gap-1 mt-2">
               <label htmlFor="title" className="text-left">
                 Titre de l’événement
@@ -166,7 +181,7 @@ export default function Event({ params }) {
               <label htmlFor="etat" className="text-left">
                 Etat
               </label>
-              <div className="flex flex-row gap-4" onClick={() => handleToggle(true)}>
+              <div className="flex flex-row gap-4">
 
                 <div className="flex flex-row gap-1">
                   <input
@@ -175,7 +190,7 @@ export default function Event({ params }) {
                     name="etat"
                     className="col-span-3"
                     defaultChecked={!etat}
-                    />
+                  />
                   <Button variant={"private"} size="sm">
                     Privé
                     <LockClosedIcon className="w-4 ml-2" />
@@ -252,16 +267,16 @@ export default function Event({ params }) {
               <label htmlFor="image" className="text-left">
                 Image de couverture
               </label>
+              <img src={image} alt="Image de converture evenement" className="w-32 h-32 rounded" />
               <Input
                 id="image"
                 type="file"
-                onChange={image}
                 className="col-span-3"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant={"accent"} className="text-center mx-auto">Mettre à jour</Button>
+            <Button variant={"accent"} className="text-center mx-auto" onClick={handleEditEvent}>Mettre à jour</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
