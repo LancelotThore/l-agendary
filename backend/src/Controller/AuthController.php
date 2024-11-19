@@ -123,6 +123,7 @@ class AuthController extends AbstractController
 
     // Retourner un tableau avec les propriétés nécessaires
     return new JsonResponse([
+        'id' => $user->getId(),
         'firstname' => $user->getFirstname(),
         'lastname' => $user->getLastname(),
         'email' => $user->getEmail(),
