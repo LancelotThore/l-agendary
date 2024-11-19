@@ -8,6 +8,7 @@ import { createEvent } from "@/app/api/event";
 import { useRouter } from "next/navigation";
 import { fetchUser } from "@/app/api/data";
 import path from 'path';
+import { toast } from "sonner"
 
 export default function CreateEvent() {
     const [user, setUser] = useState(null);
@@ -28,7 +29,7 @@ export default function CreateEvent() {
         const fetchData = async () => {
             const userData = await fetchUser();
             if (!userData) {
-                router.push('/login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+                router.push('/login');
                 return;
             }
             setUser(userData);
@@ -88,13 +89,10 @@ export default function CreateEvent() {
                 imageName,
                 creator
             );
-            setSuccess("L'événement a été créé avec succès !");
-            setTimeout(() => {
-                router.push('/');
-            }, 2000);
+            toast("L'événement a été créé avec succès !");
+            router.push('/');
         } catch (error: any) {
-            setError(error.message);
-            console.error("Error submitting form:", error);
+            toast(error.message);
         }
     };
 

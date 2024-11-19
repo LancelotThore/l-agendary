@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { Navbar } from '../components/navBar';
 import { Footer } from "../components/ui/footer";
+import { Toaster } from "@/components/ui/sonner"
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -30,6 +31,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
             <main className='container m-auto w-10/12 my-16'>
               {children}
             </main>
+            <Toaster />
 
             <Footer />
           </>

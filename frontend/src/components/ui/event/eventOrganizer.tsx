@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 interface Organisateur {
   name: string;
+  lastname: string;
   age: number;
   bio: string;
   profilePicture: string;
@@ -18,8 +19,8 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
       <div className="aspect-square w-32 md:w-auto lg:order-2">
         <img
           className="rounded-lg object-cover h-32 w-32 md:h-52 md:w-52"
-          src={`/uploads/profile_pictures/${organisateur.profilePicture}`}
-          alt={`Image de profil de ${organisateur.firstname + ' ' + organisateur.lastname}`}
+          src={organisateur.profilePicture ? `/uploads/profile_pictures/${organisateur.profilePicture}` : "/img.png"} 
+          alt={`Image de profil de ${organisateur.name + ' ' + organisateur.lastname}`}
         />
       </div>
       <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
@@ -27,7 +28,7 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
           Organisateur
         </h4>
         <div className="flex gap-11 mb-5 font-semibold">
-          <p>{organisateur.firstname + ' ' + organisateur.lastname}</p>
+          <p>{organisateur.name + ' ' + organisateur.lastname}</p>
           <p className="mr-6">
           {organisateur.age ? (
             `${organisateur.age} ans`

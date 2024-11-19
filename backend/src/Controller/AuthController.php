@@ -106,33 +106,33 @@ class AuthController extends AbstractController
     }
 
     public function logged(Request $request): JsonResponse
-{
-    // Récupérer le token depuis le cookie
-    $token = $request->cookies->get('token');
+    {
+        // Récupérer le token depuis le cookie
+        $token = $request->cookies->get('token');
 
-    if (!$token) {
-        return new JsonResponse(['error' => 'Token not found'], 401);
+        if (!$token) {
+            return new JsonResponse(['error' => 'Token not found'], 401);
+        }
+
+        $data = $this->jwtEncoder->decode($token);
+        $user = $this->getUserRepository()->findOneBy(['email' => $data['username']]);
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
+
+        // Retourner un tableau avec les propriétés nécessaires
+        return new JsonResponse([
+            'id' => $user->getId(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'email' => $user->getEmail(),
+            'age' => $user->getAge(),
+            'bio' => $user->getBio(),
+            'roles' => $user->getRoles(),
+            'profile_pic' => $user->getProfilePicture()
+        ]);
+
     }
-
-    $data = $this->jwtEncoder->decode($token);
-    $user = $this->getUserRepository()->findOneBy(['email' => $data['username']]);
-
-    if (!$user) {
-        return new JsonResponse(['error' => 'User not found'], 404);
-    }
-
-    // Retourner un tableau avec les propriétés nécessaires
-    return new JsonResponse([
-        'id' => $user->getId(),
-        'firstname' => $user->getFirstname(),
-        'lastname' => $user->getLastname(),
-        'email' => $user->getEmail(),
-        'age' => $user->getAge(),
-        'bio' => $user->getBio(),
-        'roles' => $user->getRoles(),
-        'profile_pic' => $user->getProfilePicture()
-    ]);
-
-}
 
 }

@@ -5,30 +5,50 @@ import EventOrganizer from "@/components/ui/event/eventOrganizer";
 import EventDescription from "@/components/ui/event/eventDescription";
 import EventShare from "@/components/ui/event/eventShare";
 import { Button } from "@/components/ui/button";
-import { fetchEvent, fetchCreator } from "@/app/api/event";
+import { fetchEvent, fetchCreator, joinEvent, isUserRegistered } from "@/app/api/event";
 import { fetchUser } from "@/app/api/data";
 import { useEffect, useState } from "react";
 import PageEventSkeleton from "./loading";
+import { toast } from "sonner"
 
 export default function Event({ params }) {
   const [event, setEvent] = useState(null);
   const [creator, setCreator] = useState(null);
   const [user, setUser] = useState(null);
+  const [joinSuccess, setJoinSuccess] = useState('');
+  const [joinError, setJoinError] = useState('');
+  const [isRegistered, setIsRegistered] = useState(false);
 
-    useEffect(() => {
-      const fetchData = async () => {
-          const dataEvents = await fetchEvent(params.id);
-          setEvent(dataEvents);
-          const dataCreator = await fetchCreator(dataEvents.creator);
-          setCreator(dataCreator);
+  useEffect(() => {
+    const fetchData = async () => {
+      const dataEvents = await fetchEvent(params.id);
+      setEvent(dataEvents);
+      const dataCreator = await fetchCreator(dataEvents.creator);
+      setCreator(dataCreator);
+
+      const user = await fetchUser();
+      setUser(user);
+
+      if (user) {
+        const registered = await isUserRegistered(params.id);
+        setIsRegistered(registered.isRegistered);
+      }
+    };
+    fetchData();
+  }, [params.id]);
   
-          const userData = await fetchUser();
-          setUser(userData);
-      };
-      fetchData();
-  }, []);
-  // console.log(user);
-  
+  const handleJoinEvent = async () => {
+    if (event) {
+      try {
+        const response = await joinEvent(event.id);
+        toast("Inscription à l'événement réussie.");
+        setIsRegistered(true); // Mettre à jour l'état pour actualiser le bouton
+      } catch (error) {
+        toast('Erreur lors de l\'inscription à l\'événement.');
+      }
+    }
+  };
+
   return (
     <>
       {event && creator ? (
@@ -54,8 +74,8 @@ export default function Event({ params }) {
             <Button className="md:hidden" size={"lg"}>
               Partager
             </Button>
-            <Button variant={"accent"} size={"lg"}>
-              Rejoindre
+            <Button variant={"accent"} size={"lg"} onClick={handleJoinEvent} disabled={isRegistered}>
+              {isRegistered ? "Inscrit" : "Rejoindre"}
             </Button>
             {user && user.id === creator.id && (
               <Button size={"lg"}>Modifier l'événement</Button>

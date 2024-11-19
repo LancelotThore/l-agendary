@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\EventController;
+use App\Controller\UserController;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ApiResource(
@@ -40,6 +41,17 @@ use App\Controller\EventController;
             uriTemplate: '/search-events',
             controller: EventController::class . '::searchEvents',
             // outputFormats: ['json' => ['application/ld+json']],
+        ),
+        new Post(
+            name: 'join-event',
+            uriTemplate: '/events/join/{id}',
+            controller: EventController::class . '::joinEvent',
+        ),
+        new Get(
+            name: 'is-user-registered',
+            uriTemplate: '/users/is-registered/{id}',
+            controller: UserController::class . '::isUserRegisteredToEvent',
+            read: false
         ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
