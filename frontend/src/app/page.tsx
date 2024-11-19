@@ -98,7 +98,7 @@ export default function Home() {
                 lieu={card.location}
                 startDate={card.start_date}
                 endDate={card.end_date}
-                img={card.image}
+                img={`/uploads/event_pictures/${card.image}`}
               />
             </Link>
           ))

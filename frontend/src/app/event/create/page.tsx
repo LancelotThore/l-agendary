@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { FormElement } from "@/components/ui/form/formElement";
 import { FormRadio } from "@/components/ui/form/formRadio";
 import { Button } from "@/components/ui/button";
 import { createEvent } from "@/app/api/event";
 import { useRouter } from "next/navigation";
+import { fetchUser } from "@/app/api/data";
+import path from 'path';
 
 export default function CreateEvent() {
+    const [user, setUser] = useState(null);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -16,11 +19,29 @@ export default function CreateEvent() {
         startDate: '',
         endDate: '',
         image: null as File | null,
-        creator: '/api/users/1',
+        creator: '',
     });
+
+    const router = useRouter();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userData = await fetchUser();
+            if (!userData) {
+                router.push('/login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+                return;
+            }
+            setUser(userData);
+            setFormData(prevState => ({
+                ...prevState,
+                creator: `/api/users/${userData.id}`
+            }));
+        };
+        fetchData();
+    }, [router]);
+
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, files } = e.target;
@@ -32,23 +53,22 @@ export default function CreateEvent() {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        
+    
         const { title, description, privacy, location, startDate, endDate, image, creator } = formData;
-
+    
         if (!image) {
             setError('Veuillez sélectionner une image.');
             return;
         }
-
+    
         if (new Date(startDate) >= new Date(endDate)) {
             setError('La date de début doit être avant la date de fin.');
             return;
         }
-
+    
         const imageData = new FormData();
         imageData.append('file', image);
-
+    
         try {
             const response = await fetch('/api/upload/event_pic', {
                 method: 'POST',
@@ -56,6 +76,8 @@ export default function CreateEvent() {
             });
             const data = await response.json();
             const imageUrl = data.url;
+            const imageName = path.basename(imageUrl); // Extraire le nom du fichier
+    
             await createEvent(
                 title, 
                 description, 
@@ -63,7 +85,7 @@ export default function CreateEvent() {
                 location, 
                 startDate, 
                 endDate, 
-                imageUrl, 
+                imageName,
                 creator
             );
             setSuccess("L'événement a été créé avec succès !");

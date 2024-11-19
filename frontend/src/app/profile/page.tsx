@@ -323,7 +323,7 @@ export default function ProfilePage() {
             <div className="aspect-square w-32 md:w-64 hover:cursor-pointer  lg:order-2">
               <img
                 className="rounded-lg object-cover hover:opacity-75  h-full w-full"
-                src={image || "img.png"}
+                src={image ? `/uploads/profile_pictures/${image}` : "img.png"}              
                 alt={`Image de profil de ${firstname}`}
               />
             </div>

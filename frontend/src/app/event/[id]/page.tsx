@@ -15,27 +15,26 @@ export default function Event({ params }) {
   const [creator, setCreator] = useState(null);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const dataEvents = await fetchEvent(params.id);
-      setEvent(dataEvents);
-      const dataCreator = await fetchCreator(dataEvents.creator);
-      setCreator(dataCreator);
-    };
-    fetchData();
-
-    const user = fetchUser();
-    setUser(user);
-
-    
+    useEffect(() => {
+      const fetchData = async () => {
+          const dataEvents = await fetchEvent(params.id);
+          setEvent(dataEvents);
+          const dataCreator = await fetchCreator(dataEvents.creator);
+          setCreator(dataCreator);
+  
+          const userData = await fetchUser();
+          setUser(userData);
+      };
+      fetchData();
   }, []);
+  // console.log(user);
   
   return (
     <>
       {event && creator ? (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
           <img
-            src={event.image}
+            src={`/uploads/event_pictures/${event.image}`}
             alt="Card"
             className="rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md"
           />
