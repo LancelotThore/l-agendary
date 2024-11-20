@@ -25,17 +25,6 @@ use App\Controller\EventController;
             // outputFormats: ['json' => ['application/ld+json']],
         ),
         new GetCollection(
-            name: 'paginated-events',
-            uriTemplate: '/paginated-events',
-            controller: EventController::class . '::paginatedEvents',
-            // outputFormats: ['json' => ['application/ld+json']],
-        ),
-        new Get(
-            name: 'nb-public-events',
-            uriTemplate: '/nb-public-events',
-            controller: EventController::class . '::nbPublicEvents',
-        ),
-        new GetCollection(
             name: 'unique-locations',
             uriTemplate: '/unique-locations',
             controller: EventController::class . '::getUniqueLocations',

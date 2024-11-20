@@ -9,52 +9,26 @@ export async function fetchEvents() {
   }
 }
 
-export async function fetchPaginatedEvents(limit: number, offset: number) {
-  try {
-    const res = await fetch(`https://localhost/api/paginated-events?limit=${limit}&offset=${offset}`);
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return null;
-  }
-}
-
-export async function fetchSearchEvents(query: string, location: string, startDate: string, endDate: string, creatorFirstname: string, limit: number, offset: number) {
+export async function fetchSearchEvents(query: string | null, location: string | null, startDate: string | null, endDate: string | null, creatorFirstname: string | null, limit: number, offset: number) {
   try {
     const url = new URL(`https://localhost/api/search-events`);
-    if (query) {
-      url.searchParams.append('q', query);
-    }
-    if (location) {
-      url.searchParams.append('location', location);
-    }
-    if (startDate) {
-      url.searchParams.append('startDate', startDate);
-    }
-    if (endDate) {
-      url.searchParams.append('endDate', endDate);
-    }
-    if (creatorFirstname) {
-      url.searchParams.append('creatorFirstname', creatorFirstname);
-    }
+    if (query) url.searchParams.append('q', query);
+    if (location) url.searchParams.append('location', location);
+    if (startDate) url.searchParams.append('startDate', startDate);
+    if (endDate) url.searchParams.append('endDate', endDate);
+    if (creatorFirstname) url.searchParams.append('creatorFirstname', creatorFirstname);
     url.searchParams.append('limit', limit.toString());
     url.searchParams.append('offset', offset.toString());
 
     const res = await fetch(url.toString());
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return null;
-  }
-}
-
-export async function fetchNbEvents(){
-  try {
-    const res = await fetch(`https://localhost/api/nb-public-events`);
-    const data = await res.json();
-    return data;
+    return {
+      total: data.total,
+      events: data.events
+    };
   } catch (error) {
     console.error("Error fetching events:", error);
     return null;

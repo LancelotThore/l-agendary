@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Filter from "@/components/ui/search/filter";
 import { CardEvent } from "@/components/ui/cardEvent";
 import Pagination from "@/components/ui/search/pagination";
-import { fetchPaginatedEvents, fetchNbEvents } from "../api/event";
+import { fetchSearchEvents } from "../api/event";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -14,33 +14,49 @@ export default function SearchPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchParams, setSearchParams] = useState({
+    query: '',
+    location: '',
+    startDate: '',
+    endDate: '',
+    creatorFirstname: ''
+  });
 
   const fetchData = async (page) => {
     const offset = (page - 1) * ITEMS_PER_PAGE;
-    const dataEvents = await fetchPaginatedEvents(ITEMS_PER_PAGE, offset);
-    const nbEvents = await fetchNbEvents();
-    setEvents(dataEvents);
-    setTotalPages(Math.ceil(nbEvents / ITEMS_PER_PAGE));
+    const data = await fetchSearchEvents(
+      searchParams.query,
+      searchParams.location,
+      searchParams.startDate,
+      searchParams.endDate,
+      searchParams.creatorFirstname,
+      ITEMS_PER_PAGE,
+      offset
+    );
+    if (data) {
+      setEvents(data.events);
+      setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
+    }
   };
 
   useEffect(() => {
-    if (!isSearching) {
-      fetchData(currentPage);
-    }
-  }, [currentPage, isSearching]);
+    fetchData(currentPage);
+  }, [currentPage, isSearching, searchParams]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
   const handleSearchResults = (results) => {
-    setEvents(results);
+    setEvents(results.events);
+    setTotalPages(Math.ceil(results.total / ITEMS_PER_PAGE));
     setCurrentPage(1);
+    setIsSearching(true);
   };
 
   return (
     <div className='w-full'>
-      <Filter onSearchResults={handleSearchResults}/>
+      <Filter onSearchResults={handleSearchResults} />
       <ul className="flex items-center gap-5 my-10 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {events.map((event, index) => (
           <Link href={`/event/${event.id}`} key={index}>
