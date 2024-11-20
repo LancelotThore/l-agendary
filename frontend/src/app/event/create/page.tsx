@@ -55,7 +55,7 @@ export default function CreateEvent() {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     
-        const { title, description, privacy, location, startDate, endDate, image, creator } = formData;
+        const { title, description, privacy, location, startDate, endDate, image } = formData;
     
         if (!image) {
             setError('Veuillez sélectionner une image.');
@@ -86,8 +86,7 @@ export default function CreateEvent() {
                 location, 
                 startDate, 
                 endDate, 
-                imageName,
-                creator
+                imageName
             );
             toast("L'événement a été créé avec succès !");
             router.push('/');

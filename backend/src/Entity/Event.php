@@ -60,9 +60,14 @@ use App\Controller\UserController;
         ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
-        new Post(), // Create a new event
+        //new Post(), // Create a new event
         new Patch(), // Patch an event
         new Delete(), // Delete an event
+        new Post(
+            name: 'create-event',
+            uriTemplate: '/events',
+            controller: EventController::class . '::createEvent',
+        ),
     ]
 )]
 class Event

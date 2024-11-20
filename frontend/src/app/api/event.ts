@@ -82,8 +82,7 @@ export async function createEvent(
     location: string,
     start_date: string,
     end_date: string,
-    imageUrl: string,
-    creator: string
+    imageUrl: string
 ) {
     const formData = {
         title,
@@ -92,8 +91,7 @@ export async function createEvent(
         location,
         start_date,
         end_date,
-        image: imageUrl,
-        creator
+        image: imageUrl
     };
 
     try {

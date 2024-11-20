@@ -41,10 +41,10 @@ export default function Event({ params }) {
     if (event) {
       try {
         const response = await joinEvent(event.id);
-        toast("Vous avez rejoint l'événement");
-        setIsRegistered(true); // Mettre à jour l'état pour actualiser le bouton
+        toast(`Vous avez rejoint l'événement ${event.title}`);
+        setIsRegistered(true);
       } catch (error) {
-        toast('Erreur lors de l\'inscription à l\'événement.');
+        toast(`Erreur lors de l\'inscription à l\'événement`);
       }
     }
   };
@@ -53,8 +53,8 @@ export default function Event({ params }) {
     if (event) {
       try {
         const response = await leaveEvent(event.id);
-        toast("Vous avez quitté l'événement");
-        setIsRegistered(false); // Mettre à jour l'état pour actualiser le bouton
+        toast(`Vous avez quitté l'événement ${event.title}`);
+        setIsRegistered(false);
       } catch (error) {
         toast('Erreur lors de la désinscription de l\'événement.');
       }

@@ -171,4 +171,46 @@ class EventController extends AbstractController
 
         return $this->json(['success' => 'User unregistered from event successfully']);
     }
+
+    /**
+     * @Route("/api/events", name="create-event", methods={"POST"})
+     */
+    public function createEvent(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Récupérer le token depuis le cookie
+        $token = $request->cookies->get('token');
+
+        if (!$token) {
+            return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Décoder le token pour obtenir les informations de l'utilisateur
+        $data = $this->jwtEncoder->decode($token);
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
+
+        if (!$user) {
+            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $eventData = json_decode($request->getContent(), true);
+
+        $event = new Event();
+        $event->setTitle($eventData['title']);
+        $event->setDescription($eventData['description']);
+        $event->setPrivacy($eventData['privacy']);
+        $event->setLocation($eventData['location']);
+        $event->setStartDate(new \DateTime($eventData['start_date']));
+        $event->setEndDate(new \DateTime($eventData['end_date']));
+        $event->setImage($eventData['image']);
+        $event->setCreator($user);
+
+        try {
+            $entityManager->persist($event);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->json(['success' => 'Event created successfully']);
+    }
 }
