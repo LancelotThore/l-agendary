@@ -43,18 +43,18 @@ export default function Event({ params }) {
 
   function extractDateAndTime(isoString) {
     const date = new Date(isoString);
-  
-    // Obtenir la date locale au format YYYY-MM-DD
+
+    const localTime = new Date(date.getTime() - date.getTimezoneOffset() * -60000);
+
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(localTime.getMonth() + 1).padStart(2, "0");
+    const day = String(localTime.getDate()).padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}`;
-  
-    // Obtenir l'heure locale au format HH:mm
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    const hours = String(localTime.getHours()).padStart(2, "0");
+    const minutes = String(localTime.getMinutes()).padStart(2, "0");
     const formattedTime = `${hours}:${minutes}`;
-  
+
     return { formattedDate, formattedTime };
   }
 
@@ -65,8 +65,8 @@ export default function Event({ params }) {
     setCreator(dataCreator);
 
     if (dataEvents) {
-      const { formattedDate: startDate, formattedTime: startHour } = extractDateAndTime(dataEvents.start_date);
-      const { formattedDate: endDate, formattedTime: endHour } = extractDateAndTime(dataEvents.end_date);
+      const { formattedDate: startDate, formattedTime: startHourForm } = extractDateAndTime(dataEvents.start_date);
+      const { formattedDate: endDate, formattedTime: endHourform } = extractDateAndTime(dataEvents.end_date);
 
       setId(dataEvents.id);
       setTitle(dataEvents.title);
@@ -74,10 +74,11 @@ export default function Event({ params }) {
       setLocation(dataEvents.location);
       setEtat(dataEvents.privacy);
       setStartDate(startDate);
-      setStartHour(startHour);
+      setStartHour(startHourForm);
       setEndDate(endDate);
-      setEndHour(endHour);
+      setEndHour(endHourform);
       setImage(dataEvents.image);
+      
     }
     setLoading(false);
   };
@@ -91,16 +92,36 @@ export default function Event({ params }) {
 
   const handleEditEvent = async (e) => {
     e.preventDefault();
-    const combinedStartDateTime = new Date(`${startDate}T${startHour}:00`).toISOString();
-    const combinedEndDateTime = new Date(`${endDate}T${endHour}:00`).toISOString();
+    const startHourInt = parseInt(startHour.split(":")[0], 10);
+    const endHourInt = parseInt(endHour.split(":")[0], 10);
+
+    const combinedStartDateTime = new Date(`${startDate}T${startHourInt + 1 }:00`).toISOString();
+    const combinedEndDateTime = new Date(`${endDate}T${endHourInt + 1 }:00`).toISOString();
+    setError("");
+    setSuccess("");
+
+    if (!title || !description || !location || !startDate || !startHour || !endDate || !endHour) {
+      setError("Tous les champs doivent être remplis.");
+      return;
+    }
+    
+    // Vérifier si la date et l'heure de début sont avant la date et l'heure de fin
+    if (new Date(combinedStartDateTime) >= new Date(combinedEndDateTime)) {
+      setError("La date et l'heure de début doivent être avant la date et l'heure de fin.");
+      return;
+    }
+
     try {
       await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, image);
-      setSuccess("Evènement mis à jour avec succès");
+      setSuccess("Evènement mis à jour avec succès !");
       upEvent();
     } catch (err) {
       setError("Erreur lors de la mise à jour des informations de l'évènement");
     }
+
   };
+  console.log(event);
+  console.log(etat);
 
   return (
     <>
@@ -174,6 +195,7 @@ export default function Event({ params }) {
               </label>
               <Input
                 id="title"
+                name="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="col-span-3"
@@ -185,6 +207,7 @@ export default function Event({ params }) {
               </label>
               <Input
                 id="title"
+                name="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="col-span-3"
@@ -203,6 +226,7 @@ export default function Event({ params }) {
                     name="etat"
                     className="col-span-3"
                     defaultChecked={!etat}
+                    onChange={() => setEtat(false)}
                   />
                   <Button variant={"private"} size="sm">
                     Privé
@@ -216,6 +240,7 @@ export default function Event({ params }) {
                     name="etat"
                     className="col-span-3"
                     defaultChecked={etat}
+                    onChange={() => setEtat(true)}
                   />
                   <Button variant={"public"} size="sm">
                     Public
@@ -231,6 +256,7 @@ export default function Event({ params }) {
               </label>
               <Input
                 id="location"
+                name="location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 className="col-span-3"
@@ -244,6 +270,7 @@ export default function Event({ params }) {
                 <Input
                   id="startdate"
                   type="date"
+                  name="startdate"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   className="col-span-3"
@@ -251,6 +278,7 @@ export default function Event({ params }) {
                 <Input
                   id="starthour"
                   type="time"
+                  name="startdate"
                   value={startHour}
                   onChange={(e) => setStartHour(e.target.value)}
                   className="col-span-3"
@@ -265,12 +293,14 @@ export default function Event({ params }) {
                 <Input
                   id="enddate"
                   type="date"
+                  name="enddate"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />
                 <Input
                   id="endhour"
                   type="time"
+                  name="enddate"
                   value={endHour}
                   onChange={(e) => setEndHour(e.target.value)}
                 />
@@ -283,13 +313,15 @@ export default function Event({ params }) {
               <img src={image} alt="Image de converture evenement" className="w-32 h-32 rounded" />
               <Input
                 id="image"
+                name="image"
                 type="file"
                 className="col-span-3"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant={"accent"} className="text-center mx-auto" onClick={handleEditEvent}>Mettre à jour</Button>
+            <span className={`text-center pb-3 ${error == "" ? 'text-green-500' : 'text-red-500'}`}>{success}{error}</span>
+            <Button variant={"accent"} className="w-32 text-center mx-auto" onClick={handleEditEvent}>Mettre à jour</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
