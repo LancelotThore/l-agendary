@@ -78,7 +78,7 @@ export default function Event({ params }) {
       setEndDate(endDate);
       setEndHour(endHourform);
       setImage(dataEvents.image);
-      
+
     }
     setLoading(false);
   };
@@ -95,8 +95,8 @@ export default function Event({ params }) {
     const startHourInt = parseInt(startHour.split(":")[0], 10);
     const endHourInt = parseInt(endHour.split(":")[0], 10);
 
-    const combinedStartDateTime = new Date(`${startDate}T${startHourInt + 1 }:00`).toISOString();
-    const combinedEndDateTime = new Date(`${endDate}T${endHourInt + 1 }:00`).toISOString();
+    const combinedStartDateTime = new Date(`${startDate}T${startHourInt + 1}:00`).toISOString();
+    const combinedEndDateTime = new Date(`${endDate}T${endHourInt + 1}:00`).toISOString();
     setError("");
     setSuccess("");
 
@@ -104,7 +104,7 @@ export default function Event({ params }) {
       setError("Tous les champs doivent être remplis.");
       return;
     }
-    
+
     // Vérifier si la date et l'heure de début sont avant la date et l'heure de fin
     if (new Date(combinedStartDateTime) >= new Date(combinedEndDateTime)) {
       setError("La date et l'heure de début doivent être avant la date et l'heure de fin.");
@@ -120,8 +120,6 @@ export default function Event({ params }) {
     }
 
   };
-  console.log(event);
-  console.log(etat);
 
   return (
     <>
@@ -156,6 +154,153 @@ export default function Event({ params }) {
                 <Button variant={"accent"} size={"lg"}>
                   Rejoindre
                 </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="hover:bg-primary/70 text-sm/[18px]">
+                      Modifier l'évènement
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[650px]">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl text-center">Modifier l'évènement</DialogTitle>
+                    </DialogHeader>
+                    <div className="sm:px-10 px-0 h-[516px] overflow-y-scroll">
+                      <div className="flex flex-col gap-1 mt-2">
+                        <label htmlFor="title" className="text-left">
+                          Titre de l’événement
+                        </label>
+                        <Input
+                          id="title"
+                          name="title"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1 mt-2">
+                        <label htmlFor="descrition" className="text-left">
+                          Description
+                        </label>
+                        <Input
+                          id="title"
+                          name="description"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="flex flex-col gap mt-2">
+                        <label htmlFor="etat" className="text-left">
+                          Etat
+                        </label>
+                        <div className="flex flex-row gap-4">
+
+                          <div className="flex flex-row gap-1">
+                            <input
+                              id="etat"
+                              type="radio"
+                              name="etat"
+                              className="col-span-3"
+                              defaultChecked={!etat}
+                              onChange={() => setEtat(false)}
+                            />
+                            <Button variant={"private"} size="sm">
+                              Privé
+                              <LockClosedIcon className="w-4 ml-2" />
+                            </Button>
+                          </div>
+                          <div className="flex flex-row gap-1">
+                            <input
+                              id="etat"
+                              type="radio"
+                              name="etat"
+                              className="col-span-3"
+                              defaultChecked={etat}
+                              onChange={() => setEtat(true)}
+                            />
+                            <Button variant={"public"} size="sm">
+                              Public
+                              <LockOpenIcon className="w-4 ml-2" />
+                            </Button>
+                          </div>
+
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1 mt-2">
+                        <label htmlFor="location" className="text-left">
+                          Lieu
+                        </label>
+                        <Input
+                          id="location"
+                          name="location"
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1 mt-2">
+                        <label htmlFor="startdate" className="text-left">
+                          Date de début
+                        </label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <Input
+                            id="startdate"
+                            type="date"
+                            name="startdate"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="col-span-3"
+                          />
+                          <Input
+                            id="starthour"
+                            type="time"
+                            name="startdate"
+                            value={startHour}
+                            onChange={(e) => setStartHour(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1 mt-2">
+                        <label htmlFor="enddate" className="text-left">
+                          Date de fin
+                        </label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <Input
+                            id="enddate"
+                            type="date"
+                            name="enddate"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                          />
+                          <Input
+                            id="endhour"
+                            type="time"
+                            name="enddate"
+                            value={endHour}
+                            onChange={(e) => setEndHour(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1 mt-2">
+                        <label htmlFor="image" className="text-left">
+                          Image de couverture
+                        </label>
+                        <img src={image} alt="Image de converture evenement" className="w-32 h-32 rounded" />
+                        <Input
+                          id="image"
+                          name="image"
+                          type="file"
+                          className="col-span-3"
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <span className={`text-center pb-3 ${error == "" ? 'text-green-500' : 'text-red-500'}`}>{success}{error}</span>
+                      <Button variant={"accent"} className="w-32 text-center mx-auto" onClick={handleEditEvent}>Mettre à jour</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
                 {user && user.id === creator.id && (
                   <Button size={"lg"}>Modifier l'événement</Button>
                 )}
@@ -177,154 +322,6 @@ export default function Event({ params }) {
           )}
         </>
       )}
-
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="hover:bg-primary/70 mb-2 mr-2">
-            Modifier l'évènement
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[650px]">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-center">Modifier l'évènement</DialogTitle>
-          </DialogHeader>
-          <div className="sm:px-10 px-0 h-[516px] overflow-y-scroll">
-            <div className="flex flex-col gap-1 mt-2">
-              <label htmlFor="title" className="text-left">
-                Titre de l’événement
-              </label>
-              <Input
-                id="title"
-                name="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="col-span-3"
-              />
-            </div>
-            <div className="flex flex-col gap-1 mt-2">
-              <label htmlFor="descrition" className="text-left">
-                Description
-              </label>
-              <Input
-                id="title"
-                name="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="col-span-3"
-              />
-            </div>
-            <div className="flex flex-col gap mt-2">
-              <label htmlFor="etat" className="text-left">
-                Etat
-              </label>
-              <div className="flex flex-row gap-4">
-
-                <div className="flex flex-row gap-1">
-                  <input
-                    id="etat"
-                    type="radio"
-                    name="etat"
-                    className="col-span-3"
-                    defaultChecked={!etat}
-                    onChange={() => setEtat(false)}
-                  />
-                  <Button variant={"private"} size="sm">
-                    Privé
-                    <LockClosedIcon className="w-4 ml-2" />
-                  </Button>
-                </div>
-                <div className="flex flex-row gap-1">
-                  <input
-                    id="etat"
-                    type="radio"
-                    name="etat"
-                    className="col-span-3"
-                    defaultChecked={etat}
-                    onChange={() => setEtat(true)}
-                  />
-                  <Button variant={"public"} size="sm">
-                    Public
-                    <LockOpenIcon className="w-4 ml-2" />
-                  </Button>
-                </div>
-
-              </div>
-            </div>
-            <div className="flex flex-col gap-1 mt-2">
-              <label htmlFor="location" className="text-left">
-                Lieu
-              </label>
-              <Input
-                id="location"
-                name="location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="col-span-3"
-              />
-            </div>
-            <div className="flex flex-col gap-1 mt-2">
-              <label htmlFor="startdate" className="text-left">
-                Date de début
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  id="startdate"
-                  type="date"
-                  name="startdate"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="col-span-3"
-                />
-                <Input
-                  id="starthour"
-                  type="time"
-                  name="startdate"
-                  value={startHour}
-                  onChange={(e) => setStartHour(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-1 mt-2">
-              <label htmlFor="enddate" className="text-left">
-                Date de fin
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  id="enddate"
-                  type="date"
-                  name="enddate"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-                <Input
-                  id="endhour"
-                  type="time"
-                  name="enddate"
-                  value={endHour}
-                  onChange={(e) => setEndHour(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-1 mt-2">
-              <label htmlFor="image" className="text-left">
-                Image de couverture
-              </label>
-              <img src={image} alt="Image de converture evenement" className="w-32 h-32 rounded" />
-              <Input
-                id="image"
-                name="image"
-                type="file"
-                className="col-span-3"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <span className={`text-center pb-3 ${error == "" ? 'text-green-500' : 'text-red-500'}`}>{success}{error}</span>
-            <Button variant={"accent"} className="w-32 text-center mx-auto" onClick={handleEditEvent}>Mettre à jour</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
