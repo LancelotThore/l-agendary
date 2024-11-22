@@ -78,21 +78,25 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
 
   return (
     <div className="flex justify-center items-center gap-2">
-      <Button
-        onClick={handlePreviousPage}
-        disabled={currentPage === 1}
-      >
-        Précédent
-      </Button>
+      {totalPages > 1 && (
+        <Button
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+        >
+          Précédent
+        </Button>
+      )}
       <div className="flex gap-2">
         {renderPageButtons()}
       </div>
-      <Button
-        onClick={handleNextPage}
-        disabled={currentPage === totalPages}
-      >
-        Suivant
-      </Button>
+      {totalPages > 1 && (
+        <Button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
+          Suivant
+        </Button>
+      )}
     </div>
   );
 };
