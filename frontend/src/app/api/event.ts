@@ -82,8 +82,7 @@ export async function createEvent(
     location: string,
     start_date: string,
     end_date: string,
-    imageUrl: string,
-    creator: string
+    imageUrl: string
 ) {
     const formData = {
         title,
@@ -92,8 +91,7 @@ export async function createEvent(
         location,
         start_date,
         end_date,
-        image: imageUrl,
-        creator
+        image: imageUrl
     };
 
     try {
@@ -118,4 +116,76 @@ export async function createEvent(
         console.error('Error creating event:', error);
         throw new Error('Erreur lors de la création de l\'événement');
     }
+}
+
+export async function joinEvent(eventId: string) {
+  try {
+    const response = await fetch(`https://localhost:443/api/events/join/${eventId}`, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/ld+json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.errors || 'Erreur lors de l\'inscription à l\'événement');
+    }
+  } catch (error) {
+    console.error('Error joining event:', error);
+    throw new Error('Erreur lors de l\'inscription à l\'événement');
+  }
+}
+
+export async function leaveEvent(eventId: string) {
+  try {
+    const response = await fetch(`https://localhost:443/api/events/leave/${eventId}`, {
+      method: 'DELETE',
+      headers: {
+        'accept': 'application/ld+json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.errors || 'Erreur lors de la désinscription de l\'événement');
+    }
+  } catch (error) {
+    console.error('Error leaving event:', error);
+    throw new Error('Erreur lors de la désinscription de l\'événement');
+  }
+}
+
+export async function isUserRegistered(eventId: number) {
+  try {
+    const response = await fetch(`https://localhost/api/users/is-registered/${eventId}`, {
+      method: 'GET',
+      headers: {
+        'accept': 'application/ld+json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.errors || 'Erreur lors de la vérification de l\'inscription');
+    }
+  } catch (error) {
+    console.error('Error checking registration:', error);
+    throw new Error('Erreur lors de la vérification de l\'inscription');
+  }
 }

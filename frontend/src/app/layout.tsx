@@ -1,40 +1,25 @@
-'use client';
-
 import './globals.css';
 import { ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
-import { Navbar } from '../components/navBar';
-import { Footer } from "../components/ui/footer";
+import { Metadata } from 'next/types';
+import RootLayoutClient from '@/components/ui/rootLayoutClient';
 
 interface RootLayoutProps {
   children: ReactNode;
 }
 
-const RootLayout = ({ children }: RootLayoutProps) => {
-  const pathname = usePathname();
-  const noLayoutPages = ['/register', '/login', '/recover/account', '/recover/password'];
+export const metadata: Metadata = {
+  title: {
+    template: "%s | L'agendary",
+    default: "L'agendary",
+  },
+  // description: 'The official Next.js Learn Dashboard built with App Router.',
+  // metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
+};
 
+const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="fr">
-      <head>
-        <title>L'agendary</title>
-        <link rel="icon" href="/logo.svg" />
-      </head>
-      <body className='flex flex-col min-h-screen'>
-        {noLayoutPages.includes(pathname) ? (
-          <>{children}</>
-        ) : (
-          <>
-            <Navbar />
-            
-            <main className='container m-auto w-10/12 my-16'>
-              {children}
-            </main>
-
-            <Footer />
-          </>
-        )}
-      </body>
+      <RootLayoutClient>{children}</RootLayoutClient>
     </html>
   );
 };

@@ -59,10 +59,14 @@ export default function Home() {
 
   return (
     <div className="">
-      <div
-        className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg"
-        style={{ backgroundImage: "url('./bgToolCards.webp')" }}
-      >
+      <div className="relative flex flex-col items-center p-24 rounded-lg">
+        <Image
+          src="/bgToolCards.webp"
+          alt="Background"
+          layout="fill"
+          objectFit="cover"
+          className="z-[-1]"
+        />
         <h1
           className={`${agbalumo.className} text-3xl md:text-4xl pb-14 text-center text-secondary`}
         >
@@ -98,7 +102,7 @@ export default function Home() {
                 lieu={card.location}
                 startDate={card.start_date}
                 endDate={card.end_date}
-                img={card.image}
+                img={`/uploads/event_pictures/${card.image}`}
               />
             </Link>
           ))
