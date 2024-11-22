@@ -178,12 +178,12 @@ export default function ProfilePage() {
               <label htmlFor="firstname" className="text-right">
                 Prénom
               </label>
-              <Input
-                id="firstname"
-                value={firstname}
-                onChange={(e) => setFirstname(e.target.value)}
-                className="col-span-3"
-              />
+                <Input
+                  id="firstname"
+                  value={firstname}
+                  onChange={(e) => setFirstname(e.target.value)}
+                  className="col-span-3"
+                />
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
