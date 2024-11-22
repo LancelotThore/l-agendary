@@ -8,7 +8,8 @@ import { createEvent } from "@/app/api/event";
 import { useRouter } from "next/navigation";
 import { fetchUser } from "@/app/api/data";
 import path from 'path';
-import { toast } from "sonner"
+import { toast } from "sonner";
+
 
 export default function CreateEvent() {
     const [user, setUser] = useState(null);
