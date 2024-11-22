@@ -37,6 +37,8 @@
 - Sauvegarde l'image de l'event à la création de celui-ci dans ./frontend/public/uploads/events_pictures
 - Possibilité de modifier un évènement lorsque c'est l'évènement du créateur
 - Ajout d'une flèche pour revenir en arrière
+- Ajout des filtres sur la page recherche ( searchBar, date, lieu, créateur)
+- Probléme de Pagination aprés une recherche
 
 
 
