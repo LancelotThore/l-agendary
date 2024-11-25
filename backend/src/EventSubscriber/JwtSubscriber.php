@@ -35,23 +35,23 @@ class JwtSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $token = $request->cookies->get('token');
+        // $token = $request->cookies->get('token');
 
-        if (!$token) {
-            throw new AccessDeniedHttpException('Token not found');
-        }
+        // if (!$token) {
+        //     throw new AccessDeniedHttpException('Token not found');
+        // }
 
-        try {
-            $data = $this->jwtEncoder->decode($token);
-        } catch (\Exception $e) {
-            throw new AccessDeniedHttpException('Invalid token');
-        }
+        // try {
+        //     $data = $this->jwtEncoder->decode($token);
+        // } catch (\Exception $e) {
+        //     throw new AccessDeniedHttpException('Invalid token');
+        // }
 
-        $user = $this->userRepository->findOneBy(['email' => $data['username']]);
+        // $user = $this->userRepository->findOneBy(['email' => $data['username']]);
 
-        if (!$user) {
-            throw new AccessDeniedHttpException('User not found');
-        }
+        // if (!$user) {
+        //     throw new AccessDeniedHttpException('User not found');
+        // }
 
         // if (!in_array('ROLE_ADMIN', $user->getRoles())) {
         //     throw new AccessDeniedHttpException('User is not an admin');
