@@ -6,6 +6,11 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EventRegistrationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\EventRegistrationController;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 
 #[ORM\Entity(repositoryClass: EventRegistrationRepository::class)]
 #[ApiResource(
@@ -14,7 +19,7 @@ use App\Controller\EventRegistrationController;
             name: 'event-registration-with-mail',
             uriTemplate: '/event-registrations-with-mail',
             controller: EventRegistrationController::class . '::registerWithEmail',
-        )
+        ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
         new Post(), // Create a new event
@@ -22,7 +27,7 @@ use App\Controller\EventRegistrationController;
         new Delete(), // Delete an event
     ]
 )]
-#[ORM\UniqueConstraint(columns: ["event_id", "email"])]
+#[ORM\UniqueConstraint(columns: ["event_id", "user_id"])]
 class EventRegistration
 {
     #[ORM\Id]
@@ -34,8 +39,9 @@ class EventRegistration
     #[ORM\JoinColumn(nullable: false)]
     private ?Event $event = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     #[ORM\Column]
     private ?bool $validation = null;
@@ -60,14 +66,14 @@ class EventRegistration
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getUser(): ?User
     {
-        return $this->email;
+        return $this->user;
     }
 
-    public function setEmail(string $email): static
+    public function setUser(?User $user): static
     {
-        $this->email = $email;
+        $this->user = $user;
 
         return $this;
     }

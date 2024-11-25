@@ -79,4 +79,61 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
     return $this->json($events);
 }
+
+/**
+     * @Route("/register-event", name="register-event", methods={"POST"})
+     */
+    public function RegisterEvent(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'];
+        $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if (!$existingUser) {
+            // Création d'un utilisateur fictif
+            $user = new User();
+            $user->setEmail($email);
+            $user->setPassword('default_password');
+            $user->setFirstName('Default');
+            $user->setLastName('User');
+            $user->setRoles(['ROLE_EMAIL']);
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // Créer l'inscription
+            $eventRegistration = new EventRegistration();
+            $eventRegistration->setValidation(false);
+            $eventRegistration->setToken(bin2hex(random_bytes(32)));
+            $eventRegistration->setEvent($event);
+            $eventRegistration->setUser($user);
+        } else {
+
+        }
+
+        // $eventId = $data['event'];
+
+        // if (!$eventId) {
+        //     return $this->json(['error' => 'Event ID non valide'], 400);
+        // }
+
+        // // Récupérer l'événement depuis la base de données
+        // $event = $entityManager->getRepository(Event::class)->find($eventId);
+
+        // if (!$event) {
+        //     return $this->json(['error' => 'Événement non trouvé'], 404);
+        // }
+
+        // // Créer l'inscription
+        // $eventRegistration = new EventRegistration();
+        // $eventRegistration->setValidation(false);
+        // $eventRegistration->setToken(bin2hex(random_bytes(32)));
+        // $eventRegistration->setEvent($event);
+        // $eventRegistration->setEmail($email);
+
+        // // Persister l'inscription
+        // $entityManager->persist($eventRegistration);
+        // $entityManager->flush();
+
+        // return $this->json(['status' => 'success']);
+    }
 }
