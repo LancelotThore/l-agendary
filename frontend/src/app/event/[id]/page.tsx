@@ -132,16 +132,36 @@ export default function Event({ params }) {
 
   const handleEditEvent = async (e) => {
     e.preventDefault();
-    // Extraire heures et minutes pour l'heure de début
+
+    const normalizeDateTime = (date, hour, minutes) => {
+      let hours = parseInt(hour, 10);
+      let mins = parseInt(minutes, 10);
+
+      if (hours === 24) {
+        hours = 0;
+        const nextDay = new Date(date);
+        nextDay.setDate(nextDay.getDate() + 1);
+        date = nextDay.toISOString().split("T")[0];
+      }
+
+      return `${date}T${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+    };
+
     const startHourInt = parseInt(startHour.split(":")[0], 10);
     const startMinutesInt = parseInt(startHour.split(":")[1], 10);
 
-    // Extraire heures et minutes pour l'heure de fin
     const endHourInt = parseInt(endHour.split(":")[0], 10);
     const endMinutesInt = parseInt(endHour.split(":")[1], 10);
 
-    const combinedStartDateTime = new Date(`${startDate}T${startHourInt + 1}:${startMinutesInt}`).toISOString();
-    const combinedEndDateTime = new Date(`${endDate}T${endHourInt + 1}:${endMinutesInt}`).toISOString();
+    const normalizedStart = normalizeDateTime(startDate, startHourInt + 1, startMinutesInt);
+    const normalizedEnd = normalizeDateTime(endDate, endHourInt + 1, endMinutesInt);
+
+    console.log(normalizedStart);
+    console.log(normalizedEnd);
+
+    const combinedStartDateTime = new Date(normalizedStart).toISOString();
+    const combinedEndDateTime = new Date(normalizedEnd).toISOString();
+
     setError("");
     setSuccess("");
 
@@ -149,8 +169,6 @@ export default function Event({ params }) {
       setError("Tous les champs doivent être remplis.");
       return;
     }
-
-    // Vérifier si la date et l'heure de début sont avant la date et l'heure de fin
     if (new Date(combinedStartDateTime) >= new Date(combinedEndDateTime)) {
       setError("La date et l'heure de début doivent être avant la date et l'heure de fin.");
       return;
@@ -162,7 +180,6 @@ export default function Event({ params }) {
       setSuccess("Evènement mis à jour avec succès !");
     } catch (err) {
       console.log(err);
-
       setError("Erreur lors de la mise à jour des informations de l'évènement");
     }
   };
