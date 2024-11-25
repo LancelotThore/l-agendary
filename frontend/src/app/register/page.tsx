@@ -7,7 +7,6 @@ import { Button } from "../../components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { register } from "@/app/api/login";
-import Image from "next/image";
 
 const ralewaySemBold = Raleway({
   subsets: ["latin"],
@@ -26,34 +25,26 @@ export default function RegisterPage() {
   const [firstname, setFirstname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordValidator, setPasswordValidator] = useState('');
+  const [errorPassword, setErrorPassword] = useState('');
   const [error, setError] = useState("");
-  const [spinnerActive, setSpinnerActive] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      setSpinnerActive(true);
-      await register(email, name, firstname, password, router);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSpinnerActive(false);
+    if (password !== passwordValidator) {
+      setErrorPassword('Les mots de passe ne correspondent pas');
+      return;
     }
+    setErrorPassword('');
+    register(email, name, firstname, password, router).catch((err) =>
+      setError(err.message)
+    );
   };
 
   // Inputs liés aux états
   let inputs = [
     {
-      required: true,
-      id: "name",
-      name: "Nom",
-      type: "text",
-      value: name,
-      onChange: (e) => setName(e.target.value),
-    },
-    {
-      required: true,
       id: "firstname",
       name: "Prénom",
       type: "text",
@@ -61,7 +52,13 @@ export default function RegisterPage() {
       onChange: (e) => setFirstname(e.target.value),
     },
     {
-      required: true,
+      id: "name",
+      name: "Nom",
+      type: "text",
+      value: name,
+      onChange: (e) => setName(e.target.value),
+    },
+    {
       id: "email",
       name: "Email",
       type: "email",
@@ -69,12 +66,18 @@ export default function RegisterPage() {
       onChange: (e) => setEmail(e.target.value),
     },
     {
-      required: true,
       id: "password",
       name: "Mot de passe",
       type: "password",
       value: password,
       onChange: (e) => setPassword(e.target.value),
+    },
+    {
+      id: "passwordValidator",
+      name: "Confirmation du mot de passe",
+      type: "password",
+      value: passwordValidator,
+      onChange: (e) => setPasswordValidator(e.target.value),
     },
   ];
 
@@ -103,7 +106,7 @@ export default function RegisterPage() {
                 {input.name}
               </label>
               <Input
-                required={input.required}
+                required
                 id={input.id}
                 placeholder={input.name}
                 type={input.type}
@@ -113,6 +116,9 @@ export default function RegisterPage() {
               />
             </div>
           ))}
+          {errorPassword && (
+            <div className="text-red-500 text-center mt-4">{errorPassword}</div>
+          )}
 
           {/* Affichage conditionnel de l'erreur */}
           {error && (
@@ -121,7 +127,6 @@ export default function RegisterPage() {
 
           <div className="flex justify-center flex-col">
             <Button size="default" className="mt-4 mx-auto">
-              <Image width={5} height={5} className={`animate-spin h-5 w-5 mr-3 ${spinnerActive ? '' : 'hidden'}`} src="./spinner.svg" alt="Spiner svg" />
               Créer son compte
             </Button>
             <a

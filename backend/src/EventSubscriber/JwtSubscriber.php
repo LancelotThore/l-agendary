@@ -53,9 +53,9 @@ class JwtSubscriber implements EventSubscriberInterface
             throw new AccessDeniedHttpException('User not found');
         }
 
-        if (!in_array('ROLE_ADMIN', $user->getRoles())) {
-            throw new AccessDeniedHttpException('User is not an admin');
-        }
+        // if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+        //     throw new AccessDeniedHttpException('User is not an admin');
+        // }
     }
 
     public static function getSubscribedEvents()
