@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from 'next/link';
 import Filter from "@/components/ui/search/filter";
-import { CardEvent } from "@/components/ui/cardEvent";
+import { CardEvent } from "@/components/ui/event/cardEvent";
 import Pagination from "@/components/ui/search/pagination";
 import { fetchSearchEvents } from "../api/event";
 

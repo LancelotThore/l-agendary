@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { SearchBar } from "../searchBar";
-import { SearchInput } from "../searchInput";
+import { SearchBar } from "./searchBar";
+import { SearchInput } from "./searchInput";
 import { Input } from "../input";
 import { Clock, LocationOn, User, Filtre } from '../icons';
 import { fetchSearchEvents, fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";

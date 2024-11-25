@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { Search } from "./icons";
+import { Search } from "../icons";
 
 export interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {
   startImg?: React.ReactNode;

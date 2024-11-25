@@ -41,7 +41,7 @@ export function Navbar() {
     return (
         <nav className="bg-secondary text-primary shadow-md">
             <div className="flex items-center justify-between mx-auto py-4 w-10/12 m-auto">
-                <div className="flex items-center space-x-10 rtl:space-x-reverse">
+                <div className="flex items-center space-x-6 rtl:space-x-reverse">
                     <Link href="/" className="flex items-center">
                         <Logo className="w-40" />
                     </Link>
@@ -52,9 +52,16 @@ export function Navbar() {
                         <span>Rechercher</span>
                         <Search className="w-5 h-5" aria-hidden="true" />
                     </Link>
+                    {user ? (
+                        <>
+                            <Link href="/event/create" className="md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
+                                <span>Créer un événement</span>
+                            </Link>
+                        </>
+                    ) : ( <></> )}
                 </div>
 
-                <div className="hidden md:flex space-x-4 items-center">
+                <div className="hidden md:flex space-x-6 items-center">
                     {/* Condition pour afficher les boutons en fonction de l'état de l'utilisateur */}
                     {user ? (
                         <>

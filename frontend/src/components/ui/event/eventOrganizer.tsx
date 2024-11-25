@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Organisateur {
   firstname: string;
@@ -17,10 +18,12 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
   return (
     <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">
       <div className="aspect-square w-32 md:w-auto lg:order-2">
-        <img
+        <Image
           className="rounded-lg object-cover h-32 w-32 md:h-52 md:w-52"
-          src={organisateur.profilePicture ? `/uploads/profile_pictures/${organisateur.profilePicture}` : "/img.png"} 
+          src={organisateur.profilePicture ? `/uploads/profile_pictures/${organisateur.profilePicture}` : "/img.webp"} 
           alt={`Image de profil de ${organisateur.firstname + ' ' + organisateur.lastname}`}
+          width={200}
+          height={200}
         />
       </div>
       <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">

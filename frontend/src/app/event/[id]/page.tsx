@@ -177,7 +177,7 @@ export default function Event({ params }) {
                 <ArrowLeft className="absolute -top-10 -left-12" />
               </a>
               <img
-                src={event.image}
+                src={`/uploads/event_pictures/${event.image}`}
                 alt="Card"
                 className="rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md"
               />
@@ -197,9 +197,25 @@ export default function Event({ params }) {
                 <Button className="md:hidden" size={"lg"}>
                   Partager
                 </Button>
-                <Button variant={isRegistered ? "destructive" : "accent"} size={"lg"} onClick={isRegistered ? handleLeaveEvent : handleJoinEvent}>
-                  {isRegistered ? "Quitter l'événement" : "Rejoindre"}
-                </Button>
+                {user && user.id !== creator.id && (
+                  isRegistered ? (
+                    <Button
+                      variant="destructive"
+                      size="lg"
+                      onClick={handleLeaveEvent}
+                    >
+                      Quitter l'événement
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="accent"
+                      size="lg"
+                      onClick={handleJoinEvent}
+                    >
+                      Rejoindre l'événement
+                    </Button>
+                  )
+                )}
                 {user && user.id === creator.id && (
                   <Dialog>
                     <DialogTrigger asChild>
