@@ -173,9 +173,6 @@ export default function Event({ params }) {
         <>
           {!loading && (
             <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7 relative">
-              <a href="/">
-                <ArrowLeft className="absolute -top-10 -left-12" />
-              </a>
               <img
                 src={`/uploads/event_pictures/${event.image}`}
                 alt="Card"
