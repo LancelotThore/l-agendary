@@ -233,6 +233,8 @@ public function getUniqueLocations(EntityManagerInterface $entityManager): Respo
         $event->setEndDate(new \DateTime($eventData['end_date']));
         $event->setImage($eventData['image']);
         $event->setCreator($user);
+        // Ajouter l'utilisateur créateur à la liste des utilisateurs inscrits
+        $event->addRegisteredUser($user);
 
         try {
             $entityManager->persist($event);
