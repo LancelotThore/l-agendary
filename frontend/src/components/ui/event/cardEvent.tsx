@@ -1,4 +1,5 @@
 import { Raleway } from 'next/font/google';
+import Image from 'next/image';
 
 const ralewayBold = Raleway({
   subsets: ['latin'],
@@ -47,7 +48,7 @@ export function CardEvent({ nom, lieu, startDate, endDate, img, id }: CardProps)
         </div>
       </section>
       <section className='w-5/12 h-full sm:w-6/12'>
-        <img className='object-cover w-full h-full' src={img} alt="Img évènement" />
+        <Image className='object-cover w-full h-full' src={`/uploads/event_pictures/${img}`} alt="Img évènement" width={200} height={150} />
       </section>
     </li>
   );

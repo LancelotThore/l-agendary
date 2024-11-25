@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
 import { ToolCard } from "../components/ui/toolCard";
-import { CardEvent } from "../components/ui/cardEvent";
-import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
+import { CardEvent } from "../components/ui/event/cardEvent";
+import { CardEventSkeleton } from "../components/ui/event/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import { fetchHighlightedEvents } from "@/app/api/event";
 import { fetchUser } from "@/app/api/data";
+import { Suspense } from 'react';
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -41,12 +42,14 @@ let toolCards = [
 
 export default function Home() {
   const [highlights, setHighlights] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const dataEvents = await fetchHighlightedEvents();
       setHighlights(dataEvents);
+      setLoading(false);
     };
     fetchData();
 
@@ -65,7 +68,7 @@ export default function Home() {
           alt="Background"
           layout="fill"
           objectFit="cover"
-          className="z-[-1]"
+          className="z-[-1] rounded-lg"
         />
         <h1
           className={`${agbalumo.className} text-3xl md:text-4xl pb-14 text-center text-secondary`}
@@ -92,24 +95,38 @@ export default function Home() {
       >
         Evénements publics les plus populaires !
       </h2>
-      <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {highlights.length > 0 ? (
-          highlights.map((card, index) => (
-            <Link className="w-full" key={index} href={`/event/${card.id}`}>
-              <CardEvent
-                id={card.id}
-                nom={card.title}
-                lieu={card.location}
-                startDate={card.start_date}
-                endDate={card.end_date}
-                img={`/uploads/event_pictures/${card.image}`}
-              />
-            </Link>
-          ))
-        ) : (
-          Array.from({ length: 6 }).map((_, index) => <CardEventSkeleton key={index} />)
-        )}
-      </ul>
+      {highlights.length > 0 ? (
+        <>
+          <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
+            {!loading && (
+              highlights.map((card, index) => (
+                <Link className="w-full" key={index} href={`/event/${card.id}`}>
+                  <CardEvent
+                    id={card.id}
+                    nom={card.title}
+                    lieu={card.location}
+                    startDate={card.start_date}
+                    endDate={card.end_date}
+                    img={card.image}
+                  />
+                </Link>
+              ))
+            )}
+          </ul>
+        </>
+      ) : (
+        <>
+          {loading ? (
+            <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <CardEventSkeleton key={index} />
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center">Il n'y a pas d'évènement disponible pour le moment...</p>
+          )}
+        </>
+      )}
       <div className="text-center">
         <Link href="/search"><Button className="mt-10">Voir Plus</Button></Link>
       </div>
@@ -121,10 +138,12 @@ export default function Home() {
       </h2>
       <section className="w-full flex justify-center mb-20">
         <div className="w-9/12 flex flex-col gap-5 text-sm lg:text-base lg:flex-row-reverse md:w-full">
-          <img
+          <Image
             className="object-cover rounded-md md:w-full lg:w-6/12"
-            src="./teams.jpg"
+            src="/teams.jpg"
             alt="Image teams"
+            width={500}
+            height={500}
           />
           <div className="flex flex-col justify-center gap-5 md:w-full lg:w-6/12 sm:text-sm md:text-base">
             <p>

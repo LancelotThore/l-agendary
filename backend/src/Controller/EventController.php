@@ -44,54 +44,84 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/api/paginated-events", name="paginated-events", methods={"GET"})
-     */
-    public function paginatedEvents(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $limit = $request->query->getInt('limit', 9); // Default limit to 10 if not provided
-        $offset = $request->query->getInt('offset', 0); // Default offset to 0 if not provided
+ * @Route("/api/unique-locations", name="unique-locations", methods={"GET"})
+ */
+public function getUniqueLocations(EntityManagerInterface $entityManager): Response
+{
+    $queryBuilder = $entityManager->getRepository(Event::class)
+        ->createQueryBuilder('e')
+        ->select('DISTINCT e.location')
+        ->where('e.privacy = 1');
 
-        $paginated_events = $entityManager->getRepository(Event::class)
-            ->createQueryBuilder('e')
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->where('e.privacy = 1')
-            ->getQuery()
-            ->getResult();
+    $locations = $queryBuilder->getQuery()->getResult();
 
-        return $this->json($paginated_events);
-    }
-
-    /**
-     * @Route("/api/nb-public-events", name="nb-public-events", methods={"GET"})
-     */
-    public function nbPublicEvents(EntityManagerInterface $entityManager): Response
-    {
-        $nb_events = $entityManager->getRepository(Event::class)
-            ->createQueryBuilder('e')
-            ->select('COUNT(e.id)')
-            ->where('e.privacy = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        return $this->json($nb_events);
-    }
+    return $this->json($locations);
+}
 
     /**
      * @Route("/api/search-events", name="search-events", methods={"GET"})
      */
     public function searchEvents(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $searchTerm = $request->query->get('q', '');
+        $searchTerm = $request->query->get('q', null);
+        $location = $request->query->get('location', null);
+        $startDate = $request->query->get('startDate', null);
+        $endDate = $request->query->get('endDate', null);
+        $creatorFirstname = $request->query->get('creatorFirstname', null);
+        $limit = $request->query->get('limit', 9);
+        $offset = $request->query->get('offset', 0);
 
         $queryBuilder = $entityManager->getRepository(Event::class)
             ->createQueryBuilder('e')
-            ->where('(e.title LIKE :searchTerm OR e.description LIKE :searchTerm) AND e.privacy = 1')
-            ->setParameter('searchTerm', '%' . $searchTerm . '%');
+            ->leftJoin('e.creator', 'c')
+            ->where('e.privacy = 1');
+
+        // Check if all search parameters are empty
+        $isSearchEmpty = $searchTerm === null && $location === null && $startDate === null && $endDate === null && $creatorFirstname === null;
+
+        if (!$isSearchEmpty) {
+            if ($searchTerm !== null) {
+                $queryBuilder->andWhere('(e.title LIKE :searchTerm OR e.description LIKE :searchTerm)')
+                    ->setParameter('searchTerm', '%' . $searchTerm . '%');
+            }
+
+            if ($location !== null) {
+                $queryBuilder->andWhere('e.location = :location')
+                    ->setParameter('location', $location);
+            }
+
+            if ($startDate !== null) {
+                $queryBuilder->andWhere('e.start_date LIKE :startDate')
+                    ->setParameter('startDate', $startDate . '%');
+            }
+
+            if ($endDate !== null) {
+                $queryBuilder->andWhere('e.end_date LIKE :endDate')
+                    ->setParameter('endDate', $endDate . '%');
+            }
+
+            if ($creatorFirstname !== null) {
+                $queryBuilder->andWhere('c.firstname LIKE :creatorFirstname')
+                    ->setParameter('creatorFirstname', '%' . $creatorFirstname . '%');
+            }
+        }
+
+        // Clone the query builder for the count query
+        $countQueryBuilder = clone $queryBuilder;
+        $totalEvents = $countQueryBuilder->select('COUNT(e.id)')
+                                         ->getQuery()
+                                         ->getSingleScalarResult();
+
+        // Set limit and offset for pagination
+        $queryBuilder->setMaxResults($limit)
+                     ->setFirstResult($offset);
 
         $events = $queryBuilder->getQuery()->getResult();
 
-        return $this->json($events);
+        return $this->json([
+            'total' => $totalEvents,
+            'events' => $events
+        ]);
     }
 
     /**

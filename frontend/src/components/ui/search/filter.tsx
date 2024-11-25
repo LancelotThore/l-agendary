@@ -1,27 +1,55 @@
 'use client';
 
-import { useState } from "react";
-import { SearchBar } from "../searchBar";
+import { useState, useEffect } from "react";
+import { SearchBar } from "./searchBar";
+import { SearchInput } from "./searchInput";
 import { Input } from "../input";
-import { Clock, LocationOn, PeopleFill, User, Filtre } from '../icons';
-import { fetchSearchEvents } from "@/app/api/event";
+import { Clock, LocationOn, User, Filtre } from '../icons';
+import { fetchSearchEvents, fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";
+
+const ITEMS_PER_PAGE = 9;
 
 export default function Filter({ onSearchResults }) {
   const [showFilters, setShowFilters] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [location, setLocation] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [creatorFirstname, setCreatorFirstname] = useState("");
+  const [limit] = useState(ITEMS_PER_PAGE);
+  const [offset, setOffset] = useState(0);
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleSearch = async (searchTerm) => {
-    const results = await fetchSearchEvents(searchTerm);
+  const handleSearch = async () => {
+    const results = await fetchSearchEvents(searchTerm, location, startDate, endDate, creatorFirstname, limit, offset);
     onSearchResults(results);
   };
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    handleSearch();
+  }, [searchTerm, location, startDate, endDate, creatorFirstname, limit, offset]);
+
+  const handleSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
-    handleSearch(e.target.value);
+  };
+
+  const handleLocationSelect = async (selectedLocation: string) => {
+    setLocation(selectedLocation);
+  };
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+  };
+
+  const handleCreatorFirstnameSelect = async (selectedCreatorFirstname: string) => {
+    setCreatorFirstname(selectedCreatorFirstname);
   };
 
   return (
@@ -32,7 +60,7 @@ export default function Filter({ onSearchResults }) {
           placeholder="Rechercher"
           type="search"
           value={searchTerm}
-          onChange={handleChange}
+          onChange={handleSearchTermChange}
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base w-full'
         />
         <button
@@ -43,31 +71,33 @@ export default function Filter({ onSearchResults }) {
         </button>
       </div>
       <div className={`w-full flex-col gap-5 ${showFilters ? 'flex' : 'hidden'} md:grid md:grid-cols-4`}>
-        <Input
-          img={<Clock className='w-4 md:w-6' />}
-          type="datetime-local"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
+          <Input
+            img={<Clock className='w-4 md:w-6' />}
+            type="date"
+            className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
+            onChange={handleStartDateChange}
+            value={startDate}
+          />
+          <Input
+            img={<Clock className='w-4 md:w-6' />}
+            type="date"
+            className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
+            onChange={handleEndDateChange}
+            value={endDate}
+          />
+        <SearchInput
+          img={<LocationOn className='w-4 md:w-6' />}
+          fetchOptions={fetchUniqueLocations}
+          placeholder="Lieu"
+          onSelect={handleLocationSelect}
+          value={location}
         />
-        <SearchBar
-          id="search-lieux"
-          startImg={<LocationOn className='w-4 md:w-6' />}
-          placeholder="Lieux"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
-        />
-        <SearchBar
-          id="search-createur"
-          startImg={<User className='w-4 md:w-6' />}
+        <SearchInput
+          img={<User className='w-4 md:w-6' />}
+          fetchOptions={fetchUniqueUserNames}
           placeholder="Créateur"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
-        />
-        <SearchBar
-          id="search-participant"
-          startImg={<PeopleFill className='w-4 md:w-6' />}
-          placeholder="Participants"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
+          onSelect={handleCreatorFirstnameSelect}
+          value={creatorFirstname}
         />
       </div>
     </div>

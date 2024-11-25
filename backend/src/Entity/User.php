@@ -3,6 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -11,16 +16,26 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\GetCollection;
+use App\Controller\UserController;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            name: 'unique-user-names',
+            uriTemplate: '/unique-user-names',
+            controller: UserController::class . '::getUniqueUserNames',
+            // outputFormats: ['json' => ['application/ld+json']],
+        ),
+        new Get(), // Get one event by ID
+        new GetCollection(), // Get all events
+        new Post(), // Create a new event
+        new Patch(), // Patch an event
+        new Delete(), // Delete an event
+    ]
+)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

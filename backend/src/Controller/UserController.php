@@ -150,6 +150,20 @@ class UserController extends AbstractController
         return new JsonResponse(['error' => 'Invalid image URL'], 400);
     }
 
+        /**
+ * @Route("/api/unique-user-names", name="unique-user-names", methods={"GET"})
+ */
+public function getUniqueUserNames(EntityManagerInterface $entityManager): Response
+{
+    $queryBuilder = $entityManager->getRepository(User::class)
+        ->createQueryBuilder('u')
+        ->select('DISTINCT u.firstname');
+
+    $userNames = $queryBuilder->getQuery()->getResult();
+
+    return $this->json($userNames);
+}
+
     public function isUserRegisteredToEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $user = $this->isLogged($request);
