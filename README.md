@@ -32,6 +32,16 @@
 
 # Fonctionnalités Implémentées
 
+### Période : 17/11/2024 - 22/11/2024
+- rejoindre et quitter un événements en tant qu'utilisateur connecté
+- Sauvegarde l'image de l'event à la création de celui-ci dans ./frontend/public/uploads/events_pictures
+- Possibilité de modifier un évènement lorsque c'est l'évènement du créateur
+- Ajout d'une flèche pour revenir en arrière
+- Ajout des filtres sur la page recherche ( searchBar, date, lieu, créateur)
+- Probléme de Pagination aprés une recherche
+
+
+
 ### Période : 12/11/2024 - 15/11/2024
 _(Inclut les fonctionnalités présentes avant cette semaine)_
 

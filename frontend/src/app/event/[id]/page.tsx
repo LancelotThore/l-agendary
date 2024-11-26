@@ -5,11 +5,13 @@ import EventOrganizer from "@/components/ui/event/eventOrganizer";
 import EventDescription from "@/components/ui/event/eventDescription";
 import EventShare from "@/components/ui/event/eventShare";
 import { Button } from "@/components/ui/button";
-import { fetchEvent, fetchCreator, updateEvent } from "@/app/api/event";
+import { fetchEvent, fetchCreator, updateEvent, joinEvent, isUserRegistered, leaveEvent } from "@/app/api/event";
+import { toast } from "sonner"
 import { ArrowLeft, LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
 import { fetchUser } from "@/app/api/data";
 import { useEffect, useState } from "react";
 import PageEventSkeleton from "./loading";
+import path from 'path';
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,7 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { log } from "console";
 
 export default function Event({ params }) {
   const [id, setId] = useState(null);
@@ -33,6 +34,7 @@ export default function Event({ params }) {
   const [endDate, setEndDate] = useState("");
   const [endHour, setEndHour] = useState("");
   const [image, setImage] = useState("");
+  const [newImage, setNewImage] = useState("");
 
   const [event, setEvent] = useState(null);
   const [creator, setCreator] = useState(null);
@@ -40,6 +42,53 @@ export default function Event({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  useEffect(() => {
+    if (!params?.id) return;
+
+    const fetchData = async () => {
+      try {
+        await upEvent();
+
+        const currentUser = await fetchUser();
+        setUser(currentUser);
+
+        if (currentUser) {
+          const registered = await isUserRegistered(params.id);
+          setIsRegistered(registered.isRegistered);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des données :", error);
+      }
+    };
+
+    fetchData();
+  }, [params?.id]);
+
+  const handleJoinEvent = async () => {
+    if (event) {
+      try {
+        const response = await joinEvent(event.id);
+        toast(`Vous avez rejoint l'événement ${event.title}`);
+        setIsRegistered(true);
+      } catch (error) {
+        toast(`Erreur lors de l\'inscription à l\'événement`);
+      }
+    }
+  };
+
+  const handleLeaveEvent = async () => {
+    if (event) {
+      try {
+        const response = await leaveEvent(event.id);
+        toast(`Vous avez quitté l'événement ${event.title}`);
+        setIsRegistered(false);
+      } catch (error) {
+        toast('Erreur lors de la désinscription de l\'événement.');
+      }
+    }
+  }
 
   function extractDateAndTime(isoString) {
     const date = new Date(isoString);
@@ -83,42 +132,84 @@ export default function Event({ params }) {
     setLoading(false);
   };
 
-  useEffect(() => {
-    upEvent();
-
-    const user = fetchUser();
-    setUser(user);
-  }, []);
-
   const handleEditEvent = async (e) => {
     e.preventDefault();
-    const startHourInt = parseInt(startHour.split(":")[0], 10);
-    const endHourInt = parseInt(endHour.split(":")[0], 10);
 
-    const combinedStartDateTime = new Date(`${startDate}T${startHourInt + 1}:00`).toISOString();
-    const combinedEndDateTime = new Date(`${endDate}T${endHourInt + 1}:00`).toISOString();
+    const normalizeDateTime = (date, hour, minutes) => {
+      let hours = parseInt(hour, 10);
+      let mins = parseInt(minutes, 10);
+
+      if (hours === 24) {
+        hours = 0;
+        const nextDay = new Date(date);
+        nextDay.setDate(nextDay.getDate() + 1);
+        date = nextDay.toISOString().split("T")[0];
+      }
+
+      return `${date}T${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+    };
+
+    const startHourInt = parseInt(startHour.split(":")[0], 10);
+    const startMinutesInt = parseInt(startHour.split(":")[1], 10);
+
+    const endHourInt = parseInt(endHour.split(":")[0], 10);
+    const endMinutesInt = parseInt(endHour.split(":")[1], 10);
+
+    const normalizedStart = normalizeDateTime(startDate, startHourInt + 1, startMinutesInt);
+    const normalizedEnd = normalizeDateTime(endDate, endHourInt + 1, endMinutesInt);
+
+    const combinedStartDateTime = new Date(normalizedStart).toISOString();
+    const combinedEndDateTime = new Date(normalizedEnd).toISOString();
+
     setError("");
     setSuccess("");
+    const now = new Date();
 
     if (!title || !description || !location || !startDate || !startHour || !endDate || !endHour) {
       setError("Tous les champs doivent être remplis.");
       return;
     }
 
-    // Vérifier si la date et l'heure de début sont avant la date et l'heure de fin
+    if (new Date(combinedStartDateTime) < now) {
+      setError("La date de début est trop ancienne.");
+      return;
+    }
+
     if (new Date(combinedStartDateTime) >= new Date(combinedEndDateTime)) {
       setError("La date et l'heure de début doivent être avant la date et l'heure de fin.");
       return;
     }
 
+    console.log(image);
+    const formData = new FormData();
+    formData.append("file", newImage);
+
     try {
-      await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, image);
-      setSuccess("Evènement mis à jour avec succès !");
+      let imgName = image; // Utiliser l'image existante par défaut
+
+      if (newImage) {
+        const response = await fetch('/api/upload/event_pic', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+
+        if (!data.url) {
+          throw new Error("L'URL de l'image est manquante dans la réponse de l'API");
+        }
+
+        const imageUrl = data.url;
+        const imageName = path.basename(imageUrl); // Extraire le nom du fichier
+        imgName = `/uploads/event_pictures/${imageName}`;
+      }
+
+      await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, imgName);
       upEvent();
+      setSuccess("Evènement mis à jour avec succès !");
     } catch (err) {
+      console.log(err);
       setError("Erreur lors de la mise à jour des informations de l'évènement");
     }
-
   };
 
   return (
@@ -151,158 +242,163 @@ export default function Event({ params }) {
                 <Button className="md:hidden" size={"lg"}>
                   Partager
                 </Button>
-                <Button variant={"accent"} size={"lg"}>
-                  Rejoindre
+                <Button variant={isRegistered ? "destructive" : "accent"} size={"lg"} onClick={isRegistered ? handleLeaveEvent : handleJoinEvent}>
+                  {isRegistered ? "Quitter l'événement" : "Rejoindre"}
                 </Button>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button className="hover:bg-primary/70 text-sm/[18px]">
-                      Modifier l'évènement
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[650px]">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl text-center">Modifier l'évènement</DialogTitle>
-                    </DialogHeader>
-                    <div className="sm:px-10 px-0 h-[516px] overflow-y-scroll">
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="title" className="text-left">
-                          Titre de l’événement
-                        </label>
-                        <Input
-                          id="title"
-                          name="title"
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          className="col-span-3"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="descrition" className="text-left">
-                          Description
-                        </label>
-                        <Input
-                          id="title"
-                          name="description"
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                          className="col-span-3"
-                        />
-                      </div>
-                      <div className="flex flex-col gap mt-2">
-                        <label htmlFor="etat" className="text-left">
-                          Etat
-                        </label>
-                        <div className="flex flex-row gap-4">
-
-                          <div className="flex flex-row gap-1">
-                            <input
-                              id="etat"
-                              type="radio"
-                              name="etat"
-                              className="col-span-3"
-                              defaultChecked={!etat}
-                              onChange={() => setEtat(false)}
-                            />
-                            <Button variant={"private"} size="sm">
-                              Privé
-                              <LockClosedIcon className="w-4 ml-2" />
-                            </Button>
-                          </div>
-                          <div className="flex flex-row gap-1">
-                            <input
-                              id="etat"
-                              type="radio"
-                              name="etat"
-                              className="col-span-3"
-                              defaultChecked={etat}
-                              onChange={() => setEtat(true)}
-                            />
-                            <Button variant={"public"} size="sm">
-                              Public
-                              <LockOpenIcon className="w-4 ml-2" />
-                            </Button>
-                          </div>
-
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="location" className="text-left">
-                          Lieu
-                        </label>
-                        <Input
-                          id="location"
-                          name="location"
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                          className="col-span-3"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="startdate" className="text-left">
-                          Date de début
-                        </label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <Input
-                            id="startdate"
-                            type="date"
-                            name="startdate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            className="col-span-3"
-                          />
-                          <Input
-                            id="starthour"
-                            type="time"
-                            name="startdate"
-                            value={startHour}
-                            onChange={(e) => setStartHour(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="enddate" className="text-left">
-                          Date de fin
-                        </label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <Input
-                            id="enddate"
-                            type="date"
-                            name="enddate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                          />
-                          <Input
-                            id="endhour"
-                            type="time"
-                            name="enddate"
-                            value={endHour}
-                            onChange={(e) => setEndHour(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="image" className="text-left">
-                          Image de couverture
-                        </label>
-                        <img src={image} alt="Image de converture evenement" className="w-32 h-32 rounded" />
-                        <Input
-                          id="image"
-                          name="image"
-                          type="file"
-                          className="col-span-3"
-                        />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <span className={`text-center pb-3 ${error == "" ? 'text-green-500' : 'text-red-500'}`}>{success}{error}</span>
-                      <Button variant={"accent"} className="w-32 text-center mx-auto" onClick={handleEditEvent}>Mettre à jour</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
                 {user && user.id === creator.id && (
-                  <Button size={"lg"}>Modifier l'événement</Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button size={"lg"} className="hover:bg-primary/70">
+                        Modifier l'évènement
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[650px]">
+                      <DialogHeader>
+                        <DialogTitle className="text-2xl text-center">Modifier l'évènement</DialogTitle>
+                      </DialogHeader>
+                      <div className="sm:px-10 px-0 h-[516px] overflow-y-scroll">
+                        <div className="flex flex-col gap-1 mt-2">
+                          <label htmlFor="title" className="text-left">
+                            Titre de l’événement
+                          </label>
+                          <Input
+                            id="title"
+                            name="title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1 mt-2">
+                          <label htmlFor="descrition" className="text-left">
+                            Description
+                          </label>
+                          <Input
+                            id="title"
+                            name="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="flex flex-col gap mt-2">
+                          <label htmlFor="etat" className="text-left">
+                            Etat
+                          </label>
+                          <div className="flex flex-row gap-4">
+
+                            <div className="flex flex-row gap-1">
+                              <input
+                                id="etat"
+                                type="radio"
+                                name="etat"
+                                className="col-span-3"
+                                defaultChecked={!etat}
+                                onChange={() => setEtat(false)}
+                              />
+                              <Button variant={"private"} size="sm">
+                                Privé
+                                <LockClosedIcon className="w-4 ml-2" />
+                              </Button>
+                            </div>
+                            <div className="flex flex-row gap-1">
+                              <input
+                                id="etat"
+                                type="radio"
+                                name="etat"
+                                className="col-span-3"
+                                defaultChecked={etat}
+                                onChange={() => setEtat(true)}
+                              />
+                              <Button variant={"public"} size="sm">
+                                Public
+                                <LockOpenIcon className="w-4 ml-2" />
+                              </Button>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1 mt-2">
+                          <label htmlFor="location" className="text-left">
+                            Lieu
+                          </label>
+                          <Input
+                            id="location"
+                            name="location"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1 mt-2">
+                          <label htmlFor="startdate" className="text-left">
+                            Date de début
+                          </label>
+                          <div className="grid grid-cols-2 gap-4">
+                            <Input
+                              id="startdate"
+                              type="date"
+                              name="startdate"
+                              value={startDate}
+                              onChange={(e) => setStartDate(e.target.value)}
+                              className="col-span-3"
+                            />
+                            <Input
+                              id="starthour"
+                              type="time"
+                              name="startdate"
+                              value={startHour}
+                              onChange={(e) => setStartHour(e.target.value)}
+                              className="col-span-3"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1 mt-2">
+                          <label htmlFor="enddate" className="text-left">
+                            Date de fin
+                          </label>
+                          <div className="grid grid-cols-2 gap-4">
+                            <Input
+                              id="enddate"
+                              type="date"
+                              name="enddate"
+                              value={endDate}
+                              onChange={(e) => setEndDate(e.target.value)}
+                            />
+                            <Input
+                              id="endhour"
+                              type="time"
+                              name="enddate"
+                              value={endHour}
+                              onChange={(e) => setEndHour(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1 mt-2">
+                          <label htmlFor="image" className="text-left">
+                            Image de couverture
+                          </label>
+                          {typeof image === "string" && (
+                            <div className="w-32 h-32 overflow-hidden rounded">
+                              <img src={image} alt="Image de couverture événement" className="w-full h-full object-cover" />
+                            </div>
+                          )}
+                          <Input
+                            id="image"
+                            name="image"
+                            type="file"
+                            className="col-span-3"
+                            accept="image/png, image/jpeg"
+                            onChange={(e) => setNewImage(e.target.files[0])}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <span className={`text-center pb-3 ${error == "" ? 'text-green-500' : 'text-red-500'}`}>{success}{error}</span>
+                        <Button variant={"accent"} className="w-32 text-center mx-auto" onClick={handleEditEvent}>Mettre à jour</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 )}
               </div>
             </div>

@@ -173,9 +173,9 @@ export default function ProfilePage() {
               Modifier les informations de votre profil utilisateur.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="firstname" className="text-right">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="firstname">
                 Prénom
               </label>
                 <Input
@@ -186,8 +186,8 @@ export default function ProfilePage() {
                 />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="lastname" className="text-right">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="lastname">
                 Nom
               </label>
               <Input
@@ -198,25 +198,28 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="age" className="text-right">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="age">
                 Âge
               </label>
               <Input
                 id="age"
+                type="number"
                 value={age}
+                placeholder="Entrez votre age"
                 onChange={(e) => setAge(e.target.value)}
                 className="col-span-3"
-              />
+                />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="bio" className="text-right">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="bio">
                 Biographie
               </label>
               <Input
                 id="bio"
                 value={bio}
+                placeholder="Entrez votre biographie"
                 onChange={(e) => setBio(e.target.value)}
                 className="col-span-3"
               />
@@ -240,16 +243,16 @@ export default function ProfilePage() {
             Modifier les paramètres
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[750px]">
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Modifier mes paramètres</DialogTitle>
             <DialogDescription>
               Modifier les informations de connexion.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="email" className="text-right">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="email">
                 Email
               </label>
               <Input
@@ -260,8 +263,8 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="password" className="text-right">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="password">
                 Mot de passe
               </label>
               <Input
@@ -273,8 +276,8 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="newPassword" className="text-right">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="newPassword">
                 Nouveau mot de passe
               </label>
               <Input
@@ -286,8 +289,8 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="newPasswordValidator" className="text-right">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="newPasswordValidator">
                 Confirmer le nouveau mot de passe
               </label>
               <Input
@@ -323,7 +326,7 @@ export default function ProfilePage() {
             <div className="aspect-square w-32 md:w-64 hover:cursor-pointer  lg:order-2">
               <img
                 className="rounded-lg object-cover hover:opacity-75  h-full w-full"
-                src={image || "img.png"}
+                src={image ? `/uploads/profile_pictures/${image}` : "img.png"}              
                 alt={`Image de profil de ${firstname}`}
               />
             </div>

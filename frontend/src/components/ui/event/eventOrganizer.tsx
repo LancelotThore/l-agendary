@@ -1,7 +1,8 @@
 import Link from 'next/link';
 
 interface Organisateur {
-  name: string;
+  firstname: string;
+  lastname: string;
   age: number;
   bio: string;
   profilePicture: string;
@@ -18,7 +19,7 @@ export default function EventOrganizer({ organisateur }: EventOrganizerProps) {
       <div className="aspect-square w-32 md:w-auto lg:order-2">
         <img
           className="rounded-lg object-cover h-32 w-32 md:h-52 md:w-52"
-          src={`${organisateur.profilePicture}`}
+          src={organisateur.profilePicture ? `/uploads/profile_pictures/${organisateur.profilePicture}` : "/img.png"} 
           alt={`Image de profil de ${organisateur.firstname + ' ' + organisateur.lastname}`}
         />
       </div>

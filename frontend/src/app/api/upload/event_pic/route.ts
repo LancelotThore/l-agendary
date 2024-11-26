@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
           // console.error('Error renaming file:', renameErr);
           resolve(NextResponse.json({ error: 'Erreur lors de la sauvegarde' }, { status: 500 }));
         } else {
-          const publicImageUrl = `/uploads/event_pictures/${uniqueFileName}`;
+          const publicImageUrl = `${uniqueFileName}`;
           console.log('File uploaded successfully:', publicImageUrl);
           resolve(
             NextResponse.json(
@@ -91,11 +91,3 @@ function transformNextRequest(nextRequest: NextRequest): IncomingMessage {
 
   return req;
 }
-
-
-
-
-
-
-
-

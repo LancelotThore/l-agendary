@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Logo, Search, MenuBurger, Home, Close, Profil } from "../ui/icons";
+import { Logo, Event, Search, MenuBurger, Home, Close, Profil } from "../ui/icons";
 import { Button } from '../ui/button';
 import { fetchUser } from "@/app/api/data";
 import Link from 'next/link'    
@@ -44,6 +44,13 @@ export function Navbar() {
                 <div className="flex items-center space-x-10 rtl:space-x-reverse">
                     <Link href="/" className="flex items-center">
                         <Logo className="w-40" />
+                    </Link>
+                    <Link
+                        href="/calendar"
+                        className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                    >
+                        <span>Mes événements</span>
+                        <Event className="w-5 h-5" aria-hidden="true" />
                     </Link>
                     <Link
                         href="/search"
@@ -92,6 +99,15 @@ export function Navbar() {
                         >
                             <span>Accueil</span>
                             <Home className="w-5 h-5" aria-hidden="true" />
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            href="/calendar"
+                            className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
+                        >
+                            <span>Mes événements</span>
+                            <Event className="w-5 h-5" aria-hidden="true" />
                         </Link>
                     </li>
                     <li>

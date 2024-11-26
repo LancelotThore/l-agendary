@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/frontend/public/uploads/event_pictures
+/frontend/public/uploads/profile_pictures
+/backend/migrations
