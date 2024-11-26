@@ -62,6 +62,7 @@ class AuthController extends AbstractController
         $user->setFirstname($data['firstname']);
         $user->setLastname($data['name']);
         $user->setBio('Je m\'appelle ' . $user->getFirstname() . ' ' . $user->getLastname() . ', et je suis un utilisateur de l\'application.');
+        $user->setAge(0);
 
 
 
@@ -85,6 +86,10 @@ class AuthController extends AbstractController
 
         if (!$user || !$this->passwordHasher->isPasswordValid($user, $data['password'], null)) {
             throw new BadCredentialsException('Invalid credentials');
+        }
+
+        if (!$user->isActive()) {
+            return new JsonResponse(['error' => 'Account is not active'], 401);
         }
 
         // Créer le token JWT

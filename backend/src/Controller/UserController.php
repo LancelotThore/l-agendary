@@ -57,6 +57,10 @@ class UserController extends AbstractController
             return new JsonResponse(['error' => 'User not found'], 404);
         }
 
+        if (!$user->isActive()) {
+            return new JsonResponse(['error' => 'Account is not active'], 401);
+        }
+
         return $user;
     }
 
@@ -83,8 +87,11 @@ class UserController extends AbstractController
             $user->setLastname($data['lastname']);
         }
 
-        if (isset($data['age'])) {
+        if (isset($data['age']) && is_int($data['age'])) {
             $user->setAge($data['age']);
+        }
+        else {
+            return new JsonResponse(['error' => 'Invalid age'], 400);
         }
 
         if (isset($data['bio'])) {

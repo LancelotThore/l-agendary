@@ -31,9 +31,9 @@ class JwtSubscriber implements EventSubscriberInterface
 
         // Vérifier si /admin
 
-        if (strpos($path, '/admin') !== 0) {
-            return;
-        }
+        // if (strpos($path, '/admin') !== 0) {
+        //     return;
+        // }
 
         // $token = $request->cookies->get('token');
 
@@ -51,6 +51,10 @@ class JwtSubscriber implements EventSubscriberInterface
 
         // if (!$user) {
         //     throw new AccessDeniedHttpException('User not found');
+        // }
+
+        // if (!$user->isActive()) {
+        //     throw new AccessDeniedHttpException('Account is not active');
         // }
 
         // if (!in_array('ROLE_ADMIN', $user->getRoles())) {

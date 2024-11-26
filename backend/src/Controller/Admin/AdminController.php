@@ -53,8 +53,6 @@ class AdminController extends AbstractDashboardController
                 continue;
             }
 
-            $age = (int) $age;
-
             if ($age < 18) {
                 $ageRanges['under_18']++;
             } elseif ($age >= 18 && $age <= 24) {

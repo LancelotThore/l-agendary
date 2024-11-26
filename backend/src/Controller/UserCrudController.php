@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -33,10 +34,11 @@ class UserCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             EmailField::new('email'),
             ArrayField::new('roles'),
+            BooleanField::new('isActive'),
             TextField::new('firstname'),
             TextField::new('lastname'),
             TextField::new('bio'),
-            TextField::new('age'),
+            IntegerField::new('age'),
             TextField::new('profile_picture'),
             TextField::new('plainPassword', 'Password')->onlyOnForms()->setRequired(false),
             // TextField::new('password'),

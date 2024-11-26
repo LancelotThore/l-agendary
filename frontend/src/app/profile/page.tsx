@@ -30,7 +30,7 @@ export default function ProfilePage() {
   // Form input profile
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState<number | undefined>(undefined);
   const [bio, setBio] = useState("");
   const [image, setImage] = useState("");
 
@@ -82,7 +82,7 @@ export default function ProfilePage() {
   }
 
   // Fonction pour mettre à jour le profil utilisateur
-  const handleEditProfile = async (e) => {
+  const handleEditProfile = async (e: any) => {
     e.preventDefault();
     try {
       await updateUserProfile(firstname, lastname, age, bio);
@@ -141,7 +141,7 @@ export default function ProfilePage() {
         body: formData,
       });
       const data = await response.json();
-      const imageUrl = data.url;
+      const imageUrl = data.fileName;
 
       await updateUserProfilePicture(imageUrl);
       setSuccessImage("Image de profil mise à jour avec succès");
@@ -205,8 +205,14 @@ export default function ProfilePage() {
               <Input
                 id="age"
                 value={age}
-                onChange={(e) => setAge(e.target.value)}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value >= 0) {
+                    setAge(value);
+                  }
+                }}
                 className="col-span-3"
+                type="number"
               />
             </div>
 
@@ -323,7 +329,7 @@ export default function ProfilePage() {
             <div className="aspect-square w-32 md:w-64 hover:cursor-pointer  lg:order-2">
               <img
                 className="rounded-lg object-cover hover:opacity-75  h-full w-full"
-                src={image || "img.png"}
+                src={image ? `/uploads/profile_pictures/${image}` : "img.png"}
                 alt={`Image de profil de ${firstname}`}
               />
             </div>

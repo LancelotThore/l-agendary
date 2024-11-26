@@ -18,7 +18,8 @@ export async function fetchUser() {
 }
 
 
-export async function updateUserProfile(firstname: string, lastname: string, age: string, bio: string) {
+export async function updateUserProfile(firstname: string, lastname: string, age: number, bio: string) {
+
     try {
         const response = await fetch("https://localhost:443/api/user/update/profile", {
             method : "POST",

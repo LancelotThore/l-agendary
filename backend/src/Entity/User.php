@@ -51,7 +51,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'registered_users')]
     private Collection $registered_events;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
@@ -60,20 +60,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 
-    #[ORM\Column(length: 3, nullable: true)]
-    private ?string $age = null;
+    #[ORM\Column(type: Types::INTEGER, length: 3, nullable: true)]
+    private ?int $age = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(length: 30, nullable: true)]
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $plainPassword = null;
+
+    #[ORM\Column]
+    private ?bool $isActive = null;
 
     public function __construct()
     {
         
         $this->created_events = new ArrayCollection();
         $this->registered_events = new ArrayCollection();
+    	$this->isActive = true;
     }
 
     public function getId(): ?int
@@ -244,12 +248,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAge(): ?string
+    public function getAge(): ?int
     {
         return $this->age;
     }
 
-    public function setAge(?string $age): static
+    public function setAge(?int $age): static
     {
         $this->age = $age;
 
@@ -281,6 +285,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(?string $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

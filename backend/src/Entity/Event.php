@@ -86,6 +86,9 @@ class Event
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $deleted = null;
+
     public function __construct()
     {
         $this->registered_users = new ArrayCollection();
@@ -212,6 +215,18 @@ class Event
     public function setImage(string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?\DateTimeInterface
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?\DateTimeInterface $deleted): static
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
