@@ -245,4 +245,45 @@ public function getUniqueLocations(EntityManagerInterface $entityManager): Respo
 
         return $this->json(['success' => 'Event created successfully']);
     }
+
+    /**
+     * @Route("/api/events/{id}", name="delete-event", methods={"DELETE"})
+     */
+    public function deleteEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Récupérer le token depuis le cookie
+        $token = $request->cookies->get('token');
+
+        if (!$token) {
+            return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Décoder le token pour obtenir les informations de l'utilisateur
+        $data = $this->jwtEncoder->decode($token);
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
+
+        if (!$user) {
+            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Trouver l'événement par ID
+        $event = $entityManager->getRepository(Event::class)->find($id);
+
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($event->getCreator()->getId() !== $user->getId()) {
+            return $this->json(['error' => 'User is not the creator of the event'], Response::HTTP_FORBIDDEN);
+        }
+
+        try {
+            $entityManager->remove($event);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->json(['success' => 'Event deleted successfully']);
+    }
 }

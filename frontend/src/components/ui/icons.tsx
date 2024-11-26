@@ -1,7 +1,7 @@
 import React from "react";
 import { SVGAttributes } from "react";
 
-function Clock(props: React.SVGAttributes<SVGSVGElement>) {
+function Clock(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" {...props}>
       <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.26" d="M3.757 2.274a2.52 2.52 0 00-1.782 1.782M11.36 2.274a2.52 2.52 0 011.78 1.782"></path>
@@ -10,7 +10,7 @@ function Clock(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function LocationOn(props: React.SVGAttributes<SVGSVGElement>) {
+function LocationOn(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" {...props}>
       <path fill="currentColor" d="M7.558 14.39a.586.586 0 01-.378-.127.765.765 0 01-.236-.33 8.766 8.766 0 00-.756-1.654c-.294-.514-.708-1.118-1.244-1.81a14.25 14.25 0 01-1.307-1.984c-.325-.63-.488-1.391-.488-2.284 0-1.228.425-2.267 1.276-3.117.86-.861 1.905-1.292 3.133-1.292s2.267.43 3.118 1.292c.86.85 1.29 1.89 1.29 3.117 0 .956-.183 1.753-.55 2.394-.357.63-.772 1.254-1.244 1.873-.567.756-.997 1.386-1.291 1.89a8.896 8.896 0 00-.709 1.575.71.71 0 01-.252.346.616.616 0 01-.362.11zm0-6.614c.44 0 .814-.152 1.118-.457a1.52 1.52 0 00.457-1.118c0-.44-.153-.813-.457-1.118a1.52 1.52 0 00-1.118-.456c-.44 0-.813.152-1.118.456a1.52 1.52 0 00-.457 1.118c0 .441.153.814.457 1.118a1.52 1.52 0 001.118.457z"></path>
@@ -20,7 +20,7 @@ function LocationOn(props: React.SVGAttributes<SVGSVGElement>) {
 
 
 
-function PeopleFill(props: React.SVGAttributes<SVGSVGElement>) {
+function PeopleFill(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" {...props}>
       <g clipPath="url(#clip0_374_526)">
@@ -51,7 +51,7 @@ function LockOpenIcon(props: SVGAttributes<SVGElement>) {
   );
 }
 
-function AddEvent(props: React.SVGAttributes<SVGSVGElement>) {
+function AddEvent(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 163 163" {...props}>
       <rect width="32.662" height="138.812" x="78.66" y="10.158" fill="currentColor" rx="5" transform="rotate(11.034 78.66 10.158)">
@@ -234,7 +234,7 @@ function Close(props: SVGAttributes<SVGElement>) {
   );
 }
 
-function Instagram(props: React.SVGAttributes<SVGSVGElement>) {
+function Instagram(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40" {...props}>
       <path fill="url(#paint0_linear_537_1588)" d="M20 0c-5.428 0-6.11.025-8.242.12-2.133.1-3.585.435-4.858.93a9.75 9.75 0 00-3.543 2.308A9.75 9.75 0 001.05 6.9C.555 8.17.217 9.625.12 11.75.025 13.887 0 14.568 0 20.003c0 5.43.025 6.11.12 8.242.1 2.13.435 3.582.93 4.855a9.823 9.823 0 002.308 3.542 9.76 9.76 0 003.54 2.308c1.274.495 2.725.832 4.854.93 2.135.095 2.816.12 8.248.12 5.433 0 6.11-.025 8.245-.12 2.127-.1 3.585-.435 4.857-.93a9.75 9.75 0 003.54-2.308A9.823 9.823 0 0038.95 33.1c.492-1.273.83-2.725.93-4.855.095-2.133.12-2.813.12-8.245 0-5.432-.025-6.113-.12-8.248-.1-2.127-.438-3.582-.93-4.852a9.75 9.75 0 00-2.308-3.543A9.75 9.75 0 0033.1 1.05C31.825.555 30.37.217 28.242.12 26.108.025 25.43 0 19.995 0H20zm-1.793 3.605h1.796c5.34 0 5.972.018 8.08.115 1.95.087 3.01.415 3.715.687.932.363 1.6.798 2.3 1.498.7.7 1.132 1.365 1.495 2.3.274.703.6 1.762.687 3.713.097 2.107.117 2.74.117 8.077s-.02 5.973-.117 8.08c-.087 1.95-.415 3.008-.688 3.713a6.25 6.25 0 01-1.497 2.297c-.7.7-1.365 1.133-2.3 1.495-.7.275-1.76.6-3.713.69-2.107.095-2.74.117-8.08.117s-5.974-.022-8.082-.117c-1.95-.09-3.008-.415-3.713-.69a6.25 6.25 0 01-2.3-1.495 6.25 6.25 0 01-1.5-2.3c-.272-.703-.6-1.762-.687-3.712-.095-2.108-.115-2.74-.115-8.083 0-5.342.02-5.97.115-8.077.09-1.95.415-3.01.69-3.716.362-.932.797-1.6 1.497-2.3.7-.7 1.365-1.132 2.3-1.495.705-.274 1.763-.6 3.713-.69 1.845-.085 2.56-.11 6.287-.112v.005zm12.47 3.32a2.4 2.4 0 100 4.799 2.4 2.4 0 000-4.799zM20.003 9.73a10.272 10.272 0 10-.321 20.542 10.272 10.272 0 00.32-20.542zm0 3.602a6.668 6.668 0 110 13.337 6.668 6.668 0 010-13.337z"></path>
@@ -249,7 +249,7 @@ function Instagram(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function Facebook(props: React.SVGAttributes<SVGSVGElement>) {
+function Facebook(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40" {...props}>
       <g clipPath="url(#clip0_537_1589)">
@@ -264,7 +264,7 @@ function Facebook(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function Whatsapp(props: React.SVGAttributes<SVGSVGElement>) {
+function Whatsapp(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40" {...props}>
       <g clipPath="url(#clip0_537_1591)">
@@ -279,7 +279,7 @@ function Whatsapp(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function Linkedin(props: React.SVGAttributes<SVGSVGElement>) {
+function Linkedin(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40"{...props}>
       <g clipPath="url(#clip0_537_1593)">
@@ -294,7 +294,7 @@ function Linkedin(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function Mail(props: React.SVGAttributes<SVGSVGElement>) {
+function Mail(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40" {...props}>
       <g>
@@ -305,7 +305,7 @@ function Mail(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function Link(props: React.SVGAttributes<SVGSVGElement>) {
+function Link(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 30" {...props}>
       <g fill="#000">
@@ -316,7 +316,7 @@ function Link(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function User(props: React.SVGAttributes<SVGSVGElement>) {
+function User(props: SVGAttributes<SVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -330,7 +330,7 @@ function User(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-function Filtre(props: React.SVGAttributes<SVGSVGElement>) {
+function Filtre(props: SVGAttributes<SVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -347,7 +347,7 @@ function Filtre(props: React.SVGAttributes<SVGSVGElement>) {
     </svg>
   );
 }
-function ArrowLeft(props: React.SVGAttributes<SVGSVGElement>) {
+function ArrowLeft(props: SVGAttributes<SVGElement>) {
   return (
     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path d="M12.4999 30.0001L11.2919 28.7921L10.0839 30.0001L11.2919 31.208L12.4999 30.0001ZM42.4999 31.7084C43.4434 31.7084 44.2082 30.9435 44.2082 30.0001C44.2082 29.0566 43.4434 28.2917 42.4999 28.2917V31.7084ZM21.2919 18.7921L11.2919 28.7921L13.7079 31.208L23.7079 21.208L21.2919 18.7921ZM11.2919 31.208L21.2919 41.208L23.7079 38.7921L13.7079 28.7921L11.2919 31.208ZM12.4999 31.7084H42.4999V28.2917H12.4999V31.7084Z" fill="#33363F" />
@@ -355,4 +355,13 @@ function ArrowLeft(props: React.SVGAttributes<SVGSVGElement>) {
   );
 }
 
-export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, Logo, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, Link, User, Filtre, ArrowLeft };
+function PlusCircle(props: SVGAttributes<SVGElement>) {
+  return (
+    <svg fill="none" strokeWidth={1.5} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+  );
+}
+
+
+export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, Logo, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, Link, User, Filtre, ArrowLeft, PlusCircle };

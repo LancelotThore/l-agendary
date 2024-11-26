@@ -5,7 +5,7 @@ import { SearchBar } from "./searchBar";
 import { SearchInput } from "./searchInput";
 import { Input } from "../input";
 import { Clock, LocationOn, User, Filtre } from '../icons';
-import { fetchSearchEvents, fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";
+import { fetchSearchEvents, fetchUniqueLocations, fetchUniqueUserNames } from "@/lib/event";
 
 const ITEMS_PER_PAGE = 9;
 

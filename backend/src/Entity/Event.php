@@ -57,7 +57,11 @@ use App\Controller\UserController;
         new GetCollection(), // Get all events
         //new Post(), // Create a new event
         new Patch(), // Patch an event
-        new Delete(), // Delete an event
+        new Delete(
+            name: 'delete-event',
+            uriTemplate: '/events/{id}',
+            controller: EventController::class . '::deleteEvent',
+        ),
         new Post(
             name: 'create-event',
             uriTemplate: '/events',

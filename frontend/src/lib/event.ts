@@ -184,27 +184,27 @@ try {
 }
 
 export async function isUserRegistered(eventId: number) {
-try {
-  const response = await fetch(`https://localhost/api/users/is-registered/${eventId}`, {
-    method: 'GET',
-    headers: {
-      'accept': 'application/ld+json',
-      'Content-Type': 'application/json'
-    },
-    credentials: 'include'
-  });
+  try {
+    const response = await fetch(`https://localhost/api/users/is-registered/${eventId}`, {
+      method: 'GET',
+      headers: {
+        'accept': 'application/ld+json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    });
 
-  if (response.ok) {
-    const data = await response.json();
-    return data;
-  } else {
-    const errorData = await response.json();
-    throw new Error(errorData.errors || 'Erreur lors de la vérification de l\'inscription');
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.errors || 'Erreur lors de la vérification de l\'inscription');
+    }
+  } catch (error) {
+    console.error('Error checking registration:', error);
+    throw new Error('Erreur lors de la vérification de l\'inscription');
   }
-} catch (error) {
-  console.error('Error checking registration:', error);
-  throw new Error('Erreur lors de la vérification de l\'inscription');
-}
 }
 
 export async function updateEvent(
@@ -245,5 +245,28 @@ export async function updateEvent(
   } catch (error) {
     return null;
   }
+}
 
+export async function deleteEvent(eventId: string) {
+  try {
+    const response = await fetch(`https://localhost:443/api/events/${eventId}`, {
+      method: 'DELETE',
+      headers: {
+        'accept': 'application/ld+json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.errors || 'Erreur lors de la suppression de l\'événement');
+    }
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    throw new Error('Erreur lors de la suppression de l\'événement');
+  }
 }

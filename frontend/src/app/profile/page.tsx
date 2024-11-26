@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchUser } from "@/app/api/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
+import { fetchUser } from "@/lib/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,7 +18,7 @@ import {
   updateUserProfile,
   updateUserSettings,
   updateUserProfilePicture,
-} from "@/app/api/data";
+} from "@/lib/data";
 import Image from "next/image";
 
 export default function ProfilePage() {
