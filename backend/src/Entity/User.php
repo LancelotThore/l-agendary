@@ -45,12 +45,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'creator')]
     private Collection $created_events;
 
-    /**
-     * @var Collection<int, Event>
-     */
-    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'registered_users')]
-    private Collection $registered_events;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstname = null;
 
@@ -66,11 +60,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $profilePicture = null;
 
+    /**
+     * @var Collection<int, UserEvent>
+     */
+    #[ORM\OneToMany(targetEntity: UserEvent::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $userEvents;
+
     public function __construct()
     {
-        
         $this->created_events = new ArrayCollection();
-        $this->registered_events = new ArrayCollection();
+        $this->Event = new ArrayCollection();
+        $this->userEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -178,33 +178,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Event>
-     */
-    public function getRegisteredEvents(): Collection
-    {
-        return $this->registered_events;
-    }
-
-    public function addRegisteredEvent(Event $registeredEvent): static
-    {
-        if (!$this->registered_events->contains($registeredEvent)) {
-            $this->registered_events->add($registeredEvent);
-            $registeredEvent->addRegisteredUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRegisteredEvent(Event $registeredEvent): static
-    {
-        if ($this->registered_events->removeElement($registeredEvent)) {
-            $registeredEvent->removeRegisteredUser($this);
-        }
-
-        return $this;
-    }
-
     public function getFirstname(): ?string
     {
         return $this->firstname;
@@ -261,6 +234,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilePicture(?string $profilePicture): static
     {
         $this->profilePicture = $profilePicture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserEvent>
+     */
+    public function getUserEvents(): Collection
+    {
+        return $this->userEvents;
+    }
+
+    public function addUserEvent(UserEvent $userEvent): static
+    {
+        if (!$this->userEvents->contains($userEvent)) {
+            $this->userEvents->add($userEvent);
+            $userEvent->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserEvent(UserEvent $userEvent): static
+    {
+        if ($this->userEvents->removeElement($userEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($userEvent->getUser() === $this) {
+                $userEvent->setUser(null);
+            }
+        }
 
         return $this;
     }

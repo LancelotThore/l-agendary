@@ -3,11 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\User;
+use App\Entity\UserEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class EventController extends AbstractController
 {
@@ -18,10 +22,10 @@ class EventController extends AbstractController
     {
         $highlighted_events = $entityManager->getRepository(Event::class)
             ->createQueryBuilder('e')
-            ->leftJoin('e.registered_users', 'u')
+            ->leftJoin('e.eventsUser', 'u')
             ->groupBy('e.id')
             ->where('e.privacy = 1')
-            ->orderBy('COUNT(u.id)', 'DESC')
+            ->orderBy('COUNT(u.user)', 'DESC')
             ->setMaxResults(6)
             ->getQuery()
             ->getResult();
@@ -80,14 +84,21 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
     return $this->json($events);
 }
 
-/**
+    /**
      * @Route("/register-event", name="register-event", methods={"POST"})
      */
-    public function RegisterEvent(Request $request, EntityManagerInterface $entityManager): Response
+    public function RegisterEvent(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $data = json_decode($request->getContent(), true);
         $email = $data['email'];
+        $eventId = $data['event'];
         $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+        $event = $entityManager->getRepository(Event::class)->find($eventId);
+        
+        // Créer l'inscription
+        $eventUser = new UserEvent();
+        $eventUser->setToken(bin2hex(random_bytes(32)));
+        $eventUser->setEvent($event);
 
         if (!$existingUser) {
             // Création d'un utilisateur fictif
@@ -98,19 +109,48 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
             $user->setLastName('User');
             $user->setRoles(['ROLE_EMAIL']);
             $entityManager->persist($user);
+            
+            $eventUser->setUser($user);
+            $eventUser->setValidation(false);    
+            $entityManager->persist($eventUser);  
             $entityManager->flush();
+            
+            $email = (new Email())
+                ->from('your_email@example.com')
+                ->to($user->getEmail())
+                ->subject('Confirmation d\'inscription à un événement')
+                ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
+                        <a href="https://yourwebsite.com/confirm-registration/' . $eventUser->getToken() . '">
+                            <button>Confirmer l\'inscription</button>
+                        </a>');
 
-            // Créer l'inscription
-            $eventRegistration = new EventRegistration();
-            $eventRegistration->setValidation(false);
-            $eventRegistration->setToken(bin2hex(random_bytes(32)));
-            $eventRegistration->setEvent($event);
-            $eventRegistration->setUser($user);
+                $mailer->send($email);
         } else {
+            if($entityManager->getRepository(UserEvent::class)->findOneBy(['event' => $event, 'user' => $existingUser])) {
+                return $this->json(['error' => 'Vous êtes déjà inscrit à cet événement'], 400);
+            }
+            if($existingUser->getRoles() == ['ROLE_EMAIL']) {
+                $userEvent::setUser($existingUser);
+                $userEvent::setValidation(false);
+                $entityManager->persist($eventUser);  
+                $entityManager->flush();
+                
+                $email = (new Email())
+                ->from('your_email@example.com')
+                ->to($user->getEmail())
+                ->subject('Confirmation d\'inscription à un événement')
+                ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
+                        <a href="https://yourwebsite.com/confirm-registration/' . $userEvent::getToken() . '">
+                            <button>Confirmer l\'inscription</button>
+                        </a>');
 
+                $mailer->send($email);
+            } else {
+                return $this->json(['error' => 'Vous possédez déjà un compte sur notre application, veuillez vous connecter pour vous inscrire à cet événement.'], 400);
+            }
         }
 
-        // $eventId = $data['event'];
+        return $this->json(['status' => 'success']);
 
         // if (!$eventId) {
         //     return $this->json(['error' => 'Event ID non valide'], 400);

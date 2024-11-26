@@ -27,7 +27,6 @@ class HomeController extends AbstractController
     {
         $users = $this->em->getRepository(User::class)->findAll();
 
-
         return $this->render("base.html.twig",[
 
             'users' => $users,

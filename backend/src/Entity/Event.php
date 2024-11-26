@@ -41,6 +41,11 @@ use App\Controller\EventController;
             controller: EventController::class . '::searchEvents',
             // outputFormats: ['json' => ['application/ld+json']],
         ),
+        new Post(
+            name: 'register-event',
+            uriTemplate: '/register-event',
+            controller: EventController::class . '::RegisterEvent',
+        ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
         new Post(), // Create a new event
@@ -77,18 +82,18 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator = null;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'registered_events')]
-    private Collection $registered_users;
-
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
+    /**
+     * @var Collection<int, UserEvent>
+     */
+    #[ORM\OneToMany(targetEntity: UserEvent::class, mappedBy: 'event', orphanRemoval: true)]
+    private Collection $eventsUser;
+
     public function __construct()
     {
-        $this->registered_users = new ArrayCollection();
+        $this->eventsUser = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -180,30 +185,6 @@ class Event
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getRegisteredUsers(): Collection
-    {
-        return $this->registered_users;
-    }
-
-    public function addRegisteredUser(User $registeredUser): static
-    {
-        if (!$this->registered_users->contains($registeredUser)) {
-            $this->registered_users->add($registeredUser);
-        }
-
-        return $this;
-    }
-
-    public function removeRegisteredUser(User $registeredUser): static
-    {
-        $this->registered_users->removeElement($registeredUser);
-
-        return $this;
-    }
-
     public function getImage(): ?string
     {
         return $this->image;
@@ -212,6 +193,36 @@ class Event
     public function setImage(string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserEvent>
+     */
+    public function getEventsUser(): Collection
+    {
+        return $this->eventsUser;
+    }
+
+    public function addEventUser(UserEvent $userEvent): static
+    {
+        if (!$this->eventsUser->contains($userEvent)) {
+            $this->eventsUser->add($userEvent);
+            $userEvent->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventUser(UserEvent $userEvent): static
+    {
+        if ($this->eventsUser->removeElement($userEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($userEvent->getEvent() === $this) {
+                $userEvent->setEvent(null);
+            }
+        }
 
         return $this;
     }

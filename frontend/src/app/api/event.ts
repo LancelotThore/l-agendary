@@ -127,7 +127,7 @@ export async function createEventRegistration(email: string, event: string) {
   };
 
   try {
-      const response = await fetch('https://localhost:443/api/event-registrations-with-mail', {
+      const response = await fetch('https://localhost:443/api/register-event', {
           method: 'POST',
           headers: {
               'accept': 'application/ld+json',
