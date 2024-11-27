@@ -202,6 +202,9 @@ export default function Event({ params }) {
     }
   };
 
+    
+  }, []);
+  
   return (
     <>
       {event && creator ? (

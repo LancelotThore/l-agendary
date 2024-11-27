@@ -16,6 +16,32 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+
+    public function countPublicAndPrivateEvents(): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->select('e.privacy, COUNT(e.id) as count')
+            ->groupBy('e.privacy');
+
+        $results = $qb->getQuery()->getResult();
+
+        $data = [
+            'public' => 0,
+            'private' => 0,
+        ];
+
+        foreach ($results as $result) {
+            if ($result['privacy']) {
+                $data['private'] = $result['count'];
+            } else {
+                $data['public'] = $result['count'];
+            }
+        }
+
+        return $data;
+    }
+
+
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */

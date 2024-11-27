@@ -33,6 +33,50 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+
+    // public function countUsersByAgeRange(): array
+    // {
+    //     $conn = $this->getEntityManager()->getConnection();
+
+    //     $sql = '
+    //         SELECT age, COUNT(*) as count
+    //         FROM user
+    //         GROUP BY age
+    //     ';
+
+    //     $stmt = $conn->prepare($sql);
+    //     $result = $stmt->executeQuery()->fetchAllAssociative();
+
+    //     $data = [
+    //         'under_18' => 0,
+    //         '18_24' => 0,
+    //         '25_34' => 0,
+    //         '35_44' => 0,
+    //         'above_45' => 0,
+    //     ];
+
+    //     foreach ($result as $row) {
+    //         $age = (int) $row['age'];
+    //         $count = (int) $row['count'];
+
+    //         if ($age < 18) {
+    //             $data['under_18'] += $count;
+    //         } elseif ($age >= 18 && $age <= 24) {
+    //             $data['18_24'] += $count;
+    //         } elseif ($age >= 25 && $age <= 34) {
+    //             $data['25_34'] += $count;
+    //         } elseif ($age >= 35 && $age <= 44) {
+    //             $data['35_44'] += $count;
+    //         } else {
+    //             $data['above_45'] += $count;
+    //         }
+    //     }
+
+    //     return $data;
+    // }
+
+
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

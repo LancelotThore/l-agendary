@@ -34,7 +34,7 @@ class EventController extends AbstractController
             ->createQueryBuilder('e')
             ->leftJoin('e.registered_users', 'u')
             ->groupBy('e.id')
-            ->where('e.privacy = 1')
+            ->where('e.privacy = true')
             ->orderBy('COUNT(u.id)', 'DESC')
             ->setMaxResults(6)
             ->getQuery()

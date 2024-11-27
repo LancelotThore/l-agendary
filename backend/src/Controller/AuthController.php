@@ -62,7 +62,7 @@ class AuthController extends AbstractController
         $user->setFirstname($data['firstname']);
         $user->setLastname($data['name']);
         $user->setBio('Je m\'appelle ' . $user->getFirstname() . ' ' . $user->getLastname() . ', et je suis un utilisateur de l\'application.');
-        $user->setAge('?');
+        $user->setAge(0);
 
 
 
@@ -86,6 +86,10 @@ class AuthController extends AbstractController
 
         if (!$user || !$this->passwordHasher->isPasswordValid($user, $data['password'], null)) {
             throw new BadCredentialsException('Invalid credentials');
+        }
+
+        if (!$user->isActive()) {
+            return new JsonResponse(['error' => 'Account is not active'], 401);
         }
 
         // Créer le token JWT
@@ -133,6 +137,27 @@ class AuthController extends AbstractController
             'profile_pic' => $user->getProfilePicture()
         ]);
 
+    }
+
+    public function isAdmin(Request $request) {
+        $token = $request->cookies->get('token');
+
+        if (!$token) {
+            return new JsonResponse(['error' => 'Token not found'], 401);
+        }
+
+        $data = $this->jwtEncoder->decode($token);
+        $user = $this->getUserRepository()->findOneBy(['email' => $data['username']]);
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
+
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            return new JsonResponse(['isAdmin' => true], 200);
+        }
+
+        return new JsonResponse(['isAdmin' => false], 401);
     }
 
 }
