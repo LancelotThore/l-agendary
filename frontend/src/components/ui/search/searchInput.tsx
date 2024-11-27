@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/api/utils";
 import { Search, Close } from "../icons";
-import { fetchSearchEvents } from "@/lib/event";
+import { fetchSearchEvents } from "@/app/api/event";
 
 export interface SelectInputProps extends React.HTMLAttributes<HTMLDivElement> {
   img?: React.ReactNode;

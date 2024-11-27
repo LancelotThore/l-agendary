@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { Logo, Search, MenuBurger, Home, Close, Profil, PlusCircle } from "../ui/icons";
 import { Button } from '../ui/button';
-import { fetchUser } from "@/lib/data";
+import { fetchUser } from "@/app/api/data";
 import Link from 'next/link'    
 import { useRouter } from 'next/navigation';
-import { logout } from "@/lib/login";
+import { logout } from "@/app/api/login";
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

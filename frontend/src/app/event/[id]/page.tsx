@@ -5,33 +5,16 @@ import EventOrganizer from "@/components/ui/event/eventOrganizer";
 import EventDescription from "@/components/ui/event/eventDescription";
 import EventShare from "@/components/ui/event/eventShare";
 import { Button } from "@/components/ui/button";
-import { fetchEvent, fetchCreator, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent } from "@/lib/event";
+import { fetchEvent, fetchCreator, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent } from "@/app/api/event";
 import { toast } from "sonner"
 import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
-import { fetchUser } from "@/lib/data";
+import { fetchUser } from "@/app/api/data";
 import { useEffect, useState } from "react";
 import PageEventSkeleton from "./loading";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useRouter } from "next/navigation";
 
 export default function Event({ params }) {
@@ -83,8 +66,13 @@ export default function Event({ params }) {
         const response = await joinEvent(event.id);
         toast(`Vous avez rejoint l'événement ${event.title}`);
         setIsRegistered(true);
+        setEvent((prevEvent) => ({
+          ...prevEvent,
+          registeredUsers: [...prevEvent.registeredUsers, user.id],
+        }));
+        await upEvent();
       } catch (error) {
-        toast(`Erreur lors de l\'inscription à l\'événement`);
+        toast(`Erreur lors de l'inscription à l'événement ${event.title}`);
       }
     }
   };
@@ -95,8 +83,13 @@ export default function Event({ params }) {
         const response = await leaveEvent(event.id);
         toast(`Vous avez quitté l'événement ${event.title}`);
         setIsRegistered(false);
+        setEvent((prevEvent) => ({
+          ...prevEvent,
+          registeredUsers: prevEvent.registeredUsers.filter((userId) => userId !== user.id),
+        }));
+        await upEvent();
       } catch (error) {
-        toast('Erreur lors de la désinscription de l\'événement.');
+        toast(`Erreur lors de la désinscription de l'événement ${event.title}`);
       }
     }
   }
@@ -108,7 +101,7 @@ export default function Event({ params }) {
         toast(`Vous avez supprimé l'événement ${event.title}`);
         router.push("/");
       } catch (error) {
-        toast('Erreur lors de la suppression de l\'événement.');
+        toast(`Erreur lors de la suppression de l\'événement ${event.title}`);
       }
     }
   }

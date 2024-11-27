@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Filter from "@/components/ui/search/filter";
 import { CardEvent } from "@/components/ui/event/cardEvent";
 import Pagination from "@/components/ui/search/pagination";
-import { fetchSearchEvents } from "../../lib/event";
+import { fetchSearchEvents } from "../api/event";
 
 const ITEMS_PER_PAGE = 9;
 

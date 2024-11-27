@@ -4,9 +4,9 @@ import { useEffect, useState, FormEvent } from "react";
 import { FormElement } from "@/components/ui/form/formElement";
 import { FormRadio } from "@/components/ui/form/formRadio";
 import { Button } from "@/components/ui/button";
-import { createEvent } from "@/lib/event";
+import { createEvent } from "@/app/api/event";
 import { useRouter } from "next/navigation";
-import { fetchUser } from "@/lib/data";
+import { fetchUser } from "@/app/api/data";
 import path from 'path';
 import { toast } from "sonner";
 

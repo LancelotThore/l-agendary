@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "../../components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { register } from "@/lib/login";
+import { register } from "@/app/api/login";
 import Image from "next/image";
 
 const ralewaySemBold = Raleway({
@@ -124,12 +124,12 @@ export default function RegisterPage() {
               <Image width={5} height={5} className={`animate-spin h-5 w-5 mr-3 ${spinnerActive ? '' : 'hidden'}`} src="./spinner.svg" alt="Spiner svg" />
               Créer son compte
             </Button>
-            <a
+            <Link
               className="text-center mt-3 hover:underline hover:underline-offset-2 transition-transform md:text-sm"
               href="/login"
             >
               Déjà un compte ? Se connecter
-            </a>
+            </Link>
           </div>
         </div>
       </form>
