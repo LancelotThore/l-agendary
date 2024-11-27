@@ -31,35 +31,35 @@ class JwtSubscriber implements EventSubscriberInterface
 
         // Vérifier si /admin
 
-        // if (strpos($path, '/admin') !== 0) {
-        //     return;
-        // }
+        if (strpos($path, '/admin') !== 0) {
+            return;
+        }
 
-        // $token = $request->cookies->get('token');
+        $token = $request->cookies->get('token');
 
-        // if (!$token) {
-        //     throw new AccessDeniedHttpException('Token not found');
-        // }
+        if (!$token) {
+            throw new AccessDeniedHttpException('Token not found');
+        }
 
-        // try {
-        //     $data = $this->jwtEncoder->decode($token);
-        // } catch (\Exception $e) {
-        //     throw new AccessDeniedHttpException('Invalid token');
-        // }
+        try {
+            $data = $this->jwtEncoder->decode($token);
+        } catch (\Exception $e) {
+            throw new AccessDeniedHttpException('Invalid token');
+        }
 
-        // $user = $this->userRepository->findOneBy(['email' => $data['username']]);
+        $user = $this->userRepository->findOneBy(['email' => $data['username']]);
 
-        // if (!$user) {
-        //     throw new AccessDeniedHttpException('User not found');
-        // }
+        if (!$user) {
+            throw new AccessDeniedHttpException('User not found');
+        }
 
-        // if (!$user->isActive()) {
-        //     throw new AccessDeniedHttpException('Account is not active');
-        // }
+        if (!$user->isActive()) {
+            throw new AccessDeniedHttpException('Account is not active');
+        }
 
-        // if (!in_array('ROLE_ADMIN', $user->getRoles())) {
-        //     throw new AccessDeniedHttpException('User is not an admin');
-        // }
+        if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+            throw new AccessDeniedHttpException('User is not an admin');
+        }
     }
 
     public static function getSubscribedEvents()
