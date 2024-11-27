@@ -120,7 +120,7 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
                 ->to($user->getEmail())
                 ->subject('Confirmation d\'inscription à un événement')
                 ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
-                        <a href="https://yourwebsite.com/confirm-registration/' . $eventUser->getToken() . '">
+                        <a href="https://localhost:3000/confirm-registration?token=' . $eventUser->getToken() . '">
                             <button>Confirmer l\'inscription</button>
                         </a>');
 
