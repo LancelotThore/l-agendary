@@ -155,7 +155,7 @@ export async function createEventRegistration(email: string, event: string) {
 
 export async function confirmRegistration(token: string) {
   try {
-      const response = await fetch(`https://localhost:443/api/confirm-registration}`, {
+      const response = await fetch('https://localhost:443/api/confirm-registration', {
           method: 'POST',
           headers: {
               'accept': 'application/ld+json',

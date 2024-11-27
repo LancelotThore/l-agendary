@@ -44,12 +44,12 @@ use App\Controller\EventController;
         new Post(
             name: 'register-event',
             uriTemplate: '/register-event',
-            controller: EventController::class . '::RegisterEvent',
+            controller: EventController::class . '::registerEvent',
         ),
         new Post(
             name: 'confirm-registration',
             uriTemplate: '/confirm-registration',
-            controller: EventController::class . '::ConfirmRegistration',
+            controller: EventController::class . '::confirmRegistration',
         ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events

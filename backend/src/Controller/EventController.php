@@ -87,7 +87,7 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
     /**
      * @Route("/register-event", name="register-event", methods={"POST"})
      */
-    public function RegisterEvent(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    public function registerEvent(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $data = json_decode($request->getContent(), true);
         $email = $data['email'];
@@ -159,7 +159,7 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
     public function confirmRegistration(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
-        $token = $data['token'];
+        $token = $data['token'];    
         $userEvent = $entityManager->getRepository(UserEvent::class)->findOneBy(['token' => $token]);
 
         if (!$userEvent) {
