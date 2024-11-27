@@ -22,10 +22,10 @@ class EventController extends AbstractController
     {
         $highlighted_events = $entityManager->getRepository(Event::class)
             ->createQueryBuilder('e')
-            ->leftJoin('e.eventsUser', 'u')
+            ->leftJoin('e.eventsUser', 'eu')
             ->groupBy('e.id')
             ->where('e.privacy = 1')
-            ->orderBy('COUNT(u.user)', 'DESC')
+            ->orderBy('COUNT(eu.user)', 'DESC')
             ->setMaxResults(6)
             ->getQuery()
             ->getResult();
@@ -140,7 +140,7 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
                 ->to($user->getEmail())
                 ->subject('Confirmation d\'inscription à un événement')
                 ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
-                        <a href="https://yourwebsite.com/confirm-registration/' . $userEvent::getToken() . '">
+                        <a href="https://localhost:3000/confirm-registration?token=' . $userEvent::getToken() . '">
                             <button>Confirmer l\'inscription</button>
                         </a>');
 
@@ -151,29 +151,24 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
         }
 
         return $this->json(['status' => 'success']);
+    }
 
-        // if (!$eventId) {
-        //     return $this->json(['error' => 'Event ID non valide'], 400);
-        // }
+    /**
+     * @Route("/confirm-registration", name="confirm-registration", methods={"POST"})
+     */
+    public function confirmRegistration(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['token'];
+        $userEvent = $entityManager->getRepository(UserEvent::class)->findOneBy(['token' => $token]);
 
-        // // Récupérer l'événement depuis la base de données
-        // $event = $entityManager->getRepository(Event::class)->find($eventId);
+        if (!$userEvent) {
+            return $this->json(['error' => 'Invalid token'], 400);
+        }
 
-        // if (!$event) {
-        //     return $this->json(['error' => 'Événement non trouvé'], 404);
-        // }
+        $userEvent->setValidation(true);
+        $entityManager->flush();
 
-        // // Créer l'inscription
-        // $eventRegistration = new EventRegistration();
-        // $eventRegistration->setValidation(false);
-        // $eventRegistration->setToken(bin2hex(random_bytes(32)));
-        // $eventRegistration->setEvent($event);
-        // $eventRegistration->setEmail($email);
-
-        // // Persister l'inscription
-        // $entityManager->persist($eventRegistration);
-        // $entityManager->flush();
-
-        // return $this->json(['status' => 'success']);
+        return $this->json(['status' => 'success']);
     }
 }

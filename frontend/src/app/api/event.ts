@@ -152,3 +152,28 @@ export async function createEventRegistration(email: string, event: string) {
       throw new Error(`Erreur lors de l'inscription à l'événement: ${error.message}`);
   }
 }
+
+export async function confirmRegistration(token: string) {
+  try {
+      const response = await fetch(`https://localhost:443/api/confirm-registration}`, {
+          method: 'POST',
+          headers: {
+              'accept': 'application/ld+json',
+              'Content-Type': 'application/ld+json'
+          },
+          body: JSON.stringify({ token }),
+          credentials: 'include'
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          return data;
+      } else {
+          const errorData = await response.json();
+          throw new Error(`Erreur lors de la confirmation de l'inscription: ${response.status} ${response.statusText} - ${errorData.errors || 'Données incorrectes'}`);
+      }
+  } catch (error) {
+      console.error('Error confirming registration:', error);
+      throw new Error(`Erreur lors de la confirmation de l'inscription: ${error.message}`);
+  }
+}

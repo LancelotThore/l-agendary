@@ -46,6 +46,11 @@ use App\Controller\EventController;
             uriTemplate: '/register-event',
             controller: EventController::class . '::RegisterEvent',
         ),
+        new Post(
+            name: 'confirm-registration',
+            uriTemplate: '/confirm-registration',
+            controller: EventController::class . '::ConfirmRegistration',
+        ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
         new Post(), // Create a new event

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { confirmRegistration } from "../api/event";
 
 export default function ConfirmRegistration() {
     const router = useRouter();
@@ -17,10 +18,14 @@ export default function ConfirmRegistration() {
         }
     }, [searchParams, router]);
 
+    const handleSubmit = () => {
+        confirmRegistration(searchParams.get('token'));
+    }
+
     return (
         <div className="flex flex-col gap-4 justify-center items-center">
             <h1 className="text-base font-semibold text-center md:text-2xl">Inscription à l'évenement NAME</h1>
-            <Button>Confirmer l'inscription</Button>
+            <Button onClick={handleSubmit}>Confirmer l'inscription</Button>
         </div>
     )
 }
