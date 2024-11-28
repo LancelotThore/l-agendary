@@ -202,7 +202,7 @@ export default function CreateEvent() {
                 variant={"accent"} 
                 className="mx-auto mt-6"
             >
-                Publier
+                Créer l'événement
             </Button>
         </form>
     );

@@ -202,9 +202,6 @@ export default function Event({ params }) {
     }
   };
 
-    
-  }, []);
-  
   return (
     <>
       {event && creator ? (
@@ -414,7 +411,7 @@ export default function Event({ params }) {
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Annulé</AlertDialogCancel>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
                           <AlertDialogAction onClick={handleDeleteEvent}>Continue</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>

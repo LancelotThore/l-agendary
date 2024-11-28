@@ -9,9 +9,8 @@ import { CardEventSkeleton } from "../components/ui/event/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import { fetchHighlightedEvents } from "@/app/api/event";
+import { fetchUser } from "@/app/api/data";
 import { Suspense } from 'react';
-import { fetchUser, isAdmin } from "@/app/api/data";
-import { useRouter } from "next/navigation";
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -45,9 +44,6 @@ export default function Home() {
   const [highlights, setHighlights] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [error, setError] = useState("");
-  const router = useRouter();
-  // const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,28 +53,11 @@ export default function Home() {
     };
     fetchData();
 
-    // const isAdmin = async () => {
-    //   const adminStatus = await isAdmin();
-    //   setIsAdmin(adminStatus.is_admin);
-    // }
-
     const fetchUserData = async () => {
       const userData = await fetchUser();
       setUser(userData);
     };
     fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const errorParam = urlParams.get('error');
-    if (errorParam) {
-      setError(errorParam);
-      setTimeout(() => {
-        setError("");
-      }, 5000);
-    }
-    
   }, []);
 
   return (
@@ -91,15 +70,6 @@ export default function Home() {
           objectFit="cover"
           className="z-[-1] rounded-2xl"
         />
-      {error && (
-        <div className="bg-red-500 rounded-lg mb-2 text-white text-center p-2">
-          {error}
-        </div>
-      )}
-      <div
-        className="flex flex-col bg-cover items-center bg-center p-24 rounded-lg"
-        style={{ backgroundImage: "url('./bgToolCards.webp')" }}
-      >
         <h1
           className={`${agbalumo.className} text-3xl md:text-4xl pb-14 text-center text-secondary`}
         >
