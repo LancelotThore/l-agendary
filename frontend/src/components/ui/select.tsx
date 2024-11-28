@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/app/api/utils";
+import { cn } from "@/lib/utils";
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   startImg?: React.ReactNode;

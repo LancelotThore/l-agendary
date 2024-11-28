@@ -1,42 +1,65 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { SearchBar } from "./searchBar";
-import { SearchInput } from "./searchInput";
-import { Input } from "../input";
-import { Clock, LocationOn, User, Filtre } from '../icons';
-import { fetchSearchEvents, fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";
+import { SearchBar } from "@/components/ui/search/searchBar";
+import { SearchInput } from "@/components/ui/search/searchInput";
+import { Input } from "@/components/ui/input";
+import { Clock, LocationOn, User, Filtre } from '@/components/ui/icons';
+import { fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
-const ITEMS_PER_PAGE = 9;
+export default function Filter() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
 
-export default function Filter({ onSearchResults }) {
   const [showFilters, setShowFilters] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [location, setLocation] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [creatorFirstname, setCreatorFirstname] = useState("");
-  const [limit] = useState(ITEMS_PER_PAGE);
-  const [offset, setOffset] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('query') || '');
+  const [location, setLocation] = useState(searchParams.get('location') || '');
+  const [startDate, setStartDate] = useState(searchParams.get('startDate') || '');
+  const [endDate, setEndDate] = useState(searchParams.get('endDate') || '');
+  const [creatorFirstname, setCreatorFirstname] = useState(searchParams.get('creatorFirstname') || '');
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleSearch = async () => {
-    const results = await fetchSearchEvents(searchTerm, location, startDate, endDate, creatorFirstname, limit, offset);
-    onSearchResults(results);
-  };
-
   useEffect(() => {
-    handleSearch();
-  }, [searchTerm, location, startDate, endDate, creatorFirstname, limit, offset]);
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1');
+    if (searchTerm) {
+      params.set('query', searchTerm);
+    } else {
+      params.delete('query');
+    }
+    if (location) {
+      params.set('location', location);
+    } else {
+      params.delete('location');
+    }
+    if (startDate) {
+      params.set('startDate', startDate);
+    } else {
+      params.delete('startDate');
+    }
+    if (endDate) {
+      params.set('endDate', endDate);
+    } else {
+      params.delete('endDate');
+    }
+    if (creatorFirstname) {
+      params.set('creatorFirstname', creatorFirstname);
+    } else {
+      params.delete('creatorFirstname');
+    }
+    router.replace(`${pathname}?${params.toString()}`);
+  }, [searchTerm, location, startDate, endDate, creatorFirstname]);
 
   const handleSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleLocationSelect = async (selectedLocation: string) => {
+  const handleLocationSelect = (selectedLocation: string) => {
     setLocation(selectedLocation);
   };
 
@@ -48,7 +71,7 @@ export default function Filter({ onSearchResults }) {
     setEndDate(e.target.value);
   };
 
-  const handleCreatorFirstnameSelect = async (selectedCreatorFirstname: string) => {
+  const handleCreatorFirstnameSelect = (selectedCreatorFirstname: string) => {
     setCreatorFirstname(selectedCreatorFirstname);
   };
 
@@ -71,20 +94,20 @@ export default function Filter({ onSearchResults }) {
         </button>
       </div>
       <div className={`w-full flex-col gap-5 ${showFilters ? 'flex' : 'hidden'} md:grid md:grid-cols-4`}>
-          <Input
-            img={<Clock className='w-4 md:w-6' />}
-            type="date"
-            className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
-            onChange={handleStartDateChange}
-            value={startDate}
-          />
-          <Input
-            img={<Clock className='w-4 md:w-6' />}
-            type="date"
-            className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
-            onChange={handleEndDateChange}
-            value={endDate}
-          />
+        <Input
+          img={<Clock className='w-4 md:w-6' />}
+          type="date"
+          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
+          onChange={handleStartDateChange}
+          value={startDate}
+        />
+        <Input
+          img={<Clock className='w-4 md:w-6' />}
+          type="date"
+          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
+          onChange={handleEndDateChange}
+          value={endDate}
+        />
         <SearchInput
           img={<LocationOn className='w-4 md:w-6' />}
           fetchOptions={fetchUniqueLocations}

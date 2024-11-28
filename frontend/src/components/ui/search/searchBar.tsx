@@ -1,13 +1,13 @@
-import * as React from "react";
-import { cn } from "@/app/api/utils";
-import { Search } from "../icons";
+import { forwardRef, InputHTMLAttributes, ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { Search } from "@/components/ui/icons";
 
-export interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  startImg?: React.ReactNode;
-  endImg?: React.ReactNode;
+export interface SearchBarProps extends InputHTMLAttributes<HTMLInputElement> {
+  startImg?: ReactNode;
+  endImg?: ReactNode;
 }
 
-const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
+const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
   ({ className, type, startImg, endImg = <Search className="w-4 md:w-6" />, ...props }, ref) => { 
     return (
       <div className="relative flex items-center w-full md:max-w-lg">

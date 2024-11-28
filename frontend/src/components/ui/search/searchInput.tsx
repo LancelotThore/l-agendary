@@ -1,17 +1,15 @@
-import * as React from "react";
-import { useState, useEffect, useRef } from "react";
-import { cn } from "@/app/api/utils";
-import { Search, Close } from "../icons";
-import { fetchSearchEvents } from "@/app/api/event";
+import { useState, useEffect, useRef, forwardRef, HTMLAttributes, ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { Search, Close } from "@/components/ui/icons";
 
-export interface SelectInputProps extends React.HTMLAttributes<HTMLDivElement> {
-  img?: React.ReactNode;
+export interface SelectInputProps extends HTMLAttributes<HTMLDivElement> {
+  img?: ReactNode;
   placeholder?: string;
   fetchOptions?: () => Promise<string[]>;
   onSelect?: (selected: string) => void;
 }
 
-const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
+const SearchInput = forwardRef<HTMLDivElement, SelectInputProps>(
   ({ className, img = <Search className="w-4 md:w-6" />, placeholder = "Select an option", fetchOptions, onSelect, ...props }, ref) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
