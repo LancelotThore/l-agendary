@@ -110,6 +110,12 @@ export default function LoginPage() {
               <Image width={5} height={5} className={`animate-spin h-5 w-5 mr-3 ${spinnerActive ? '' : 'hidden'}`} src="./spinner.svg" alt="Spiner svg" />
               Se connecter
             </Button>
+            <Link
+              className="text-center mt-3 hover:underline hover:underline-offset-2 transition-transform md:text-sm"
+              href="/register"
+            >
+              Pas encore de compte ? S'inscrire
+            </Link>
           </div>
         </div>
       </form>

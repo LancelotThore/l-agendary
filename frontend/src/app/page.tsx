@@ -68,7 +68,7 @@ export default function Home() {
           alt="Background"
           layout="fill"
           objectFit="cover"
-          className="z-[-1] rounded-lg"
+          className="z-[-1] rounded-2xl"
         />
         <h1
           className={`${agbalumo.className} text-3xl md:text-4xl pb-14 text-center text-secondary`}

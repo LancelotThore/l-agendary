@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Logo, Search, MenuBurger, Home, Close, Profil } from "../ui/icons";
-import { Button } from '../ui/button';
+import { Search, MenuBurger, Home, Close, Profil, PlusCircle } from "@/components/ui/icons";
+import { Logo } from "@/components/ui/logos";
+import { Button } from '@/components/ui/button';
 import { fetchUser } from "@/app/api/data";
 import Link from 'next/link'    
 import { useRouter } from 'next/navigation';
@@ -53,11 +54,10 @@ export function Navbar() {
                         <Search className="w-5 h-5" aria-hidden="true" />
                     </Link>
                     {user ? (
-                        <>
-                            <Link href="/event/create" className="md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
-                                <span>Créer un événement</span>
-                            </Link>
-                        </>
+                        <Link href="/event/create" className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
+                            <span>Créer un événement</span>
+                            <PlusCircle className="w-5 h-5" aria-hidden="true" />
+                        </Link>
                     ) : ( <></> )}
                 </div>
 
@@ -112,6 +112,12 @@ export function Navbar() {
                     </li>
                     {user ? (
                         <>
+                            <li>
+                                <Link href="/event/create" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
+                                    <span>Créer d'événement</span>
+                                    <PlusCircle className="w-5 h-5" aria-hidden="true" />
+                                </Link>
+                            </li>
                             <li>
                                 <Link href="/profile" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
                                     <span>Profil</span>
