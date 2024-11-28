@@ -21,8 +21,10 @@ const RootLayoutClient = ({ children }: RootLayoutClientProps) => {
       ) : (
         <>
           <Navbar />
-          <main className='container m-auto w-10/12 my-16'>
-            {children}
+          <main className='container m-auto w-10/12'>
+            <div className='my-16'>
+              {children}
+            </div>
           </main>
           <Toaster />
           <Footer />

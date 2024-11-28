@@ -89,7 +89,7 @@ export default function Home() {
           alt="Background"
           layout="fill"
           objectFit="cover"
-          className="z-[-1] rounded-lg"
+          className="z-[-1] rounded-2xl"
         />
       {error && (
         <div className="bg-red-500 rounded-lg mb-2 text-white text-center p-2">

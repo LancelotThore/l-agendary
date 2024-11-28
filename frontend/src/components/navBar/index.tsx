@@ -1,19 +1,18 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Logo, Search, MenuBurger, Home, Close, Profil, PlusCircle } from "../ui/icons";
-import { Button } from '../ui/button';
+import { Search, MenuBurger, Home, Close, Profil, PlusCircle } from "@/components/ui/icons";
+import { Logo } from "@/components/ui/logos";
+import { Button } from '@/components/ui/button';
 import { fetchUser } from "@/app/api/data";
 import Link from 'next/link'    
 import { useRouter } from 'next/navigation';
 import { logout } from "@/app/api/login";
-import { isAdmin as isLoggedAdmin } from "@/app/api/data";
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // État de chargement
-    const [isAdmin, setIsAdmin] = useState(false); // État admin
     const router = useRouter(); // Pour la redirection
 
     useEffect(() => {
@@ -30,18 +29,6 @@ export function Navbar() {
         };
 
         loadUser();
-
-        // Fonction pour vérifier le statut admin
-        const checkAdmin = async () => {
-            try {
-                const adminStatus = await isLoggedAdmin();
-                setIsAdmin(adminStatus);
-            } catch (err) {
-                console.error("Erreur lors de la vérification du statut admin :", err);
-            }
-        };
-
-        checkAdmin();
     }, []);
 
     const toggleMenu = () => {
@@ -83,11 +70,6 @@ export function Navbar() {
                                 <Profil className="w-5 h-5" aria-hidden="true" />
                             </Link>
                             <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
-                            {isAdmin && (
-                                <Link href="/admin" className="block py-2 px-3 rounded hover:bg-background font-medium text-base">
-                                    <span>Admin</span>
-                                </Link>
-                            )}
                         </>
                     ) : (
                         <>
@@ -145,11 +127,6 @@ export function Navbar() {
                             <li>
                                 <Button onClick={handleLogout} className="hover:bg-primary/70 mt-2">Se déconnecter</Button>
                             </li>
-                            {isAdmin && (
-                                <Link href="/admin" className="block py-2 px-3 rounded hover:bg-background font-medium text-base mt-2">
-                                    <span>Admin</span>
-                                </Link>
-                            )}
                         </>
                     ) : (
                         <>
