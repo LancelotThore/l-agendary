@@ -29,10 +29,10 @@
    - Voir [data.md](./data.md).
 
 6. **Accèder à la page administrateur** :
-   - Vous devez renseigner un rôle admin dans phpmyadmin à l'adresse : [http://localhost:8080/]
-   Les informations à renseigner dans le rôle de l'utilisateur est : ```["ROLE_USER", "ROLE_ADMIN"]```
-   *Utilisateur: root*
-   *Mot de passe: root*
+   - Vous devez renseigner un rôle admin dans phpmyadmin à l'adresse : [http://localhost:8080/](http://localhost:8080/)
+   - Les informations à renseigner dans le rôle de l'utilisateur est : ```["ROLE_USER", "ROLE_ADMIN"]```
+   - *Utilisateur: root*
+   - *Mot de passe: root*
 
 
 ---
