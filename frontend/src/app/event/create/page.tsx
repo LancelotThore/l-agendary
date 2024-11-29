@@ -87,7 +87,7 @@ export default function CreateEvent() {
                 location, 
                 startDate, 
                 endDate, 
-                imageName
+                `/uploads/event_pictures/${imageName}`
             );
             toast("L'événement a été créé avec succès !");
             router.push('/');
@@ -202,7 +202,7 @@ export default function CreateEvent() {
                 variant={"accent"} 
                 className="mx-auto mt-6"
             >
-                Créer l'événement
+                Publier
             </Button>
         </form>
     );

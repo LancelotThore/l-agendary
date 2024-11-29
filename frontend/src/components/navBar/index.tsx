@@ -1,20 +1,17 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Search, MenuBurger, Home, Close, Profil, PlusCircle } from "@/components/ui/icons";
-import { Logo } from "@/components/ui/logos";
-import { Button } from '@/components/ui/button';
+import { Logo, Event, Search, MenuBurger, Home, Close, Profil } from "../ui/icons";
+import { Button } from '../ui/button';
 import { fetchUser } from "@/app/api/data";
-import Link from 'next/link';
+import Link from 'next/link'    
 import { useRouter } from 'next/navigation';
 import { logout } from "@/app/api/login";
-import { isAdmin as isLoggedAdmin } from "@/app/api/data";
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // État de chargement
-    const [isAdmin, setIsAdmin] = useState(false); // État admin
     const router = useRouter(); // Pour la redirection
 
     useEffect(() => {
@@ -31,18 +28,6 @@ export function Navbar() {
         };
 
         loadUser();
-
-        // Fonction pour vérifier le statut admin
-        const checkAdmin = async () => {
-            try {
-                const adminStatus = await isLoggedAdmin();
-                setIsAdmin(adminStatus);
-            } catch (err) {
-                console.error("Erreur lors de la vérification du statut admin :", err);
-            }
-        };
-
-        checkAdmin();
     }, []);
 
     const toggleMenu = () => {
@@ -60,6 +45,16 @@ export function Navbar() {
                     <Link href="/" className="flex items-center">
                         <Logo className="w-40" />
                     </Link>
+
+                    {user && (
+                        <Link
+                            href="/calendar"
+                            className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                        >
+                            <span>Mes événements</span>
+                            <Event className="w-5 h-5" aria-hidden="true" />
+                        </Link>
+                    )}
                     <Link
                         href="/search"
                         className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
@@ -67,18 +62,6 @@ export function Navbar() {
                         <span>Rechercher</span>
                         <Search className="w-5 h-5" aria-hidden="true" />
                     </Link>
-                    {user ? (
-                        <Link
-                            href="/event/create"
-                            className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
-                        >
-                            <span>Créer un événement</span>
-                            <PlusCircle className="w-5 h-5" aria-hidden="true" />
-                        </Link>
-                    ) : (
-                        <></>
-                    )
-                    }
                 </div>
 
                 <div className="hidden md:flex space-x-4 items-center">
@@ -90,14 +73,6 @@ export function Navbar() {
                                 <Profil className="w-5 h-5" aria-hidden="true" />
                             </Link>
                             <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
-                            {isAdmin && (
-                                <Link
-                                    href="/admin"
-                                    className="flex items-center space-x-2 rtl:space-x-reverse block py-2 rounded font-medium text-xl"
-                                >
-                                    <Button variant={"secondary"} >Admin</Button>
-                                </Link>
-                            )}
                         </>
                     ) : (
                         <>
@@ -131,6 +106,15 @@ export function Navbar() {
                     </li>
                     <li>
                         <Link
+                            href="/calendar"
+                            className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
+                        >
+                            <span>Mes événements</span>
+                            <Event className="w-5 h-5" aria-hidden="true" />
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
                             href="/search"
                             className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
                         >
@@ -140,15 +124,6 @@ export function Navbar() {
                     </li>
                     {user ? (
                         <>
-                             <li>
-                                <Link
-                                    href="/event/create"
-                                    className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
-                                >
-                                    <span>Créer un événement</span>
-                                    <PlusCircle className="w-5 h-5" aria-hidden="true" />
-                                </Link>
-                            </li>
                             <li>
                                 <Link href="/profile" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
                                     <span>Profil</span>
@@ -158,16 +133,6 @@ export function Navbar() {
                             <li>
                                 <Button onClick={handleLogout} className="hover:bg-primary/70 mt-2">Se déconnecter</Button>
                             </li>
-                            {isAdmin && (
-                                <li>
-                                    <Link
-                                        href="/admin"
-                                        className="flex items-center space-x-2 rtl:space-x-reverse block py-2 rounded font-medium text-xl"
-                                    >
-                                        <Button variant={"secondary"} >Admin</Button>
-                                    </Link>
-                                </li>
-                            )}
                         </>
                     ) : (
                         <>
