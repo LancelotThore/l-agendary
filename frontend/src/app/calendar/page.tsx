@@ -3,14 +3,12 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
-import { ToolCard } from "../components/ui/toolCard";
-import { CardEvent } from "../components/ui/cardEvent";
-import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
-import { Button } from "../components/ui/button";
-import Link from "next/link";
-import { fetchHighlightedEvents } from "@/app/api/event";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
 import { fetchUser } from "@/app/api/data";
-import { Suspense } from 'react';
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -23,13 +21,71 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
+function Calendar() {
+  return (
+    <FullCalendar
+      plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+      initialView="dayGridMonth"
+      headerToolbar={{
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      }}
+      eventContent={renderEventContent}
+      events={[
+        { title: 'event 1', start: '2024-11-02T14:15:00', end: '2024-11-03T18:52:01' },
+        { title: 'event 2', start: '2024-11-06T14:00:00', end: '2024-11-06T15:35:00' }
+      ]}
+    />
+  );
+}
 
+function renderEventContent() {
+  return (
+    <a className="flex flex-col bg-blue-500 text-white w-full h-full" href="/event/29">
+        <b>titre</b>
+        <p className="whitespace-normal">description...</p>
+    </a>
+  );
+}
 
 export default function Home() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const userData = await fetchUser();
+        setUser(userData);
+      } catch (err) {
+        setError("Erreur lors de la récupération de l'utilisateur :", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  if (loading) {
+    return <p>Chargement...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div>
-        <h1>Calendrier</h1>
+      {user ? (
+        <Calendar />
+      ) : (
+        <>
+          <p>Connectez-vous pour accèder à votre calendrier</p>
+        </>
+      )}
     </div>
   );
 }

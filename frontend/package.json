@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fullcalendar/react": "^6.1.15",
     "@next/font": "^14.2.15",
     "@nextui-org/card": "^2.0.34",
     "@nextui-org/react": "^2.4.8",

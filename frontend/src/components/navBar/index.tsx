@@ -45,13 +45,16 @@ export function Navbar() {
                     <Link href="/" className="flex items-center">
                         <Logo className="w-40" />
                     </Link>
-                    <Link
-                        href="/calendar"
-                        className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
-                    >
-                        <span>Mes événements</span>
-                        <Event className="w-5 h-5" aria-hidden="true" />
-                    </Link>
+
+                    {user && (
+                        <Link
+                            href="/calendar"
+                            className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                        >
+                            <span>Mes événements</span>
+                            <Event className="w-5 h-5" aria-hidden="true" />
+                        </Link>
+                    )}
                     <Link
                         href="/search"
                         className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
