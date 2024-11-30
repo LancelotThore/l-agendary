@@ -2,28 +2,35 @@
 
 namespace App\Entity;
 
+use App\Repository\UserEventRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'user_event')]
-#[ORM\IdClass(UserEventId::class)]
+#[ORM\Entity(repositoryClass: UserEventRepository::class)]
 class UserEvent
 {
     #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
     #[ORM\ManyToOne(inversedBy: 'userEvents')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'eventsUser')]
+    #[ORM\ManyToOne(inversedBy: 'userEvents')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Event $event = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $validation = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getUser(): ?User
     {
@@ -54,7 +61,7 @@ class UserEvent
         return $this->token;
     }
 
-    public function setToken(string $token): static
+    public function setToken(?string $token): static
     {
         $this->token = $token;
 
@@ -66,7 +73,7 @@ class UserEvent
         return $this->validation;
     }
 
-    public function setValidation(bool $validation): static
+    public function setValidation(?bool $validation): static
     {
         $this->validation = $validation;
 

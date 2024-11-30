@@ -27,11 +27,44 @@ auth_logout:
 
 
 # -------------------------
+# API
+
 # Events
 
-# -------------------------
+highlighted_events:
+    path: /api/highlighted-events
+    controller: App\Controller\EventController::highlightedEvents
+
+event:
+    path: /api/event/{id}
+    controller: App\Controller\EventController::event
+
+paginated_events:
+    path: /api/paginated-events
+    controller: App\Controller\EventController::paginatedEvents
+
+nb_public_events:
+    path: /api/nb-public-events
+    controller: App\Controller\EventController::nbPublicEvents
+
+search_events:
+    path: /api/search-events
+    controller: App\Controller\EventController::searchEvents
+
+register_event:
+    path: /api/register-event
+    controller: App\Controller\EventController::registerEvent
+
+confirm_registration:
+    path: /api/confirm-registration
+    controller: App\Controller\EventController::confirmRegistration
+
 # Users
 
+user:
+    path: /api/user/{id}
+    controller: App\Controller\UserController::user
+    
 user_profile_update:
     path: /api/user/update/profile
     controller: App\Controller\UserController::updateProfile

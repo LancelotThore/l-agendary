@@ -22,15 +22,35 @@ class EventController extends AbstractController
     {
         $highlighted_events = $entityManager->getRepository(Event::class)
             ->createQueryBuilder('e')
-            ->leftJoin('e.eventsUser', 'eu')
+            ->leftJoin('e.userEvents', 'ue')
             ->groupBy('e.id')
             ->where('e.privacy = 1')
-            ->orderBy('COUNT(eu.user)', 'DESC')
+            ->orderBy('COUNT(ue.user)', 'DESC')
             ->setMaxResults(6)
             ->getQuery()
             ->getResult();
 
-        return $this->json($highlighted_events);
+        $serializer = $this->container->get('serializer');
+        $highlighted_events_json = $serializer->serialize($highlighted_events, 'json', ['circular_reference_handler' => function ($object) {
+            return $object->getId();
+        }]);
+
+        return new Response($highlighted_events_json, 200, ['Content-Type' => 'application/json']);
+    }
+
+    /**
+     * @Route("/api/event/{id}", name="event", methods={"GET"})
+     */
+    public function event($id, EntityManagerInterface $entityManager): Response
+    {
+        $event = $entityManager->getRepository(Event::class)->find($id);
+
+        $serializer = $this->container->get('serializer');
+        $event_json = $serializer->serialize($event, 'json', ['circular_reference_handler' => function ($object) {
+            return $object->getId();
+        }]);
+
+        return new Response($event_json, 200, ['Content-Type' => 'application/json']);
     }
 
 /**
@@ -49,7 +69,12 @@ public function paginatedEvents(Request $request, EntityManagerInterface $entity
         ->getQuery()
         ->getResult();
 
-    return $this->json($paginated_events);
+        $serializer = $this->container->get('serializer');
+        $paginated_events_json = $serializer->serialize($paginated_events, 'json', ['circular_reference_handler' => function ($object) {
+            return $object->getId();
+        }]);
+
+        return new Response($paginated_events_json, 200, ['Content-Type' => 'application/json']);
 }
 
 /**
@@ -81,7 +106,12 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
     $events = $queryBuilder->getQuery()->getResult();
 
-    return $this->json($events);
+    $serializer = $this->container->get('serializer');
+    $events_json = $serializer->serialize($events, 'json', ['circular_reference_handler' => function ($object) {
+        return $object->getId();
+    }]);
+
+    return new Response($events_json, 200, ['Content-Type' => 'application/json']);
 }
 
     /**

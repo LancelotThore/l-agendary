@@ -14,7 +14,6 @@ import { FormElement } from "@/components/ui/form/formElement";
 
 export default function Event({ params }) {
   const [event, setEvent] = useState(null);
-  const [creator, setCreator] = useState(null);
   const [user, setUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formEmail, setFormEmail] = useState("");
@@ -23,10 +22,8 @@ export default function Event({ params }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dataEvents = await fetchEvent(params.id);
-      setEvent(dataEvents);
-      const dataCreator = await fetchCreator(dataEvents.creator);
-      setCreator(dataCreator);
+      const dataEvent = await fetchEvent(params.id);
+      setEvent(dataEvent);
     };
     fetchData();
 
@@ -82,7 +79,7 @@ export default function Event({ params }) {
 
   return (
     <>
-      {event && creator ? (
+      {event ? (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
           <img
             src={event.image}
@@ -93,7 +90,7 @@ export default function Event({ params }) {
             <EventHeader event={event} />
           </div>
           <div className="lg:col-span-4">
-            <EventOrganizer organisateur={creator} />
+            <EventOrganizer organisateur={event.creator} />
           </div>
           <div className="lg:col-span-3 xl:col-span-4">
             <EventDescription description={event.description} />
@@ -108,7 +105,7 @@ export default function Event({ params }) {
             <Button variant={"accent"} size={"lg"} onClick={handleJoinClick}>
               Rejoindre
             </Button>
-            {user && user.id === creator.id && (
+            {user && user.id === event.creator.id && (
               <Button size={"lg"}>Modifier l'événement</Button>
             )}
           </div>

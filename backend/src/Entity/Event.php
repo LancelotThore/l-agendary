@@ -2,12 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,48 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Controller\EventController;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-#[ApiResource(
-    operations: [
-        new GetCollection(
-            name: 'highlighted-events',
-            uriTemplate: '/highlighted-events',
-            controller: EventController::class . '::highlightedEvents',
-            // outputFormats: ['json' => ['application/ld+json']],
-        ),
-        new GetCollection(
-            name: 'paginated-events',
-            uriTemplate: '/paginated-events',
-            controller: EventController::class . '::paginatedEvents',
-            // outputFormats: ['json' => ['application/ld+json']],
-        ),
-        new Get(
-            name: 'nb-public-events',
-            uriTemplate: '/nb-public-events',
-            controller: EventController::class . '::nbPublicEvents',
-        ),
-        new GetCollection(
-            name: 'search-events',
-            uriTemplate: '/search-events',
-            controller: EventController::class . '::searchEvents',
-            // outputFormats: ['json' => ['application/ld+json']],
-        ),
-        new Post(
-            name: 'register-event',
-            uriTemplate: '/register-event',
-            controller: EventController::class . '::registerEvent',
-        ),
-        new Post(
-            name: 'confirm-registration',
-            uriTemplate: '/confirm-registration',
-            controller: EventController::class . '::confirmRegistration',
-        ),
-        new Get(), // Get one event by ID
-        new GetCollection(), // Get all events
-        new Post(), // Create a new event
-        new Patch(), // Patch an event
-        new Delete(), // Delete an event
-    ]
-)]
+#[ORM\Table(name: '`event`')]
 class Event
 {
     #[ORM\Id]
@@ -94,11 +47,11 @@ class Event
      * @var Collection<int, UserEvent>
      */
     #[ORM\OneToMany(targetEntity: UserEvent::class, mappedBy: 'event', orphanRemoval: true)]
-    private Collection $eventsUser;
+    private Collection $userEvents;
 
     public function __construct()
     {
-        $this->eventsUser = new ArrayCollection();
+        $this->userEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,24 +158,24 @@ class Event
     /**
      * @return Collection<int, UserEvent>
      */
-    public function getEventsUser(): Collection
+    public function getUserEvents(): Collection
     {
-        return $this->eventsUser;
+        return $this->userEvents;
     }
 
-    public function addEventUser(UserEvent $userEvent): static
+    public function addUserEvent(UserEvent $userEvent): static
     {
-        if (!$this->eventsUser->contains($userEvent)) {
-            $this->eventsUser->add($userEvent);
+        if (!$this->userEvents->contains($userEvent)) {
+            $this->userEvents->add($userEvent);
             $userEvent->setEvent($this);
         }
 
         return $this;
     }
 
-    public function removeEventUser(UserEvent $userEvent): static
+    public function removeUserEvent(UserEvent $userEvent): static
     {
-        if ($this->eventsUser->removeElement($userEvent)) {
+        if ($this->userEvents->removeElement($userEvent)) {
             // set the owning side to null (unless already changed)
             if ($userEvent->getEvent() === $this) {
                 $userEvent->setEvent(null);
