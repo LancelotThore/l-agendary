@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\EventController;
+use App\Controller\UserController;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ApiResource(
@@ -25,15 +26,10 @@ use App\Controller\EventController;
             // outputFormats: ['json' => ['application/ld+json']],
         ),
         new GetCollection(
-            name: 'paginated-events',
-            uriTemplate: '/paginated-events',
-            controller: EventController::class . '::paginatedEvents',
+            name: 'unique-locations',
+            uriTemplate: '/unique-locations',
+            controller: EventController::class . '::getUniqueLocations',
             // outputFormats: ['json' => ['application/ld+json']],
-        ),
-        new Get(
-            name: 'nb-public-events',
-            uriTemplate: '/nb-public-events',
-            controller: EventController::class . '::nbPublicEvents',
         ),
         new GetCollection(
             name: 'search-events',
@@ -41,11 +37,36 @@ use App\Controller\EventController;
             controller: EventController::class . '::searchEvents',
             // outputFormats: ['json' => ['application/ld+json']],
         ),
+        new Post(
+            name: 'join-event',
+            uriTemplate: '/events/join/{id}',
+            controller: EventController::class . '::joinEvent',
+        ),
+        new Delete(
+            name: 'leave-event',
+            uriTemplate: '/events/leave/{id}',
+            controller: EventController::class . '::leaveEvent',
+        ),
+        new Get(
+            name: 'is-user-registered',
+            uriTemplate: '/users/is-registered/{id}',
+            controller: UserController::class . '::isUserRegisteredToEvent',
+            read: false
+        ),
         new Get(), // Get one event by ID
         new GetCollection(), // Get all events
-        new Post(), // Create a new event
+        //new Post(), // Create a new event
         new Patch(), // Patch an event
-        new Delete(), // Delete an event
+        new Delete(
+            name: 'delete-event',
+            uriTemplate: '/events/{id}',
+            controller: EventController::class . '::deleteEvent',
+        ),
+        new Post(
+            name: 'create-event',
+            uriTemplate: '/events',
+            controller: EventController::class . '::createEvent',
+        ),
     ]
 )]
 class Event

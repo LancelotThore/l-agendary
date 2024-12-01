@@ -78,7 +78,6 @@ export async function updateUserSettings(email: string, password: string, newPas
 }
 
 
-
 export async function updateUserProfilePicture(imageUrl: string) {
     try {
         const response = await fetch('https://localhost:443/api/user/update/image', {

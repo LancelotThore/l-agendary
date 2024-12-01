@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Logo, Search, MenuBurger, Home, Close, Profil } from "../ui/icons";
-import { Button } from '../ui/button';
+import { Search, MenuBurger, Home, Close, Profil, PlusCircle, CalendarIcon } from "@/components/ui/icons";
+import { Logo } from "@/components/ui/logos";
+import { Button } from '@/components/ui/button';
 import { fetchUser } from "@/app/api/data";
-import Link from 'next/link'    
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { logout } from "@/app/api/login";
 import { isAdmin as isLoggedAdmin } from "@/app/api/data";
@@ -66,6 +67,24 @@ export function Navbar() {
                         <span>Rechercher</span>
                         <Search className="w-5 h-5" aria-hidden="true" />
                     </Link>
+                    {user && (
+                        <Link
+                            href="/event/create"
+                            className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                        >
+                            <span>Créer un événement</span>
+                            <PlusCircle className="w-5 h-5" aria-hidden="true" />
+                        </Link>
+                    )}
+                    {user && (
+                        <Link
+                            href="/calendar"
+                            className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                        >
+                            <span>Calendrier</span>
+                            <CalendarIcon className="w-5 h-5" aria-hidden="true" />
+                        </Link>
+                    )}
                 </div>
 
                 <div className="hidden md:flex space-x-4 items-center">
@@ -78,8 +97,11 @@ export function Navbar() {
                             </Link>
                             <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
                             {isAdmin && (
-                                <Link href="/admin" className="block py-2 px-3 rounded hover:bg-background font-medium text-base">
-                                    <span>Admin</span>
+                                <Link
+                                    href="/admin"
+                                    className="flex items-center space-x-2 rtl:space-x-reverse block py-2 rounded font-medium text-xl"
+                                >
+                                    <Button variant={"secondary"} >Admin</Button>
                                 </Link>
                             )}
                         </>
@@ -124,6 +146,15 @@ export function Navbar() {
                     </li>
                     {user ? (
                         <>
+                             <li>
+                                <Link
+                                    href="/event/create"
+                                    className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
+                                >
+                                    <span>Créer un événement</span>
+                                    <PlusCircle className="w-5 h-5" aria-hidden="true" />
+                                </Link>
+                            </li>
                             <li>
                                 <Link href="/profile" className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl">
                                     <span>Profil</span>
@@ -134,9 +165,14 @@ export function Navbar() {
                                 <Button onClick={handleLogout} className="hover:bg-primary/70 mt-2">Se déconnecter</Button>
                             </li>
                             {isAdmin && (
-                                <Link href="/admin" className="block py-2 px-3 rounded hover:bg-background font-medium text-base mt-2">
-                                    <span>Admin</span>
-                                </Link>
+                                <li>
+                                    <Link
+                                        href="/admin"
+                                        className="flex items-center space-x-2 rtl:space-x-reverse block py-2 rounded font-medium text-xl"
+                                    >
+                                        <Button variant={"secondary"} >Admin</Button>
+                                    </Link>
+                                </li>
                             )}
                         </>
                     ) : (

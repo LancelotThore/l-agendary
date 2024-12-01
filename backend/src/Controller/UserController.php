@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
-
+use App\Entity\Event;
 
 class UserController extends AbstractController
 {
@@ -156,4 +156,37 @@ class UserController extends AbstractController
 
         return new JsonResponse(['error' => 'Invalid image URL'], 400);
     }
+
+        /**
+ * @Route("/api/unique-user-names", name="unique-user-names", methods={"GET"})
+ */
+public function getUniqueUserNames(EntityManagerInterface $entityManager): Response
+{
+    $queryBuilder = $entityManager->getRepository(User::class)
+        ->createQueryBuilder('u')
+        ->select('DISTINCT u.firstname');
+
+    $userNames = $queryBuilder->getQuery()->getResult();
+
+    return $this->json($userNames);
+}
+
+    public function isUserRegisteredToEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->isLogged($request);
+        if (!$user instanceof User) {
+            return $user; // Retourne la réponse d'erreur de isLogged
+        }
+
+        $event = $entityManager->getRepository(Event::class)->find($id);
+
+        if (!$event) {
+            return new JsonResponse(['error' => 'Event not found'], 404);
+        }
+
+        $isRegistered = $event->getRegisteredUsers()->contains($user);
+
+        return new JsonResponse(['isRegistered' => $isRegistered]);
+    }
+    
 }

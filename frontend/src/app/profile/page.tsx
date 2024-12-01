@@ -19,6 +19,7 @@ import {
   updateUserSettings,
   updateUserProfilePicture,
 } from "@/app/api/data";
+import Image from "next/image";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -327,10 +328,12 @@ export default function ProfilePage() {
           <DialogTrigger asChild>
             {/* <Button className="hover:bg-primary/70 mb-2">Modifier la photo de profil</Button> */}
             <div className="aspect-square w-32 md:w-64 hover:cursor-pointer  lg:order-2">
-              <img
+              <Image
                 className="rounded-lg object-cover hover:opacity-75  h-full w-full"
-                src={image ? `/uploads/profile_pictures/${image}` : "img.png"}
+                src={image ? `/uploads/profile_pictures/${image}` : "/img.webp"}              
                 alt={`Image de profil de ${firstname}`}
+                width={200}
+                height={200}
               />
             </div>
           </DialogTrigger>

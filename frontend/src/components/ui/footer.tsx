@@ -1,5 +1,6 @@
 import { Raleway } from "next/font/google";
-import { Logo } from "./icons.tsx";
+import { LogoReverse } from "@/components/ui/logos";
+import Link from "next/link";
 
 const ralewayBold = Raleway({
   subsets: ["latin"],
@@ -15,28 +16,28 @@ const ralewayMedium = Raleway({
 
 export function Footer() {
   return (
-    <footer className="flex items-center flex-col p-5 bg-foreground text-background mt-auto">
-      <Logo className="w-40" />
+    <footer className="flex items-center flex-col p-5 bg-foreground text-background">
+      <LogoReverse className="w-40" />
 
       <div className={`${ralewayBold.className} flex my-5 text-sm md:text-xl`}>
-        <a href="/" className="border-r-4 border-background pr-5">
+        <Link href="/" className="border-r-4 border-background pr-5">
           Mentions Légales
-        </a>
-        <a href="/" className="pl-5">
+        </Link>
+        <Link href="/" className="pl-5">
           Contact
-        </a>
+        </Link>
       </div>
 
       <div className={`${ralewayMedium.className} flex mt-5 text-sm`}>
-        <a href="/" className="border-r-2 border-background pr-2">
+        <Link href="/" className="border-r-2 border-background pr-2">
           © L’agendary
-        </a>
-        <a href="/" className="border-r-2 border-background px-2 underline">
+        </Link>
+        <Link href="/" className="border-r-2 border-background px-2 underline">
           Tous droits réservés
-        </a>
-        <a href="/" className="pl-2">
+        </Link>
+        <Link href="/" className="pl-2">
           2024
-        </a>
+        </Link>
       </div>
     </footer>
   );

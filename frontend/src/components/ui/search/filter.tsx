@@ -1,27 +1,78 @@
 'use client';
 
-import { useState } from "react";
-import { SearchBar } from "../searchBar";
-import { Input } from "../input";
-import { Clock, LocationOn, PeopleFill, User, Filtre } from '../icons';
-import { fetchSearchEvents } from "@/app/api/event";
+import { useState, useEffect } from "react";
+import { SearchBar } from "@/components/ui/search/searchBar";
+import { SearchInput } from "@/components/ui/search/searchInput";
+import { Input } from "@/components/ui/input";
+import { Clock, LocationOn, User, Filtre } from '@/components/ui/icons';
+import { fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
-export default function Filter({ onSearchResults }) {
+export default function Filter() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
   const [showFilters, setShowFilters] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('query') || '');
+  const [location, setLocation] = useState(searchParams.get('location') || '');
+  const [startDate, setStartDate] = useState(searchParams.get('startDate') || '');
+  const [endDate, setEndDate] = useState(searchParams.get('endDate') || '');
+  const [creatorFirstname, setCreatorFirstname] = useState(searchParams.get('creatorFirstname') || '');
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleSearch = async (searchTerm) => {
-    const results = await fetchSearchEvents(searchTerm);
-    onSearchResults(results);
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1');
+    if (searchTerm) {
+      params.set('query', searchTerm);
+    } else {
+      params.delete('query');
+    }
+    if (location) {
+      params.set('location', location);
+    } else {
+      params.delete('location');
+    }
+    if (startDate) {
+      params.set('startDate', startDate);
+    } else {
+      params.delete('startDate');
+    }
+    if (endDate) {
+      params.set('endDate', endDate);
+    } else {
+      params.delete('endDate');
+    }
+    if (creatorFirstname) {
+      params.set('creatorFirstname', creatorFirstname);
+    } else {
+      params.delete('creatorFirstname');
+    }
+    router.replace(`${pathname}?${params.toString()}`);
+  }, [searchTerm, location, startDate, endDate, creatorFirstname]);
+
+  const handleSearchTermChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
-  const handleChange = (e) => {
-    setSearchTerm(e.target.value);
-    handleSearch(e.target.value);
+  const handleLocationSelect = (selectedLocation: string) => {
+    setLocation(selectedLocation);
+  };
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+  };
+
+  const handleCreatorFirstnameSelect = (selectedCreatorFirstname: string) => {
+    setCreatorFirstname(selectedCreatorFirstname);
   };
 
   return (
@@ -32,7 +83,7 @@ export default function Filter({ onSearchResults }) {
           placeholder="Rechercher"
           type="search"
           value={searchTerm}
-          onChange={handleChange}
+          onChange={handleSearchTermChange}
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base w-full'
         />
         <button
@@ -45,29 +96,31 @@ export default function Filter({ onSearchResults }) {
       <div className={`w-full flex-col gap-5 ${showFilters ? 'flex' : 'hidden'} md:grid md:grid-cols-4`}>
         <Input
           img={<Clock className='w-4 md:w-6' />}
-          type="datetime-local"
+          type="date"
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
+          onChange={handleStartDateChange}
+          value={startDate}
         />
-        <SearchBar
-          id="search-lieux"
-          startImg={<LocationOn className='w-4 md:w-6' />}
-          placeholder="Lieux"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
+        <Input
+          img={<Clock className='w-4 md:w-6' />}
+          type="date"
+          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base bg-secondary'
+          onChange={handleEndDateChange}
+          value={endDate}
         />
-        <SearchBar
-          id="search-createur"
-          startImg={<User className='w-4 md:w-6' />}
+        <SearchInput
+          img={<LocationOn className='w-4 md:w-6' />}
+          fetchOptions={fetchUniqueLocations}
+          placeholder="Lieu"
+          onSelect={handleLocationSelect}
+          value={location}
+        />
+        <SearchInput
+          img={<User className='w-4 md:w-6' />}
+          fetchOptions={fetchUniqueUserNames}
           placeholder="Créateur"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
-        />
-        <SearchBar
-          id="search-participant"
-          startImg={<PeopleFill className='w-4 md:w-6' />}
-          placeholder="Participants"
-          type="search"
-          className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base'
+          onSelect={handleCreatorFirstnameSelect}
+          value={creatorFirstname}
         />
       </div>
     </div>

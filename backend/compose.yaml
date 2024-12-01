@@ -6,7 +6,7 @@ services:
       SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-root}@database:5432/${POSTGRES_DB:-app}?serverVersion=${POSTGRES_VERSION:-15}&charset=${POSTGRES_CHARSET:-utf8}
+      DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-root}@database:3306/${MYSQL_DB:-app}?serverVersion=${MYSQL_VERSION:-8}&charset=${MYSQL_CHARSET:-utf8}
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
       MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}/.well-known/mercure}
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
@@ -30,36 +30,43 @@ services:
         published: ${HTTP3_PORT:-443}
         protocol: udp
 
-# Mercure est installé comme un module Caddy, évite d'installer un autre service
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
-
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    image: mysql:${MYSQL_VERSION:-8.0}
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
+      MYSQL_DATABASE: ${MYSQL_DB:-app}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-root}
+      MYSQL_USER: ${MYSQL_USER:-app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
     healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 5s
       retries: 5
       start_period: 60s
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
+      - database_data:/var/lib/mysql:rw
       # Utilisation de volumes nommés pour la base de données
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      MYSQL_USER: ${MYSQL_USER:-app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+    ports:
+      - "8080:80"
 
   frontend:
     build:
-      context: ../frontend             # chemin vers le dossier frontend
-      dockerfile: Dockerfile           # chemin vers le Dockerfile
+      context: ../frontend # chemin vers le dossier frontend
+      dockerfile: Dockerfile # chemin vers le Dockerfile
     volumes:
-    - ../frontend:/app                # Monte le dossier frontend sur /app dans le conteneur
-    - /app/node_modules  
+      - ../frontend:/app # Monte le dossier frontend sur /app dans le conteneur
+      - /app/node_modules
     ports:
-      - "3000:3000"  # Port sur lequel Next.js va écouter
+      - "3000:3000" # Port sur lequel Next.js va écouter
     environment:
       - NODE_ENV=development # Ou production, selon ton besoin
     command: sh -c "npm run dev"
