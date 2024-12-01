@@ -1,15 +1,4 @@
-export async function fetchEvents() {
-  try {
-    const res = await fetch("https://localhost/api/events");
-    const data = await res.json();
-    return data["member"];
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return null;
-  }
-}
-
-export async function fetchSearchEvents(query: string | null, location: string | null, startDate: string | null, endDate: string | null, creatorFirstname: string | null, limit: number, offset: number) {
+export async function fetchSearchEvents(limit: number, offset: number) {
   try {
     const url = new URL(`https://localhost/api/search-events`);
     if (query) url.searchParams.append('q', query);
@@ -70,22 +59,11 @@ export async function fetchUniqueUserNames() {
 
 export async function fetchEvent(id : number) {
   try {
-    const res = await fetch("https://localhost/api/events/" + id);
+    const res = await fetch("https://localhost/api/event/" + id);
     const data = await res.json();
     return data;
   } catch (error) {
     console.error("Error fetching highlighted events:", error);
-    return null;
-  }
-}
-
-export async function fetchCreator(url : string) {
-  try {
-    const res = await fetch("https://localhost" + url);
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching creator:", error);
     return null;
   }
 }
@@ -268,5 +246,62 @@ export async function deleteEvent(eventId: string) {
   } catch (error) {
     console.error('Error deleting event:', error);
     throw new Error('Erreur lors de la suppression de l\'événement');
+  }
+}
+export async function createEventRegistration(email: string, event: string) {
+  const formData = {
+      event,
+      email,
+  };
+
+  try {
+      const response = await fetch('https://localhost:443/api/register-event', {
+          method: 'POST',
+          headers: {
+              'accept': 'application/ld+json',
+              'Content-Type': 'application/ld+json'
+          },
+          body: JSON.stringify(formData),
+          credentials: 'include'
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          return data;
+      } else {
+          const errorData = await response.json();
+          if (response.status === 409) { // Conflict status code for duplicate unique data
+              throw new Error('Erreur: Données dupliquées');
+          }
+          throw new Error(`Erreur lors de l'inscription à l'événement: ${response.status} ${response.statusText} - ${errorData.errors || 'Données incorrectes'}`);
+      }
+  } catch (error) {
+      console.error('Error creating event registration:', error);
+      throw new Error(`Erreur lors de l'inscription à l'événement: ${error.message}`);
+  }
+}
+
+export async function confirmRegistration(token: string) {
+  try {
+      const response = await fetch('https://localhost:443/api/confirm-registration', {
+          method: 'POST',
+          headers: {
+              'accept': 'application/ld+json',
+              'Content-Type': 'application/ld+json'
+          },
+          body: JSON.stringify({ token }),
+          credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+          return data;
+      } else {
+          throw { status: response.status, message: data.error || 'Données incorrectes' };
+      }
+  } catch (error) {
+      console.error('Error confirming registration:', error);
+      throw error;
   }
 }
