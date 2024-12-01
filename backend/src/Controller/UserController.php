@@ -171,22 +171,39 @@ public function getUniqueUserNames(EntityManagerInterface $entityManager): Respo
     return $this->json($userNames);
 }
 
-    public function isUserRegisteredToEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $user = $this->isLogged($request);
-        if (!$user instanceof User) {
-            return $user; // Retourne la réponse d'erreur de isLogged
-        }
-
-        $event = $entityManager->getRepository(Event::class)->find($id);
-
-        if (!$event) {
-            return new JsonResponse(['error' => 'Event not found'], 404);
-        }
-
-        $isRegistered = $event->getRegisteredUsers()->contains($user);
-
-        return new JsonResponse(['isRegistered' => $isRegistered]);
+public function isUserRegisteredToEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+{
+    $user = $this->isLogged($request);
+    if (!$user instanceof User) {
+        return $user; // Retourne la réponse d'erreur de isLogged
     }
+
+    // Utilisation de DQL pour charger explicitement la relation userEvents
+    $event = $entityManager->getRepository(Event::class)
+                           ->createQueryBuilder('e')
+                           ->leftJoin('e.userEvents', 'ue')
+                           ->addSelect('ue')
+                           ->where('e.id = :id')
+                           ->setParameter('id', $id)
+                           ->getQuery()
+                           ->getOneOrNullResult();
+
+    if (!$event) {
+        return new JsonResponse(['error' => 'Event not found'], 404);
+    }
+
+    $isRegistered = false;
+
+    // Vérifier si l'utilisateur est enregistré à l'événement
+    foreach ($event->getUserEvents() as $userEvent) {
+        if ($userEvent->getUser()->getId() === $user->getId()) {
+            $isRegistered = true;
+            break;
+        }
+    }
+
+    return new JsonResponse(['isRegistered' => $isRegistered]);
+}
+
     
 }

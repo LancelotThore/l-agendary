@@ -58,6 +58,8 @@ public function register(Request $request): JsonResponse
             $existingUser->setFirstname($data['firstname']);
             $existingUser->setLastname($data['name']);
             $existingUser->setRoles([]);
+            $user->setBio('Je m\'appelle ' . $user->getFirstname() . ' ' . $user->getLastname() . ', et je suis un utilisateur de l\'application.');
+            $user->setAge(0);
 
             $this->entityManager->persist($existingUser);
             $this->entityManager->flush();
@@ -79,7 +81,7 @@ public function register(Request $request): JsonResponse
     $user->setFirstname($data['firstname']);
     $user->setLastname($data['name']);
     $user->setBio('Je m\'appelle ' . $user->getFirstname() . ' ' . $user->getLastname() . ', et je suis un utilisateur de l\'application.');
-    $user->setAge('?');
+    $user->setAge(0);
 
     // Persister l'utilisateur
     $this->entityManager->persist($user);

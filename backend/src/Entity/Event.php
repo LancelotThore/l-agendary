@@ -175,26 +175,4 @@ class Event
     {
         return $this->userEvents;
     }
-
-    public function addUserEvent(UserEvent $userEvent): static
-    {
-        if (!$this->userEvents->contains($userEvent)) {
-            $this->userEvents->add($userEvent);
-            $userEvent->setEvent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserEvent(UserEvent $userEvent): static
-    {
-        if ($this->userEvents->removeElement($userEvent)) {
-            // set the owning side to null (unless already changed)
-            if ($userEvent->getEvent() === $this) {
-                $userEvent->setEvent(null);
-            }
-        }
-
-        return $this;
-    }
 }

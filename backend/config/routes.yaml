@@ -4,11 +4,6 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-
-home:
-    path: /
-    controller: App\Controller\HomeController::index
-
 auth_login:
     path: /api/login
     controller: App\Controller\AuthController::login
@@ -43,6 +38,18 @@ event:
     path: /api/event/{id}
     controller: App\Controller\EventController::event
 
+create_event:
+    path: /api/create-event
+    controller: App\Controller\EventController::createEvent
+
+delete_event:
+    path: /api/delete-event/{id}
+    controller: App\Controller\EventController::deleteEvent
+
+update_event:
+    path: /api/update-event/{id}
+    controller: App\Controller\EventController::updateEvent
+
 paginated_events:
     path: /api/paginated-events
     controller: App\Controller\EventController::paginatedEvents
@@ -62,6 +69,26 @@ register_event:
 confirm_registration:
     path: /api/confirm-registration
     controller: App\Controller\EventController::confirmRegistration
+
+is_user_registered:
+    path: /api/users/is-registered/{id}
+    controller: App\Controller\UserController::isUserRegisteredToEvent
+
+join_event:
+    path: /api/events/join/{id}
+    controller: App\Controller\EventController::joinEvent
+
+leave_event:
+    path: /api/events/leave/{id}
+    controller: App\Controller\EventController::leaveEvent
+
+unique_location:
+    path: /api/unique-locations
+    controller: App\Controller\EventController::getUniqueLocations
+
+unique_user_names:
+    path: /api/unique-user-names
+    controller: App\Controller\UserController::getUniqueUserNames
 
 # Users
 

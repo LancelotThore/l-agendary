@@ -83,7 +83,7 @@ export default function Home() {
         <Calendar />
       ) : (
         <>
-          <p>Connectez-vous pour accèder à votre calendrier</p>
+          <p>Connectez-vous pour accéder à votre calendrier</p>
         </>
       )}
     </div>

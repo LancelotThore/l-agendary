@@ -66,19 +66,55 @@ export default function Event({ params }) {
     fetchData();
   }, [params?.id]);
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setErrorMessage("");
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormEmail(value);
+  };
+
+  const closeSuccessModal = () => {
+    setIsSuccessModalOpen(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const updatedForm = {
+      email: formEmail,
+      event: event.id,
+    };
+  
+    try {
+      await createEventRegistration(updatedForm.email, updatedForm.event);
+      setIsModalOpen(false);
+      setIsSuccessModalOpen(true);
+    } catch (error) {
+      console.error("Erreur lors de l'inscription à l'événement :", error);
+      setErrorMessage("Erreur lors de l'inscription à l'événement. Veuillez réessayer.");
+    }
+  };
+
   const handleJoinEvent = async () => {
-    if (event) {
-      try {
-        const response = await joinEvent(event.id);
-        toast(`Vous avez rejoint l'événement ${event.title}`);
-        setIsRegistered(true);
-        setEvent((prevEvent) => ({
-          ...prevEvent,
-          registeredUsers: [...prevEvent.registeredUsers, user.id],
-        }));
-        await upEvent();
-      } catch (error) {
-        toast(`Erreur lors de l'inscription à l'événement ${event.title}`);
+    if (!user) {
+      setIsModalOpen(true);
+    } else {
+      if (event) {
+        try {
+          const response = await joinEvent(event.id);
+          toast(`Vous avez rejoint l'événement ${event.title}`);
+          setIsRegistered(true);
+          setEvent((prevEvent) => ({
+            ...prevEvent,
+            userEvents: [...prevEvent.userEvents, user.id],
+          }));
+          await upEvent();
+        } catch (error) {
+          toast(`Erreur lors de l'inscription à l'événement ${event.title}`);
+        }
       }
     }
   };
@@ -91,7 +127,7 @@ export default function Event({ params }) {
         setIsRegistered(false);
         setEvent((prevEvent) => ({
           ...prevEvent,
-          registeredUsers: prevEvent.registeredUsers.filter((userId) => userId !== user.id),
+          userEvents: prevEvent.userEvents.filter((userId) => userId !== user.id),
         }));
         await upEvent();
       } catch (error) {
@@ -249,6 +285,16 @@ export default function Event({ params }) {
                 </Button>
               )
             )}
+            {!user && (
+              <Button
+              variant="accent"
+              size="lg"
+              onClick={handleJoinEvent}
+            >
+              Rejoindre l'événement
+              </Button>
+            )}
+            
             {user && user.id === event.creator.id && (
               <>
                 <Dialog>

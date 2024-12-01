@@ -1,4 +1,4 @@
-export async function fetchSearchEvents(limit: number, offset: number) {
+export async function fetchSearchEvents(query: string | null, location: string | null, startDate: string | null, endDate: string | null, creatorFirstname: string | null, limit: number, offset: number) {
   try {
     const url = new URL(`https://localhost/api/search-events`);
     if (query) url.searchParams.append('q', query);
@@ -90,7 +90,7 @@ export async function createEvent(
     };
 
     try {
-        const response = await fetch('https://localhost:443/api/events', {
+        const response = await fetch('https://localhost:443/api/create-event', {
             method: 'POST',
             headers: {
                 'accept': 'application/ld+json',
@@ -196,7 +196,7 @@ export async function updateEvent(
   image: string
 ) {
   try {
-    const response = await fetch("https://localhost:443/api/events/" + id, {
+    const response = await fetch("https://localhost:443/api/update-event/" + id, {
       method: "PATCH",
       credentials: "include",
       headers: {
@@ -227,7 +227,7 @@ export async function updateEvent(
 
 export async function deleteEvent(eventId: string) {
   try {
-    const response = await fetch(`https://localhost:443/api/events/${eventId}`, {
+    const response = await fetch(`https://localhost:443/api/delete-event/${eventId}`, {
       method: 'DELETE',
       headers: {
         'accept': 'application/ld+json',

@@ -14,8 +14,8 @@ export default function EventsTable({
             <CardEvent
               nom={event.title}
               lieu={event.location}
-              startDate={event.start_date}
-              endDate={event.end_date}
+              startDate={event.startDate}
+              endDate={event.endDate}
               img={event.image}
               id={event.id}
             />

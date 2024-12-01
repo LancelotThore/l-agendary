@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Security;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
@@ -72,23 +71,14 @@ class EventController extends AbstractController
  */
 public function getUniqueLocations(EntityManagerInterface $entityManager): Response
 {
-    $limit = $request->query->getInt('limit', 9); // Default limit to 10 if not provided
-    $offset = $request->query->getInt('offset', 0); // Default offset to 0 if not provided
-
-    $paginated_events = $entityManager->getRepository(Event::class)
+    $queryBuilder = $entityManager->getRepository(Event::class)
         ->createQueryBuilder('e')
-        ->setFirstResult($offset)
-        ->setMaxResults($limit)
-        ->where('e.privacy = 1')
-        ->getQuery()
-        ->getResult();
+        ->select('DISTINCT e.location')
+        ->where('e.privacy = 1');
 
-        $serializer = $this->container->get('serializer');
-        $paginated_events_json = $serializer->serialize($paginated_events, 'json', ['circular_reference_handler' => function ($object) {
-            return $object->getId();
-        }]);
+    $locations = $queryBuilder->getQuery()->getResult();
 
-        return new Response($paginated_events_json, 200, ['Content-Type' => 'application/json']);
+    return $this->json($locations);
 }
 
 /**
@@ -104,23 +94,6 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         ->getSingleScalarResult();
 
     return $this->json($nb_events);
-}
-
-/**
- * @Route("/api/search-events", name="search-events", methods={"GET"})
- */
-public function searchEvents(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $searchTerm = $request->query->get('q', '');
-
-    $queryBuilder = $entityManager->getRepository(Event::class)
-        ->createQueryBuilder('e')
-        ->select('DISTINCT e.location')
-        ->where('e.privacy = 1');
-
-    $locations = $queryBuilder->getQuery()->getResult();
-
-    return $this->json($locations);
 }
 
     /**
@@ -183,9 +156,14 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
         $events = $queryBuilder->getQuery()->getResult();
 
+        $serializer = $this->container->get('serializer');
+        $events_json = $serializer->serialize($events, 'json', ['circular_reference_handler' => function ($object) {
+            return $object->getId();
+        }]);
+
         return $this->json([
             'total' => $totalEvents,
-            'events' => $events
+            'events' => json_decode($events_json, true)
         ]);
     }
 
@@ -218,8 +196,12 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
         try {
             // Ajouter l'utilisateur à l'événement
-            $event->addRegisteredUser($user);
-            $entityManager->persist($event);
+            $eventUser = new UserEvent();
+            $eventUser->setToken(bin2hex(random_bytes(32)));
+            $eventUser->setEvent($event);
+            $eventUser->setUser($user);
+            $eventUser->setValidation(true);
+            $entityManager->persist($eventUser);
             $entityManager->flush();
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -257,7 +239,12 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
         try {
             // Retirer l'utilisateur de l'événement
-            $event->removeRegisteredUser($user);
+            $eventUser = $entityManager->getRepository(UserEvent::class)->findOneBy(['event' => $event, 'user' => $user]);
+
+            if (!$eventUser) {
+                return $this->json(['error' => 'User is not registered for this event'], Response::HTTP_NOT_FOUND);
+            }
+            $entityManager->remove($eventUser);
             $entityManager->persist($event);
             $entityManager->flush();
         } catch (\Exception $e) {
@@ -299,10 +286,15 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
         $event->setImage($eventData['image']);
         $event->setCreator($user);
         // Ajouter l'utilisateur créateur à la liste des utilisateurs inscrits
-        $event->addRegisteredUser($user);
+        $userEvent = new UserEvent();
+        $userEvent->setToken(bin2hex(random_bytes(32)));
+        $userEvent->setEvent($event);
+        $userEvent->setUser($user);
+        $userEvent->setValidation(true);
 
         try {
             $entityManager->persist($event);
+            $entityManager->persist($userEvent);
             $entityManager->flush();
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -312,7 +304,7 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
     }
 
     /**
-     * @Route("/api/events/{id}", name="delete-event", methods={"DELETE"})
+     * @Route("/api/delete-event/{id}", name="delete-event", methods={"DELETE"})
      */
     public function deleteEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -357,6 +349,36 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
     return new Response($events_json, 200, ['Content-Type' => 'application/json']);
 }
+
+/**
+     * @Route("/api/update-event/{id}", name="update-event", methods={"PATCH"})
+     */
+    public function updateEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $eventData = json_decode($request->getContent(), true);
+        $event = $entityManager->getRepository(Event::class)->find($id);
+
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $event->setTitle($eventData['title']);
+        $event->setDescription($eventData['description']);
+        $event->setPrivacy($eventData['privacy']);
+        $event->setLocation($eventData['location']);
+        $event->setStartDate(new \DateTime($eventData['start_date']));
+        $event->setEndDate(new \DateTime($eventData['end_date']));
+        $event->setImage($eventData['image']);
+
+        try {
+            $entityManager->persist($event);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->json(['success' => 'Event updated successfully']);
+    }
 
     /**
      * @Route("/register-event", name="register-event", methods={"POST"})

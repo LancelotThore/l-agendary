@@ -15,7 +15,7 @@ interface Event {
   endDate: string; // datetime string
   location: string;
   image: string;
-  registeredUsers: string[]; // Change to array
+  userEvents: string[]; // Change to array
 }
 
 interface EventProps {
@@ -100,7 +100,7 @@ export default function EventHeader({ event }: EventProps) {
         </div>
         <div className="flex items-center gap-1.5 font-semibold">
           <PeopleFill className="w-5 min-w-5" />
-          <p>{event.registeredUsers.length} participants</p> {/* Count elements in array */}
+          <p>{event.userEvents.length} participant(s)</p> {/* Count elements in array */}
         </div>
       </div>
     </div>
