@@ -13,6 +13,32 @@ export const config = {
 
 const uploadDir = path.join(process.cwd(), 'public/uploads/event_pictures');
 
+
+
+export async function DELETE(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const fileName = searchParams.get('fileName');
+
+  if (!fileName) {
+    return NextResponse.json({ error: 'Nom de fichier non fourni' }, { status: 400 });
+  }
+
+  const filePath = path.join(uploadDir, fileName);
+
+  if (!fs.existsSync(filePath)) {
+    return NextResponse.json({ error: 'Fichier non trouvé' }, { status: 200 });
+  }
+
+  try {
+    fs.unlinkSync(filePath);
+    return NextResponse.json({ message: 'Fichier supprimé avec succès' }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json({ error: 'Erreur lors de la suppression du fichier' }, { status: 500 });
+  }
+}
+
+
+
 export async function POST(req: NextRequest) {
   // console.log('--- POST /api/upload received ---');
 

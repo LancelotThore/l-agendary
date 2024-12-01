@@ -28,6 +28,7 @@ export default function Event({ params }) {
   const [endDate, setEndDate] = useState("");
   const [endHour, setEndHour] = useState("");
   const [image, setImage] = useState("");
+  const [inputImage, setInputImage] = useState(null);
 
   const [event, setEvent] = useState(null);
   const [creator, setCreator] = useState(null);
@@ -123,6 +124,18 @@ export default function Event({ params }) {
     return { formattedDate, formattedTime };
   }
 
+  // Fonction pour mettre à jour l'image de l'event
+  const handleInputImage = (file: any) => {
+    if (file && file.type.startsWith("image/")) {
+      setInputImage(file);
+      setError("");
+
+    } else {
+      setInputImage(null);
+      setError("Veuillez sélectionner une image valide");
+    }
+  };
+
   const upEvent = async () => {
     const dataEvents = await fetchEvent(params.id);
     setEvent(dataEvents);
@@ -192,8 +205,50 @@ export default function Event({ params }) {
       return;
     }
 
+    if (!inputImage) {
+      setError("Veuillez sélectionner une image");
+      return;
+    }
+
+    // Delete previous image
+
+    if (inputImage) {
+      try {
+        const response = await fetch(`/api/upload/event_pic?fileName=${image}`, {
+          method: "DELETE",
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Erreur lors de la suppression de l'ancienne image");
+        }
+      } catch (err: any) {
+        setError(err.message);
+        return;
+      }
+    }
+
+    const formData = new FormData();
+    formData.append("file", inputImage);
+
+    let newImage = image;
+
     try {
-      await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, image);
+      const response = await fetch("/api/upload/event_pic", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      newImage = data.fileName;
+      console.log(data);
+    } catch (err) {
+      setError("Erreur lors de la mise à jour de l'image de l'event");
+      return;
+    }
+    
+
+
+    try {
+      await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, newImage);
       upEvent();
       setSuccess("Evènement mis à jour avec succès !");
     } catch (err) {
@@ -383,14 +438,14 @@ export default function Event({ params }) {
                               Image de couverture
                             </label>
                             {typeof image === "string" && (
-                              <img src={image} alt="Image de couverture événement" className="w-32 h-32 rounded" />
+                              <img src={`/uploads/event_pictures/${image}`} alt="Image de couverture événement" className="w-32 h-32 rounded" />
                             )}
                             <Input
                               id="image"
                               name="image"
                               type="file"
                               className="col-span-3"
-                              onChange={(e) => setImage(e.target.files[0])}
+                              onChange={(e: any) => handleInputImage(e.target.files[0])}
                             />
                           </div>
                         </div>
