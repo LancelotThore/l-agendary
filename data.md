@@ -6,3 +6,6 @@ INSERT INTO event (creator_id, title, description, privacy, start_date, end_date
 INSERT INTO event (creator_id, title, description, privacy, start_date, end_date, location, image) VALUES (1, 'Event 4', 'Description for event 4', 0, '2024-11-04 13:00:00', '2024-11-04 15:00:00', 'Location 4', '/uploads/event_pictures/paysage.webp');
 INSERT INTO event (creator_id, title, description, privacy, start_date, end_date, location, image) VALUES (1, 'Event 5', 'Description for event 5', 1, '2024-11-05 08:00:00', '2024-11-05 10:00:00', 'Location 5', '/uploads/event_pictures/paysage.webp');
 INSERT INTO event (creator_id, title, description, privacy, start_date, end_date, location, image) VALUES (1, 'Event 6', 'Description for event 6', 0, '2024-11-06 17:00:00', '2024-11-06 19:00:00', 'Location 6', '/uploads/event_pictures/paysage.webp');
+
+Pour que le mailer marche, dans le .env.local (pas dans le .env pour ne pas push) :
+MAILER_DSN=gmail+smtp://{adressegmail}:{motdepasse}@smtp.gmail.com

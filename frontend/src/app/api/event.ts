@@ -143,15 +143,15 @@ export async function confirmRegistration(token: string) {
           credentials: 'include'
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-          const data = await response.json();
           return data;
       } else {
-          const errorData = await response.json();
-          throw new Error(`Erreur lors de la confirmation de l'inscription: ${response.status} ${response.statusText} - ${errorData.errors || 'Données incorrectes'}`);
+          throw { status: response.status, message: data.error || 'Données incorrectes' };
       }
   } catch (error) {
       console.error('Error confirming registration:', error);
-      throw new Error(`Erreur lors de la confirmation de l'inscription: ${error.message}`);
+      throw error;
   }
 }

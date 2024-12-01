@@ -156,21 +156,25 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
                 $mailer->send($email);
         } else {
-            if($entityManager->getRepository(UserEvent::class)->findOneBy(['event' => $event, 'user' => $existingUser])) {
+            $existingEventUser = $entityManager->getRepository(UserEvent::class)->findOneBy(['event' => $event, 'user' => $existingUser]);
+            if($existingEventUser) {
+                if ($existingEventUser->getValidation() === true) {
+                    return $this->json(['error' => 'Vous êtes déjà inscrit et validé à cet événement'], 400);
+                }
                 return $this->json(['error' => 'Vous êtes déjà inscrit à cet événement'], 400);
             }
             if($existingUser->getRoles() == ['ROLE_EMAIL']) {
-                $userEvent::setUser($existingUser);
-                $userEvent::setValidation(false);
+                $eventUser->setUser($existingUser);
+                $eventUser->setValidation(false);
                 $entityManager->persist($eventUser);  
                 $entityManager->flush();
                 
                 $email = (new Email())
                 ->from('your_email@example.com')
-                ->to($user->getEmail())
+                ->to($existingUser->getEmail())
                 ->subject('Confirmation d\'inscription à un événement')
                 ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
-                        <a href="https://localhost:3000/confirm-registration?token=' . $userEvent::getToken() . '">
+                        <a href="https://localhost:3000/confirm-registration?token=' . $eventUser->getToken() . '">
                             <button>Confirmer l\'inscription</button>
                         </a>');
 
@@ -194,6 +198,10 @@ public function searchEvents(Request $request, EntityManagerInterface $entityMan
 
         if (!$userEvent) {
             return $this->json(['error' => 'Invalid token'], 400);
+        }
+
+        if ($userEvent->isValidation() === true) {
+            return $this->json(['error' => 'Inscription déjà validée'], 400);
         }
 
         $userEvent->setValidation(true);
