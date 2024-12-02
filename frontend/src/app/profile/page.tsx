@@ -133,6 +133,23 @@ export default function ProfilePage() {
       return;
     }
 
+    // Delete previous image
+
+    if (image) {
+      try {
+        const response = await fetch(`/api/upload/profile_pic?fileName=${image}`, {
+          method: "DELETE",
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Erreur lors de la suppression de l'ancienne image");
+        }
+      } catch (err: any) {
+        setErrorImage(err.message);
+        return;
+      }
+    }
+
     const formData = new FormData();
     formData.append("file", profilePicture);
 

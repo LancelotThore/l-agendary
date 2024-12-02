@@ -14,7 +14,17 @@ import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogT
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
 import { FormElement } from "@/components/ui/form/formElement";
+import { fetchEvent, fetchCreator, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent } from "@/app/api/event";
+import { toast } from "sonner"
+import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
+import { fetchUser } from "@/app/api/data";
+import { useEffect, useState } from "react";
 import PageEventSkeleton from "./loading";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useRouter } from "next/navigation";
 
 import { fetchEvent, fetchCreator, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/app/api/event";
 import { fetchUser } from "@/app/api/data";
@@ -31,6 +41,7 @@ export default function Event({ params }) {
   const [endDate, setEndDate] = useState("");
   const [endHour, setEndHour] = useState("");
   const [image, setImage] = useState("");
+  const [inputImage, setInputImage] = useState(null);
 
   const [event, setEvent] = useState(null);
   const [user, setUser] = useState(null);
@@ -165,9 +176,23 @@ export default function Event({ params }) {
     return { formattedDate, formattedTime };
   }
 
+  // Fonction pour mettre à jour l'image de l'event
+  const handleInputImage = (file: any) => {
+    if (file && file.type.startsWith("image/")) {
+      setInputImage(file);
+      setError("");
+
+    } else {
+      setInputImage(null);
+      setError("Veuillez sélectionner une image valide");
+    }
+  };
+
   const upEvent = async () => {
     const dataEvents = await fetchEvent(params.id);
     setEvent(dataEvents);
+    const dataCreator = await fetchCreator(dataEvents.creator);
+    setCreator(dataCreator);
 
     if (dataEvents) {
       const { formattedDate: startDate, formattedTime: startHourForm } = extractDateAndTime(dataEvents.start_date);
@@ -231,8 +256,50 @@ export default function Event({ params }) {
       return;
     }
 
+    if (!inputImage) {
+      setError("Veuillez sélectionner une image");
+      return;
+    }
+
+    // Delete previous image
+
+    if (inputImage) {
+      try {
+        const response = await fetch(`/api/upload/event_pic?fileName=${image}`, {
+          method: "DELETE",
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Erreur lors de la suppression de l'ancienne image");
+        }
+      } catch (err: any) {
+        setError(err.message);
+        return;
+      }
+    }
+
+    const formData = new FormData();
+    formData.append("file", inputImage);
+
+    let newImage = image;
+
     try {
-      await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, image);
+      const response = await fetch("/api/upload/event_pic", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      newImage = data.fileName;
+      console.log(data);
+    } catch (err) {
+      setError("Erreur lors de la mise à jour de l'image de l'event");
+      return;
+    }
+    
+
+
+    try {
+      await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, newImage);
       upEvent();
       setSuccess("Evènement mis à jour avec succès !");
     } catch (err) {
@@ -435,7 +502,7 @@ export default function Event({ params }) {
                           name="image"
                           type="file"
                           className="col-span-3"
-                          onChange={(e) => setImage(e.target.files[0])}
+                          onChange={(e) => setInputImage(e.target.files[0])}
                         />
                       </div>
                     </div>
