@@ -17,6 +17,7 @@ import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, delet
 import { toast } from "sonner";
 import { fetchUser } from "@/app/api/data";
 import PageEventSkeleton from "./loading";
+import NotFound from "@/app/not-found";
 
 export default function Event({ params }) {
   const [id, setId] = useState(null);
@@ -519,12 +520,7 @@ export default function Event({ params }) {
           {loading ? (
             <PageEventSkeleton />
           ) : (
-            <div className="flex justify-center items-center flex-col gap-5">
-              <p className="text-center">L'événement que vous recherchez n'existe pas...</p>
-              <Link href="/">
-                <Button size={"lg"}>Accueil</Button>
-              </Link>
-            </div>
+            <NotFound/>
           )}
         </>
       )}
