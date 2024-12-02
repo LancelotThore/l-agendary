@@ -425,12 +425,12 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         } else {
             $existingEventUser = $entityManager->getRepository(UserEvent::class)->findOneBy(['event' => $event, 'user' => $existingUser]);
             if($existingEventUser) {
-                if ($existingEventUser->getValidation() === true) {
+                if ($existingEventUser->isValidation() === true) {
                     return $this->json(['error' => 'Vous êtes déjà inscrit et validé à cet événement'], 400);
                 }
                 return $this->json(['error' => 'Vous êtes déjà inscrit à cet événement'], 400);
             }
-            if($existingUser->getRoles() == ['ROLE_EMAIL']) {
+            if (in_array('ROLE_EMAIL', $existingUser->getRoles())) {
                 $eventUser->setUser($existingUser);
                 $eventUser->setValidation(false);
                 $entityManager->persist($eventUser);  

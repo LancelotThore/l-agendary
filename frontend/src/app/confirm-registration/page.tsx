@@ -52,7 +52,7 @@ export default function ConfirmRegistration() {
 
     return (
         <div className="flex flex-col gap-4 justify-center items-center">
-            <h1 className="text-base font-semibold text-center md:text-2xl">Inscription à votre évenement</h1>
+            <h1 className="text-base font-semibold text-center md:text-2xl">Inscription à votre événement</h1>
             <Button onClick={handleSubmit}>Confirmer l'inscription</Button>
             {popupMessage && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

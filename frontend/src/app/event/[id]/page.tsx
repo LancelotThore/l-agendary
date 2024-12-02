@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
 import EventHeader from "@/components/ui/event/eventHeader";
 import EventOrganizer from "@/components/ui/event/eventOrganizer";
 import EventDescription from "@/components/ui/event/eventDescription";
@@ -14,21 +13,10 @@ import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogT
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
 import { FormElement } from "@/components/ui/form/formElement";
-import { fetchEvent, fetchCreator, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent } from "@/app/api/event";
-import { toast } from "sonner"
-import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
-import { fetchUser } from "@/app/api/data";
-import { useEffect, useState } from "react";
-import PageEventSkeleton from "./loading";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { useRouter } from "next/navigation";
-
-import { fetchEvent, fetchCreator, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/app/api/event";
-import { fetchUser } from "@/app/api/data";
+import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/app/api/event";
 import { toast } from "sonner";
+import { fetchUser } from "@/app/api/data";
+import PageEventSkeleton from "./loading";
 
 export default function Event({ params }) {
   const [id, setId] = useState(null);
@@ -191,8 +179,6 @@ export default function Event({ params }) {
   const upEvent = async () => {
     const dataEvents = await fetchEvent(params.id);
     setEvent(dataEvents);
-    const dataCreator = await fetchCreator(dataEvents.creator);
-    setCreator(dataCreator);
 
     if (dataEvents) {
       const { formattedDate: startDate, formattedTime: startHourForm } = extractDateAndTime(dataEvents.start_date);
@@ -237,10 +223,6 @@ export default function Event({ params }) {
 
     const normalizedStart = normalizeDateTime(startDate, startHourInt + 1, startMinutesInt);
     const normalizedEnd = normalizeDateTime(endDate, endHourInt + 1, endMinutesInt);
-
-    console.log(normalizedStart);
-    console.log(normalizedEnd);
-
     const combinedStartDateTime = new Date(normalizedStart).toISOString();
     const combinedEndDateTime = new Date(normalizedEnd).toISOString();
 
@@ -495,7 +477,7 @@ export default function Event({ params }) {
                           Image de couverture
                         </label>
                         {typeof image === "string" && (
-                          <img src={image} alt="Image de couverture événement" className="w-32 h-32 rounded" />
+                          <img src={`/uploads/event_pictures/${image}`} alt="Image de couverture événement" className="w-32 h-32 rounded" />
                         )}
                         <Input
                           id="image"
