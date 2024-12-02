@@ -260,6 +260,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(?string $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
     }
     
     /**
@@ -288,6 +290,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+        
+        return $this;
     }
 
     public function removeUserEvent(UserEvent $userEvent): static
