@@ -9,6 +9,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { fetchUser } from "@/app/api/data";
+import frLocale from '@fullcalendar/core/locales/fr';
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -26,15 +27,17 @@ function Calendar() {
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
       initialView="dayGridMonth"
+      locale='fr'
+      locales={[frLocale]} // Ajoutez cette ligne pour inclure la localisation française
       headerToolbar={{
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
       }}
       eventContent={renderEventContent}
       events={[
-        { title: 'event 1', start: '2024-11-02T14:15:00', end: '2024-11-03T18:52:01' },
-        { title: 'event 2', start: '2024-11-06T14:00:00', end: '2024-11-06T15:35:00' }
+        { title: 'événement 1', start: '2024-12-02T14:15:00', end: '2024-11-03T18:52:01' },
+        { title: 'événement 2', start: '2024-11-06T14:00:00', end: '2024-11-06T15:35:00' }
       ]}
     />
   );
