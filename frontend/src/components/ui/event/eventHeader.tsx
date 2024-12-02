@@ -100,7 +100,7 @@ export default function EventHeader({ event }: EventProps) {
         </div>
         <div className="flex items-center gap-1.5 font-semibold">
           <PeopleFill className="w-5 min-w-5" />
-          <p>{event.userEvents.length} participant(s)</p> {/* Count elements in array */}
+          <p>{event.userEvents.filter(userEvent => userEvent.validation === 1).length} participant(s)</p> {/* Count elements in array */}
         </div>
       </div>
     </div>

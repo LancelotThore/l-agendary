@@ -5,6 +5,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -58,8 +59,14 @@ public function register(Request $request): JsonResponse
             $existingUser->setFirstname($data['firstname']);
             $existingUser->setLastname($data['name']);
             $existingUser->setRoles([]);
-            $user->setBio('Je m\'appelle ' . $user->getFirstname() . ' ' . $user->getLastname() . ', et je suis un utilisateur de l\'application.');
-            $user->setAge(0);
+            $existingUser->setBio('Je m\'appelle ' . $existingUser->getFirstname() . ' ' . $existingUser->getLastname() . ', et je suis un utilisateur de l\'application.');
+            $existingUser->setAge(0);
+
+            // Mettre à jour les événements utilisateur relatifs à l'utilisateur
+            $events = $this->entityManager->getRepository(UserEvent::class)->findBy(['user' => $existingUser]);
+            foreach ($events as $event) {
+                $event->setValidation(true);
+            }
 
             $this->entityManager->persist($existingUser);
             $this->entityManager->flush();

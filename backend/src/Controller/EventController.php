@@ -34,14 +34,15 @@ class EventController extends AbstractController
     public function highlightedEvents(EntityManagerInterface $entityManager): Response
     {
         $highlighted_events = $entityManager->getRepository(Event::class)
-            ->createQueryBuilder('e')
-            ->leftJoin('e.userEvents', 'ue')
-            ->groupBy('e.id')
-            ->where('e.privacy = 1')
-            ->orderBy('COUNT(ue.user)', 'DESC')
-            ->setMaxResults(6)
-            ->getQuery()
-            ->getResult();
+        ->createQueryBuilder('e')
+        ->leftJoin('e.userEvents', 'ue', 'WITH', 'ue.validation = 1') // Ajouter une condition au join
+        ->groupBy('e.id')
+        ->where('e.privacy = 1')
+        ->orderBy('COUNT(ue.user)', 'DESC')
+        ->setMaxResults(6)
+        ->getQuery()
+        ->getResult();
+    
 
         $serializer = $this->container->get('serializer');
         $highlighted_events_json = $serializer->serialize($highlighted_events, 'json', ['circular_reference_handler' => function ($object) {

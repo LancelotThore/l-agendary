@@ -178,7 +178,6 @@ public function isUserRegisteredToEvent(int $id, Request $request, EntityManager
         return $user; // Retourne la réponse d'erreur de isLogged
     }
 
-    // Utilisation de DQL pour charger explicitement la relation userEvents
     $event = $entityManager->getRepository(Event::class)
                            ->createQueryBuilder('e')
                            ->leftJoin('e.userEvents', 'ue')
