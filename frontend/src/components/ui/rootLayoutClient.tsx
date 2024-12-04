@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Navbar } from '@/components/navBar';
 import { Footer } from "@/components/ui/footer";
 import { Toaster } from "@/components/ui/sonner";
+import CookiePopup from '@/components/ui/cookiePopup';
 
 interface RootLayoutClientProps {
   children: ReactNode;
@@ -26,6 +27,7 @@ const RootLayoutClient = ({ children }: RootLayoutClientProps) => {
               {children}
             </div>
           </main>
+          <CookiePopup />
           <Toaster />
           <Footer />
         </>
