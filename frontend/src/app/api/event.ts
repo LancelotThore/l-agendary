@@ -305,3 +305,28 @@ export async function confirmRegistration(token: string) {
       throw error;
   }
 }
+
+export async function removeRegistration(token: string) {
+  try {
+      const response = await fetch('https://localhost:443/api/remove-registration', {
+          method: 'POST',
+          headers: {
+              'accept': 'application/ld+json',
+              'Content-Type': 'application/ld+json'
+          },
+          body: JSON.stringify({ token }),
+          credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+          return data;
+      } else {
+          throw { status: response.status, message: data.error || 'Données incorrectes' };
+      }
+  } catch (error) {
+      console.error('Error removing registration:', error);
+      throw error;
+  }
+}

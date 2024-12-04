@@ -391,11 +391,6 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         $eventId = $data['event'];
         $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         $event = $entityManager->getRepository(Event::class)->find($eventId);
-        
-        // Créer l'inscription
-        $eventUser = new UserEvent();
-        $eventUser->setToken(bin2hex(random_bytes(32)));
-        $eventUser->setEvent($event);
 
         if (!$existingUser) {
             // Création d'un utilisateur fictif
@@ -419,16 +414,35 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
                 ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
                         <a href="https://localhost:3000/confirm-registration?token=' . $eventUser->getToken() . '">
                             <button>Confirmer l\'inscription</button>
-                        </a>');
+                        </a>
+                        Si vous souhaitez vous désinscrire de l\'événement, cliquez sur le bouton ci-dessous.
+                            <a href="https://localhost:3000/remove-registration?token=' . $eventUser->getToken() . '">
+                                <button>Se désinscrire de l\'event</button>
+                            </a>');
 
                 $mailer->send($email);
         } else {
             $existingEventUser = $entityManager->getRepository(UserEvent::class)->findOneBy(['event' => $event, 'user' => $existingUser]);
             if($existingEventUser) {
                 if ($existingEventUser->isValidation() === true) {
-                    return $this->json(['error' => 'Vous êtes déjà inscrit et validé à cet événement'], 400);
+                    return $this->json(['error' => 'Vous êtes déjà inscrit à cet événement'], 400);
+                } else {
+                    $email = (new Email())
+                    ->from('your_email@example.com')
+                    ->to($existingUser->getEmail())
+                    ->subject('Confirmation d\'inscription à un événement')
+                    ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
+                            <a href="https://localhost:3000/confirm-registration?token=' . $existingEventUser->getToken() . '">
+                                <button>Confirmer l\'inscription</button>
+                            </a>
+                            Si vous souhaitez vous désinscrire de l\'événement, cliquez sur le bouton ci-dessous.
+                            <a href="https://localhost:3000/remove-registration?token=' . $existingEventUser->getToken() . '">
+                                <button>Se désinscrire de l\'event</button>
+                            </a>');
+    
+                    $mailer->send($email);
+                    return $this->json(['success' => 'Un email de confirmation a été envoyé à votre adresse email.'], 200);
                 }
-                return $this->json(['error' => 'Vous êtes déjà inscrit à cet événement'], 400);
             }
             if (in_array('ROLE_EMAIL', $existingUser->getRoles())) {
                 $eventUser->setUser($existingUser);
@@ -443,7 +457,11 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
                 ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
                         <a href="https://localhost:3000/confirm-registration?token=' . $eventUser->getToken() . '">
                             <button>Confirmer l\'inscription</button>
-                        </a>');
+                        </a>
+                        Si vous souhaitez vous désinscrire de l\'événement, cliquez sur le bouton ci-dessous.
+                            <a href="https://localhost:3000/remove-registration?token=' . $eventUser->getToken() . '">
+                                <button>Se désinscrire de l\'event</button>
+                            </a>');
 
                 $mailer->send($email);
             } else {
@@ -472,6 +490,25 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         }
 
         $userEvent->setValidation(true);
+        $entityManager->flush();
+
+        return $this->json(['status' => 'success']);
+    }
+
+    /**
+     * @Route("/remove-registration", name="remove-registration", methods={"POST"})
+     */
+    public function removeRegistration(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['token'];    
+        $userEvent = $entityManager->getRepository(UserEvent::class)->findOneBy(['token' => $token]);
+
+        if (!$userEvent) {
+            return $this->json(['error' => 'Invalid token'], 400);
+        }
+
+        $entityManager->remove($userEvent);
         $entityManager->flush();
 
         return $this->json(['status' => 'success']);
