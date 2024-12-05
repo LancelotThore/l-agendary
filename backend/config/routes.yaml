@@ -90,10 +90,6 @@ unique_user_names:
     path: /api/unique-user-names
     controller: App\Controller\UserController::getUniqueUserNames
 
-user-events:
-    path: /api/user-events
-    controller: App\Controller\UserController::getUserEvents
-
 # Users
 
 user:
@@ -111,6 +107,10 @@ user_settings_update:
 user_image_update:
     path: /api/user/update/image
     controller: App\Controller\UserController::updateImage
+
+user-events:
+    path: /api/user-events
+    controller: App\Controller\UserController::getUserEvents
 
 
 # -------------------------
