@@ -10,7 +10,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { fetchUser } from "@/app/api/data";
 import frLocale from '@fullcalendar/core/locales/fr';
-import { fetchUserEvents } from "@/app/api/event"; // Importez la nouvelle fonction
+import { fetchUserEvents } from "@/app/api/data"; // Importez la nouvelle fonction
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],

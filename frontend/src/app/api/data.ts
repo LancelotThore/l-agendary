@@ -97,7 +97,6 @@ export async function updateUserProfilePicture(imageUrl: string) {
     }
 }
 
-
 export async function isAdmin() {
     try {
         const response = await fetch("https://localhost:443/api/isadmin", {
@@ -114,5 +113,21 @@ export async function isAdmin() {
         
     } catch (error) {
         return null;
+    }
+}
+
+export async function fetchUserEvents() {
+    try {
+      const res = await fetch("https://localhost/api/user-events", {
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching user events:", error);
+      return null;
     }
 }
