@@ -62,6 +62,10 @@ confirm_registration:
     path: /api/confirm-registration
     controller: App\Controller\EventController::confirmRegistration
 
+remove_registration:
+    path: /api/remove-registration
+    controller: App\Controller\EventController::removeRegistration
+
 is_user_registered:
     path: /api/users/is-registered/{id}
     controller: App\Controller\UserController::isUserRegisteredToEvent
