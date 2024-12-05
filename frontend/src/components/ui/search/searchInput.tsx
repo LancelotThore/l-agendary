@@ -1,19 +1,20 @@
-import { useState, useEffect, useRef, forwardRef, HTMLAttributes, ReactNode } from "react";
+import * as React from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Search, Close } from "@/components/ui/icons";
 
-export interface SelectInputProps extends HTMLAttributes<HTMLDivElement> {
-  img?: ReactNode;
+export interface SelectInputProps extends React.HTMLAttributes<HTMLDivElement> {
+  img?: React.ReactNode;
   placeholder?: string;
-  fetchOptions?: () => Promise<string[]>;
-  onSelect?: (selected: string) => void;
+  fetchOptions?: (searchTerm: string) => Promise<string[]>;
+  onSelect?: (selected: string | null) => void;
 }
 
-const SearchInput = forwardRef<HTMLDivElement, SelectInputProps>(
+const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
   ({ className, img = <Search className="w-4 md:w-6" />, placeholder = "Select an option", fetchOptions, onSelect, ...props }, ref) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState("");
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [dynamicOptions, setDynamicOptions] = useState<string[]>([]);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -32,25 +33,23 @@ const SearchInput = forwardRef<HTMLDivElement, SelectInputProps>(
 
     useEffect(() => {
       if (fetchOptions) {
-        fetchOptions().then(fetchedOptions => {
+        fetchOptions(searchTerm).then(fetchedOptions => {
           setDynamicOptions(fetchedOptions);
         }).catch(error => {
           console.error("Error fetching options:", error);
         });
+      } else {
+        setDynamicOptions([]);
       }
-    }, [fetchOptions]);
+    }, [fetchOptions, searchTerm]);
 
     const clearSelection = () => {
-      setSelectedOption("");
+      setSelectedOption(null);
       setSearchTerm("");
       if (onSelect) {
-        onSelect("");
+        onSelect(null);
       }
     };
-
-    const filteredOptions = dynamicOptions.filter(option =>
-      option.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     return (
       <div className="relative flex flex-col items-center w-full md:max-w-lg" ref={dropdownRef}>
@@ -89,26 +88,35 @@ const SearchInput = forwardRef<HTMLDivElement, SelectInputProps>(
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <div className="max-h-60 overflow-y-auto">
-              {fetchOptions && (
-                <div>
-                  {filteredOptions.map((option, index) => (
-                    <div
-                      key={index}
-                      className="cursor-pointer py-2 px-3 hover:bg-gray-200"
-                      onClick={() => {
-                        setSelectedOption(option);
-                        setSearchTerm("");
-                        setIsDropdownOpen(false);
-                        if (onSelect) {
-                          onSelect(option);
-                        }
-                      }}
-                    >
-                      {option}
-                    </div>
-                  ))}
+              <div
+                className="cursor-pointer py-2 px-3 hover:bg-gray-200"
+                onClick={() => {
+                  setSelectedOption(null);
+                  setSearchTerm("");
+                  setIsDropdownOpen(false);
+                  if (onSelect) {
+                    onSelect(null);
+                  }
+                }}
+              >
+                Aucune sélection
+              </div>
+              {dynamicOptions.map((option, index) => (
+                <div
+                  key={index}
+                  className="cursor-pointer py-2 px-3 hover:bg-gray-200"
+                  onClick={() => {
+                    setSelectedOption(option);
+                    setSearchTerm("");
+                    setIsDropdownOpen(false);
+                    if (onSelect) {
+                      onSelect(option);
+                    }
+                  }}
+                >
+                  {option}
                 </div>
-              )}
+              ))}
             </div>
           </div>
         )}

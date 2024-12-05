@@ -114,6 +114,7 @@ export default function Filter() {
           placeholder="Lieu"
           onSelect={handleLocationSelect}
           value={location}
+          
         />
         <SearchInput
           img={<User className='w-4 md:w-6' />}

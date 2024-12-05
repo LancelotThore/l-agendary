@@ -94,15 +94,22 @@ class EventController extends AbstractController
         return $this->json($eventData);
     }
 
-    /**
+/**
  * @Route("/api/unique-locations", name="unique-locations", methods={"GET"})
  */
-public function getUniqueLocations(EntityManagerInterface $entityManager): Response
+public function getUniqueLocations(Request $request, EntityManagerInterface $entityManager): Response
 {
+    $searchTerm = $request->query->get('q', '');
+
     $queryBuilder = $entityManager->getRepository(Event::class)
         ->createQueryBuilder('e')
-        ->select('DISTINCT e.location')
-        ->where('e.privacy = 1');
+        ->select('DISTINCT e.location, COUNT(e.id) AS event_count')
+        ->where('e.privacy = 1')
+        ->andWhere('e.location LIKE :searchTerm')
+        ->setParameter('searchTerm', '%' . $searchTerm . '%')
+        ->groupBy('e.location')
+        ->orderBy('event_count', 'DESC')
+        ->setMaxResults(10);
 
     $locations = $queryBuilder->getQuery()->getResult();
 
