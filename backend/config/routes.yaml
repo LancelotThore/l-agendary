@@ -92,6 +92,7 @@ unique_user_names:
 
 # Users
 
+    
 user_profile_update:
     path: /api/user/update/profile
     controller: App\Controller\UserController::updateProfile
@@ -107,6 +108,10 @@ user_image_update:
 user-events:
     path: /api/user-events
     controller: App\Controller\UserController::getUserEvents
+
+user_delete:
+    path: /api/user/delete
+    controller: App\Controller\UserController::deleteUser
 
 
 # -------------------------

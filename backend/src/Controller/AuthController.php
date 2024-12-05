@@ -111,7 +111,7 @@ public function register(Request $request): JsonResponse
             throw new BadCredentialsException('Invalid credentials');
         }
 
-        if (!$user->isActive()) {
+        if ($user->getIsActive() != null) {
             return new JsonResponse(['error' => 'Account is not active'], 401);
         }
 
@@ -148,7 +148,7 @@ public function register(Request $request): JsonResponse
             return new JsonResponse(['error' => 'User not found'], 404);
         }
 
-        if (!$user->isActive()) {
+        if ($user->getIsActive() != null) {
             return new JsonResponse(['error' => 'Account is not active'], 401);
         }
 

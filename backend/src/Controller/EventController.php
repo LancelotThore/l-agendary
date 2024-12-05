@@ -131,6 +131,21 @@ class EventController extends AbstractController
         return $this->json($nb_events);
     }
 
+/**
+ * @Route("/api/nb-public-events", name="nb-public-events", methods={"GET"})
+ */
+public function nbPublicEvents(EntityManagerInterface $entityManager): Response
+{
+    $nb_events = $entityManager->getRepository(Event::class)
+        ->createQueryBuilder('e')
+        ->select('COUNT(e.id)')
+        ->where('e.privacy = 1')
+        ->getQuery()
+        ->getSingleScalarResult();
+
+    return $this->json($nb_events);
+}
+
     /**
      * @Route("/api/search-events", name="search-events", methods={"GET"})
      */

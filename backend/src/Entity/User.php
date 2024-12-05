@@ -66,8 +66,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $plainPassword = null;
 
-    #[ORM\Column]
-    private ?bool $isActive = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $isActive = null;
     
     /**
      * @var Collection<int, UserEvent>
@@ -78,7 +78,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->created_events = new ArrayCollection();
-    	$this->isActive = true;
         $this->userEvents = new ArrayCollection();
     }
 
@@ -282,15 +281,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isActive(): ?bool
+    public function addUserEvent(UserEvent $userEvent): static
+    {
+        if (!$this->userEvents->contains($userEvent)) {
+            $this->userEvents->add($userEvent);
+            $userEvent->setUser($this);
+        }
+
+        return $this;
+    }
+
+    // Update the getter method
+    public function getIsActive(): ?\DateTimeInterface
     {
         return $this->isActive;
     }
 
-    public function setIsActive(bool $isActive): static
+    // Update the setter method
+    public function setIsActive(?\DateTimeInterface $isActive): static
     {
         $this->isActive = $isActive;
         
+        return $this;
+    }
+
+    public function removeUserEvent(UserEvent $userEvent): static
+    {
+        if ($this->userEvents->removeElement($userEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($userEvent->getUser() === $this) {
+                $userEvent->setUser(null);
+            }
+        }
+
         return $this;
     }
 

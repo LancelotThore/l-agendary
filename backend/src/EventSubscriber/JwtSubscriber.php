@@ -53,8 +53,8 @@ class JwtSubscriber implements EventSubscriberInterface
             throw new AccessDeniedHttpException('User not found');
         }
 
-        if (!$user->isActive()) {
-            throw new AccessDeniedHttpException('Account is not active');
+        if ($user->getIsActive() != null) {
+            return new JsonResponse(['error' => 'Account is not active'], 401);
         }
 
         if (!in_array('ROLE_ADMIN', $user->getRoles())) {

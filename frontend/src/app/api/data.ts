@@ -131,3 +131,31 @@ export async function fetchUserEvents() {
       return null;
     }
 }
+
+
+export async function deleteUserAccount(password: string) {
+    try {
+        const response = await fetch("https://localhost:443/api/user/delete", {
+            method: "POST",
+            credentials: "include", // Inclure les cookies dans la requête
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                password,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'An error occurred');
+        }
+
+        const data = await response.json();
+        return data;
+        
+    } catch (error) {
+        console.error("Error deleting user account:", error);
+        return { error: error.message };
+    }
+}

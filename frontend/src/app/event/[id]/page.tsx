@@ -184,8 +184,8 @@ export default function Event({ params }) {
     setEvent(dataEvents);
 
     if (dataEvents) {
-      const { formattedDate: startDate, formattedTime: startHourForm } = extractDateAndTime(dataEvents.start_date);
-      const { formattedDate: endDate, formattedTime: endHourform } = extractDateAndTime(dataEvents.end_date);
+      const { formattedDate: startDate, formattedTime: startHourForm } = extractDateAndTime(dataEvents.startDate);
+      const { formattedDate: endDate, formattedTime: endHourform } = extractDateAndTime(dataEvents.endDate);
 
       setId(dataEvents.id);
       setTitle(dataEvents.title);
@@ -241,10 +241,10 @@ export default function Event({ params }) {
       return;
     }
 
-    if (!inputImage) {
-      setError("Veuillez sélectionner une image");
-      return;
-    }
+    // if (!inputImage) {
+    //   setError("Veuillez sélectionner une image");
+    //   return;
+    // }
 
     // Delete previous image
 
