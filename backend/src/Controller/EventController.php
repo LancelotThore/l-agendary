@@ -402,6 +402,9 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
             $user->setRoles(['ROLE_EMAIL']);
             $entityManager->persist($user);
             
+            $eventUser = new UserEvent();
+            $eventUser->setToken(bin2hex(random_bytes(32)));
+            $eventUser->setEvent($event);
             $eventUser->setUser($user);
             $eventUser->setValidation(false);    
             $entityManager->persist($eventUser);  
@@ -445,6 +448,9 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
                 }
             }
             if (in_array('ROLE_EMAIL', $existingUser->getRoles())) {
+                $eventUser = new UserEvent();
+                $eventUser->setToken(bin2hex(random_bytes(32)));
+                $eventUser->setEvent($event);
                 $eventUser->setUser($existingUser);
                 $eventUser->setValidation(false);
                 $entityManager->persist($eventUser);  
