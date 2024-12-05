@@ -304,8 +304,16 @@ function ArrowLeft(props: SVGAttributes<SVGElement>) {
 
 function PlusCircle(props: SVGAttributes<SVGElement>) {
   return (
-    <svg fill="none" strokeWidth={1.5} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M12.75 8a.75.75 0 0 0-1.5 0zm-1.5 8a.75.75 0 0 0 1.5 0zM8 11.25a.75.75 0 0 0 0 1.5zm8 1.5a.75.75 0 0 0 0-1.5zM11.25 8v8h1.5V8zM8 12.75h8v-1.5H8zM20.25 12A8.25 8.25 0 0 1 12 20.25v1.5c5.385 0 9.75-4.365 9.75-9.75zM12 20.25A8.25 8.25 0 0 1 3.75 12h-1.5c0 5.385 4.365 9.75 9.75 9.75zM3.75 12A8.25 8.25 0 0 1 12 3.75v-1.5c-5.385 0-9.75 4.365-9.75 9.75zM12 3.75A8.25 8.25 0 0 1 20.25 12h1.5c0-5.385-4.365-9.75-9.75-9.75z"
+      ></path>
     </svg>
   );
 }

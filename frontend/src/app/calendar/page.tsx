@@ -23,7 +23,8 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
-function Calendar() {
+function Calendar({ events }) {
+  console.log(events);
   return (
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
@@ -36,19 +37,22 @@ function Calendar() {
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
       }}
       eventContent={renderEventContent}
-      events={[
-        { title: 'événement 1', start: '2024-12-02T14:15:00', end: '2024-11-03T18:52:01' },
-        { title: 'événement 2', start: '2024-11-06T14:00:00', end: '2024-11-06T15:35:00' }
-      ]}
+      events={events.map(event => ({
+        title: event.title,
+        start: event.startDate,
+        end: event.endDate,
+        description: event.description,
+        url: `/event/${event.id}`
+      }))} // Transformez les événements pour FullCalendar
     />
   );
 }
 
-function renderEventContent() {
+function renderEventContent(eventInfo) {
   return (
-    <a className="flex flex-col bg-blue-500 text-white w-full h-full" href="/event/29">
-        <b>titre</b>
-        <p className="whitespace-normal">description...</p>
+    <a className="flex flex-col bg-blue-500 text-white w-full h-full" href={eventInfo.event.url}>
+        <b>{eventInfo.event.title}</b>
+        <p className="whitespace-normal">{eventInfo.event.extendedProps.description}</p>
     </a>
   );
 }
@@ -57,6 +61,7 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -66,7 +71,7 @@ export default function Home() {
 
         if (userData) {
           const userEvents = await fetchUserEvents();
-          console.log(userEvents); // Affichez les événements dans la console
+          setEvents(userEvents); // Mettez à jour les événements
         }
       } catch (err) {
         setError("Erreur lors de la récupération de l'utilisateur :", err);
@@ -89,7 +94,7 @@ export default function Home() {
   return (
     <div>
       {user ? (
-        <Calendar />
+        <Calendar events={events} /> // Passez les événements au composant Calendar
       ) : (
         <>
           <p>Connectez-vous pour accéder à votre calendrier</p>

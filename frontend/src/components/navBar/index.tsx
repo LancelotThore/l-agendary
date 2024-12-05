@@ -55,45 +55,45 @@ export function Navbar() {
 
     return (
         <nav className="bg-secondary text-primary shadow-md">
-            <div className="flex items-center justify-between mx-auto py-4 w-10/12 m-auto">
-                <div className="flex items-center space-x-10 rtl:space-x-reverse">
+            <div className="flex items-center justify-between mx-auto py-4 w-10/12">
+                <div className="flex items-center gap-4">
                     <Link href="/" className="flex items-center">
                         <Logo className="w-40" />
                     </Link>
                     <Link
                         href="/search"
-                        className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                        className="hidden lg:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
                     >
                         <span>Rechercher</span>
-                        <Search className="w-5 h-5" aria-hidden="true" />
+                        <Search className="w-5 h-5 min-w-5" aria-hidden="true" />
                     </Link>
                     {user && (
-                        <Link
-                            href="/event/create"
-                            className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
-                        >
-                            <span>Créer un événement</span>
-                            <PlusCircle className="w-5 h-5" aria-hidden="true" />
-                        </Link>
-                    )}
-                    {user && (
-                        <Link
-                            href="/calendar"
-                            className="hidden md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
-                        >
-                            <span>Calendrier</span>
-                            <CalendarIcon className="w-5 h-5" aria-hidden="true" />
-                        </Link>
+                        <>
+                            <Link
+                                href="/calendar"
+                                className="hidden lg:flex items-center space-x-2 py-2 px-3 rounded hover:bg-background font-medium text-base"
+                            >
+                                <span>Créer un événement</span>
+                                <PlusCircle className="w-5 h-5 min-w-5" aria-hidden="true" />
+                            </Link>
+                            <Link
+                                href="/calendar"
+                                className="hidden lg:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
+                            >
+                                <span>Calendrier</span>
+                                <CalendarIcon className="w-5 h-5 min-w-5" aria-hidden="true" />
+                            </Link>
+                        </>
                     )}
                 </div>
 
-                <div className="hidden md:flex space-x-4 items-center">
+                <div className="hidden lg:flex space-x-4 items-center">
                     {/* Condition pour afficher les boutons en fonction de l'état de l'utilisateur */}
                     {user ? (
                         <>
                             <Link href="/profile" className="md:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base">
                                 <span>Profil</span>
-                                <Profil className="w-5 h-5" aria-hidden="true" />
+                                <Profil className="w-5 h-5 min-w-5" aria-hidden="true" />
                             </Link>
                             <Button onClick={handleLogout} className="hover:bg-primary/70">Se déconnecter</Button>
                             {isAdmin && (
@@ -118,13 +118,13 @@ export function Navbar() {
                 </div>
                 <button
                     type="button"
-                    className="inline-flex items-center p-2 justify-center text-sm text-primary rounded-lg md:hidden transition-all duration-300"
+                    className="inline-flex items-center p-2 justify-center text-sm text-primary rounded-lg lg:hidden transition-all duration-300"
                     onClick={toggleMenu}
                 >
                     {isMenuOpen ? <Close className="w-8" /> : <MenuBurger className="w-8" />}
                 </button>
             </div>
-            <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
+            <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
                 <ul className="font-medium flex flex-col py-4 rounded-lg bg-secondary items-end w-10/12 m-auto">
                     <li>
                         <Link
@@ -146,13 +146,22 @@ export function Navbar() {
                     </li>
                     {user ? (
                         <>
-                             <li>
+                            <li>
                                 <Link
                                     href="/event/create"
                                     className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
                                 >
                                     <span>Créer un événement</span>
                                     <PlusCircle className="w-5 h-5" aria-hidden="true" />
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/event/create"
+                                    className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
+                                >
+                                    <span>Calendrier</span>
+                                    <CalendarIcon className="w-5 h-5" aria-hidden="true" />
                                 </Link>
                             </li>
                             <li>
