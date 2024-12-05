@@ -294,59 +294,5 @@ public function getUniqueUserNames(EntityManagerInterface $entityManager): Respo
 
         return new JsonResponse($filteredEvents);
     }
-    
-}
-
-/**
- * @Route("/api/user-events", name="user-events", methods={"GET"})
- */
-public function getUserEvents(Request $request, EntityManagerInterface $entityManager): JsonResponse
-{
-    // Récupérer le token depuis le cookie
-    $token = $request->cookies->get('token');
-
-    if (!$token) {
-        return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
-    }
-
-    // Décoder le token pour obtenir les informations de l'utilisateur
-    $data = $this->jwtEncoder->decode($token);
-    $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
-
-    if (!$user) {
-        return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
-    }
-
-    // Récupérer les événements où l'utilisateur est inscrit ou créateur
-    $userEvents = $entityManager->getRepository(UserEvent::class)->findBy(['user' => $user]);
-    $createdEvents = $entityManager->getRepository(Event::class)->findBy(['creator' => $user]);
-
-    $events = array_merge(
-        array_map(fn($ue) => $ue->getEvent(), $userEvents),
-        $createdEvents
-    );
-
-    // Filtrer les informations spécifiques des événements
-    $filteredEvents = array_map(function($event) {
-        return [
-            'id' => $event->getId(),
-            'title' => $event->getTitle(),
-            'startDate' => $event->getStartDate(),
-            'endDate' => $event->getEndDate(),
-            'privacy' => $event->isPrivacy(),
-            'location' => $event->getLocation(),
-            'creator' => $event->getCreator()->getEmail(),
-            'description' => $event->getDescription(),
-            'image' => $event->getImage()
-        ];
-    }, $events);
-
-    return new JsonResponse($filteredEvents);
-}
-
-
 
 }
-
-
-

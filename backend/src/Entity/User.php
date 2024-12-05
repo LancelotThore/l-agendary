@@ -281,16 +281,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function addUserEvent(UserEvent $userEvent): static
-    {
-        if (!$this->userEvents->contains($userEvent)) {
-            $this->userEvents->add($userEvent);
-            $userEvent->setUser($this);
-        }
-
-        return $this;
-    }
-
     // Update the getter method
     public function getIsActive(): ?\DateTimeInterface
     {
@@ -302,18 +292,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->isActive = $isActive;
         
-        return $this;
-    }
-
-    public function removeUserEvent(UserEvent $userEvent): static
-    {
-        if ($this->userEvents->removeElement($userEvent)) {
-            // set the owning side to null (unless already changed)
-            if ($userEvent->getUser() === $this) {
-                $userEvent->setUser(null);
-            }
-        }
-
         return $this;
     }
 
