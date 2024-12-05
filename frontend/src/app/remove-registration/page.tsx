@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { confirmRegistration } from "../api/event";
+import { removeRegistration } from "../api/event";
 
-export default function ConfirmRegistration() {
+export default function RemoveRegistration() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
@@ -24,19 +24,16 @@ export default function ConfirmRegistration() {
         const token = searchParams.get('token');
         if (token) {
             try {
-                await confirmRegistration(token);
+                await removeRegistration(token);
                 setIsSuccess(true);
-                setPopupMessage("Inscription réussie !");
+                setPopupMessage("Désinscription réussie !");
             } catch (error: any) {
-                if (error.message === 'Inscription déjà validée') {
+                if (error.message === 'Invalid token') {
                     setIsSuccess(false);
-                    setPopupMessage("Erreur lors de l'inscription. Votre inscription a déjà été confirmée.");
-                } else if (error.message === 'Invalid token') {
-                    setIsSuccess(false);
-                    setPopupMessage("Erreur lors de l'inscription. Le token est invalide. Veuillez vérifier le lien d'inscription.");
+                    setPopupMessage("Erreur lors de la désinscription. Le token est invalide. Veuillez vérifier le lien de désinscription.");
                 } else if (error.message) {
                     setIsSuccess(false);
-                    setPopupMessage("Erreur lors de l'inscription. Veuillez réessayer plus tard.");
+                    setPopupMessage("Erreur lors de la désinscription. Veuillez réessayer plus tard.");
                 } else {
                     setIsSuccess(false);
                     setPopupMessage("Erreur inconnue. Veuillez réessayer.");
@@ -52,8 +49,8 @@ export default function ConfirmRegistration() {
 
     return (
         <div className="flex flex-col gap-4 justify-center items-center">
-            <h1 className="text-base font-semibold text-center md:text-2xl">Inscription à votre événement</h1>
-            <Button onClick={handleSubmit}>Confirmer l'inscription</Button>
+            <h1 className="text-base font-semibold text-center md:text-2xl">Désinscription à votre événement</h1>
+            <Button onClick={handleSubmit}>Se désinscrire</Button>
             {popupMessage && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">

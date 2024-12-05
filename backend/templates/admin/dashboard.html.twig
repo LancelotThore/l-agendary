@@ -45,7 +45,7 @@
             var eventChart = new Chart(ctxEvent, {
                 type: 'pie',
                 data: {
-                    labels: ['Public', 'Privé'],
+                    labels: ['Privé', 'Public'],
                     datasets: [{
                         label: 'Répartition des événements',
                         data: [{{ eventCounts.public }}, {{ eventCounts.private }}],

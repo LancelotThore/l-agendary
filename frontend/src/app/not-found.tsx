@@ -9,7 +9,7 @@ export default function NotFound() {
       <div className='md:grid grid-cols-2 gap-4 items-center justify-center'>
         <Image src="/calendar404.webp" alt='Illustration calendrier erreur 404' width={500} height={500} className='w-full'/>
         <div className='flex flex-col items-center justify-center gap-6'>
-          <p className='text-2xl mb-4 text-center'>Oups la page que vous rechercher semble introuvable</p>
+          <p className='text-2xl mb-4 text-center'>Oups la page que vous recherchez semble introuvable</p>
           <div className='flex gap-2 flex-wrap items-center justify-center'>
           <Link href="/">
             <Button>Retourner sur la page d'accueil</Button>

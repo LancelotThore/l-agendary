@@ -148,6 +148,10 @@ public function register(Request $request): JsonResponse
             return new JsonResponse(['error' => 'User not found'], 404);
         }
 
+        if (!$user->isActive()) {
+            return new JsonResponse(['error' => 'Account is not active'], 401);
+        }
+
         // Retourner un tableau avec les propriétés nécessaires
         return new JsonResponse([
             'id' => $user->getId(),
