@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
 import { ToolCard } from "../components/ui/toolCard";
-import { CardEvent } from "../components/ui/cardEvent";
-import { CardEventSkeleton } from "../components/ui/cardEventSkeleton";
+import { CardEvent } from "../components/ui/event/cardEvent";
+import { CardEventSkeleton } from "../components/ui/event/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
-import { fetchHighlightedEvents } from "@/app/api/event";
-import { fetchUser } from "@/app/api/data";
+import { fetchHighlightedEvents } from "@/lib/event";
+import { fetchUser } from "@/lib/data";
 import { Suspense } from 'react';
 
 const agbalumo = Agbalumo({
@@ -66,9 +66,10 @@ export default function Home() {
         <Image
           src="/bgToolCards.webp"
           alt="Background"
-          layout="fill"
-          objectFit="cover"
-          className="z-[-1]"
+          fill
+          style={{ objectFit: "cover" }}
+          className="z-[-1] rounded-2xl"
+          priority
         />
         <h1
           className={`${agbalumo.className} text-3xl md:text-4xl pb-14 text-center text-secondary`}
@@ -105,8 +106,8 @@ export default function Home() {
                     id={card.id}
                     nom={card.title}
                     lieu={card.location}
-                    startDate={card.start_date}
-                    endDate={card.end_date}
+                    startDate={card.startDate}
+                    endDate={card.endDate}
                     img={card.image}
                   />
                 </Link>
@@ -138,10 +139,12 @@ export default function Home() {
       </h2>
       <section className="w-full flex justify-center mb-20">
         <div className="w-9/12 flex flex-col gap-5 text-sm lg:text-base lg:flex-row-reverse md:w-full">
-          <img
+          <Image
             className="object-cover rounded-md md:w-full lg:w-6/12"
-            src="./teams.jpg"
+            src="/teams.jpg"
             alt="Image teams"
+            width={500}
+            height={500}
           />
           <div className="flex flex-col justify-center gap-5 md:w-full lg:w-6/12 sm:text-sm md:text-base">
             <p>

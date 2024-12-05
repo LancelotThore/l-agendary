@@ -28,9 +28,24 @@
 6. **Ajouter des données initiales** :
    - Voir [data.md](./data.md).
 
+6. **Accèder à la page administrateur** :
+   - Vous devez renseigner un rôle admin dans phpmyadmin à l'adresse : [http://localhost:8080/](http://localhost:8080/)
+   - Les informations à renseigner dans le rôle de l'utilisateur est : ```["ROLE_USER", "ROLE_ADMIN"]```
+   - *Utilisateur: root*
+   - *Mot de passe: root*
+
+
 ---
 
 # Fonctionnalités Implémentées
+
+### Période : 25/11/2024 - 29/11/2024
+- Le backoffice https://localhost/admin
+- La fonction de recherche fonctionnel avec la pagination
+- Suppression d'un event par son créateur sur la page de l'event
+- Intégration page 404
+- Intégration du calendrier seulement
+
 
 ### Période : 17/11/2024 - 22/11/2024
 - rejoindre et quitter un événements en tant qu'utilisateur connecté

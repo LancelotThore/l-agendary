@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:scale-105",
+          "bg-secondary border-primary border text-secondary-foreground hover:bg-secondary/80 hover:scale-105",
         accent:
           "bg-accent text-accent-foreground hover:bg-accent/80 hover:scale-105",
         destructive:

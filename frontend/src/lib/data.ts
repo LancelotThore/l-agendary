@@ -18,7 +18,8 @@ export async function fetchUser() {
 }
 
 
-export async function updateUserProfile(firstname: string, lastname: string, age: string, bio: string) {
+export async function updateUserProfile(firstname: string, lastname: string, age: number, bio: string) {
+
     try {
         const response = await fetch("https://localhost:443/api/user/update/profile", {
             method : "POST",
@@ -93,5 +94,68 @@ export async function updateUserProfilePicture(imageUrl: string) {
         return data;
     } catch (error) {
         return null;
+    }
+}
+
+export async function isAdmin() {
+    try {
+        const response = await fetch("https://localhost:443/api/isadmin", {
+        method : "GET",
+        credentials: "include",
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data;
+        
+    } catch (error) {
+        return null;
+    }
+}
+
+export async function fetchUserEvents() {
+    try {
+      const res = await fetch("https://localhost/api/user-events", {
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching user events:", error);
+      return null;
+    }
+}
+
+
+export async function deleteUserAccount(password: string) {
+    try {
+        const response = await fetch("https://localhost:443/api/user/delete", {
+            method: "POST",
+            credentials: "include", // Inclure les cookies dans la requête
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                password,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'An error occurred');
+        }
+
+        const data = await response.json();
+        return data;
+        
+    } catch (error) {
+        console.error("Error deleting user account:", error);
+        return { error: error.message };
     }
 }

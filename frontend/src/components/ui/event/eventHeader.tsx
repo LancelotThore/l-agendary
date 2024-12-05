@@ -6,6 +6,7 @@ import {
   LockClosedIcon,
 } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 interface Event {
   title: string;
@@ -13,7 +14,8 @@ interface Event {
   startDate: string; // datetime string
   endDate: string; // datetime string
   location: string;
-  participants: number;
+  image: string;
+  participant_count: number; // Utiliser le nombre de participants directement
 }
 
 interface EventProps {
@@ -62,11 +64,13 @@ export default function EventHeader({ event }: EventProps) {
   };
 
   return (
-    <div className="flex w-full rounded-lg px-3 md:px-8 md:py-5 bg-gradient-to-b from-transparent from-45% to-primary min-h-72 md:min-h-fit relative overflow-hidden items-end md:bg-none md:bg-secondary text-primary-foreground md:text-secondary-foreground lg:h-full lg:items-start shadow-md">
-      <img
-        src={event.image}
+    <div className="flex w-full rounded-lg px-3 md:px-8 py-5 bg-gradient-to-b from-transparent from-45% to-primary min-h-72 md:min-h-fit relative overflow-hidden items-end md:bg-none md:bg-secondary text-primary-foreground md:text-secondary-foreground lg:h-full lg:items-start shadow-md">
+      <Image
+        src={`/uploads/event_pictures/${event.image}`}
         alt="Card"
-        className="absolute z-[-10] w-full h-full left-0 object-cover rounded-lg md:hidden"
+        className="absolute z-[-10] w-full h-full left-0 top-0 object-cover rounded-lg md:hidden"
+        width={200}
+        height={150}
       />
       <div className="w-full flex flex-col mt-48 md:mt-0 gap-2 lg:justify-between lg:h-full">
         <div className="flex items-center md:items-start md:flex-col gap-2 mb-1">
@@ -96,7 +100,7 @@ export default function EventHeader({ event }: EventProps) {
         </div>
         <div className="flex items-center gap-1.5 font-semibold">
           <PeopleFill className="w-5 min-w-5" />
-          <p>{event.participants} participants</p>
+          <p>{event.participant_count} participant(s)</p>
         </div>
       </div>
     </div>

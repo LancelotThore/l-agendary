@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "../../components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { register } from "@/app/api/login";
+import { register } from "@/lib/login";
 import Image from "next/image";
 
 const ralewaySemBold = Raleway({
@@ -26,6 +26,8 @@ export default function RegisterPage() {
   const [firstname, setFirstname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVerify, setPasswordVerify] = useState("");
+  const [errorPassword, setErrorPassword] = useState('');
   const [error, setError] = useState("");
   const [spinnerActive, setSpinnerActive] = useState(false);
   const router = useRouter();
@@ -34,8 +36,12 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
       setSpinnerActive(true);
+      if (password !== passwordVerify) {
+        setErrorPassword('Les mots de passe ne correspondent pas');
+        return;
+      }
       await register(email, name, firstname, password, router);
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message);
     } finally {
       setSpinnerActive(false);
@@ -44,21 +50,22 @@ export default function RegisterPage() {
 
   // Inputs liés aux états
   let inputs = [
-    {
-      required: true,
-      id: "name",
-      name: "Nom",
-      type: "text",
-      value: name,
-      onChange: (e) => setName(e.target.value),
-    },
+
     {
       required: true,
       id: "firstname",
       name: "Prénom",
       type: "text",
       value: firstname,
-      onChange: (e) => setFirstname(e.target.value),
+      onChange: (e: any) => setFirstname(e.target.value),
+    },
+    {
+      required: true,
+      id: "lastname",
+      name: "Nom",
+      type: "text",
+      value: name,
+      onChange: (e: any) => setName(e.target.value),
     },
     {
       required: true,
@@ -66,7 +73,7 @@ export default function RegisterPage() {
       name: "Email",
       type: "email",
       value: email,
-      onChange: (e) => setEmail(e.target.value),
+      onChange: (e: any) => setEmail(e.target.value),
     },
     {
       required: true,
@@ -74,7 +81,15 @@ export default function RegisterPage() {
       name: "Mot de passe",
       type: "password",
       value: password,
-      onChange: (e) => setPassword(e.target.value),
+      onChange: (e: any) => setPassword(e.target.value),
+    },
+    {
+      required: true,
+      id: "passwordVerify",
+      name: "Confirmer le mot de passe",
+      type: "password",
+      value: passwordVerify,
+      onChange: (e: any) => setPasswordVerify(e.target.value),
     },
   ];
 
@@ -114,6 +129,10 @@ export default function RegisterPage() {
             </div>
           ))}
 
+          {errorPassword && (
+            <div className="text-red-500 text-center mt-4">{errorPassword}</div>
+          )}
+
           {/* Affichage conditionnel de l'erreur */}
           {error && (
             <div className="text-red-500 text-center mt-4">{error}</div>
@@ -124,12 +143,12 @@ export default function RegisterPage() {
               <Image width={5} height={5} className={`animate-spin h-5 w-5 mr-3 ${spinnerActive ? '' : 'hidden'}`} src="./spinner.svg" alt="Spiner svg" />
               Créer son compte
             </Button>
-            <a
+            <Link
               className="text-center mt-3 hover:underline hover:underline-offset-2 transition-transform md:text-sm"
               href="/login"
             >
               Déjà un compte ? Se connecter
-            </a>
+            </Link>
           </div>
         </div>
       </form>

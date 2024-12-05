@@ -1,35 +1,35 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import Link from 'next/link';
 import Filter from "@/components/ui/search/filter";
-import { CardEvent } from "@/components/ui/cardEvent";
-import Pagination from "@/components/ui/search/pagination";
-import { fetchSearchEvents } from "../api/event";
+import { useSearchParams } from 'next/navigation';
+import EventsTable from '@/components/ui/search/table';
+import Pagination from '@/components/ui/search/pagination';
+import { fetchSearchEvents } from "@/lib/event";
 
 const ITEMS_PER_PAGE = 9;
 
 export default function SearchPage() {
-  const [events, setEvents] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchParams, setSearchParams] = useState({
-    query: '',
-    location: '',
-    startDate: '',
-    endDate: '',
-    creatorFirstname: ''
-  });
+  const searchParams = useSearchParams();
 
-  const fetchData = async (page) => {
-    const offset = (page - 1) * ITEMS_PER_PAGE;
+  const query = searchParams.get('query') || '';
+  const location = searchParams.get('location') || '';
+  const startDate = searchParams.get('startDate') || '';
+  const endDate = searchParams.get('endDate') || '';
+  const creatorFirstname = searchParams.get('creatorFirstname') || '';
+  const currentPage = Number(searchParams.get('page')) || 1;
+
+  const [events, setEvents] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchData = async () => {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
     const data = await fetchSearchEvents(
-      searchParams.query,
-      searchParams.location,
-      searchParams.startDate,
-      searchParams.endDate,
-      searchParams.creatorFirstname,
+      query,
+      location,
+      startDate,
+      endDate,
+      creatorFirstname,
       ITEMS_PER_PAGE,
       offset
     );
@@ -40,42 +40,16 @@ export default function SearchPage() {
   };
 
   useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage, isSearching, searchParams]);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handleSearchResults = (results) => {
-    setEvents(results.events);
-    setTotalPages(Math.ceil(results.total / ITEMS_PER_PAGE));
-    setCurrentPage(1);
-    setIsSearching(true);
-  };
+    fetchData();
+  }, [currentPage, query, location, startDate, endDate, creatorFirstname]);
 
   return (
-    <div className='w-full'>
-      <Filter onSearchResults={handleSearchResults} />
-      <ul className="flex items-center gap-5 my-10 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
-        {events.map((event, index) => (
-          <Link href={`/event/${event.id}`} key={index}>
-            <CardEvent
-              nom={event.title}
-              lieu={event.location}
-              startDate={event.start_date}
-              endDate={event.end_date}
-              img={event.image}
-              id={event.id}
-            />
-          </Link>
-        ))}
-      </ul>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+    <div className="w-full">
+      <Filter />
+      <EventsTable events={events} />
+      <div className="mt-5 flex w-full justify-center items-start">
+        <Pagination totalPages={totalPages} />
+      </div>
     </div>
   );
 }

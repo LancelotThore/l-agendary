@@ -1,5 +1,7 @@
 import { Raleway } from 'next/font/google';
 import Link from 'next/link';
+import Image from 'next/image';
+
 
 const ralewayBold = Raleway({
     subsets: ['latin'],
@@ -30,8 +32,8 @@ export function ToolCard({ id, title, description, icon, color, link }: ToolCard
           <h2 className={`${ralewayBold.className} text-base md:text-2xl`}>{title}</h2>
           <p className={`${ralewayMedium.className} hidden md:block`}>{description}</p>
         </div>
-        <img className='relative h-min w-11 h-11 md:w-36 md:h-36' src={icon} alt="toolcard Icon" />
-        <img className='absolute top-28 -right-28 group-hover:top-6 group-hover:-right-0 md:top-36 md:-right-36 md:group-hover:top-10 md:group-hover:-right-6 opacity-20 w-11 h-11 md:w-36 md:h-36 ease-in-out duration-500' src={icon} alt="toolcard Icon" />
+        <Image className='relative h-min w-11 h-11 md:w-36 md:h-36' src={icon} alt="toolcard Icon" width={44} height={44} />
+        <Image className='absolute top-28 -right-28 group-hover:top-6 group-hover:-right-0 md:top-36 md:-right-36 md:group-hover:top-10 md:group-hover:-right-6 opacity-20 w-11 h-11 md:w-36 md:h-36 ease-in-out duration-500' src={icon} alt="toolcard Icon" width={44} height={44} />
       </Link>
     </li>
   );

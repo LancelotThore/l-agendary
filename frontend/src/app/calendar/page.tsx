@@ -8,7 +8,9 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import { fetchUser } from "@/app/api/data";
+import { fetchUser } from "@/lib/data";
+import frLocale from '@fullcalendar/core/locales/fr';
+import { fetchUserEvents } from "@/lib/data"; // Importez la nouvelle fonction
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -21,30 +23,36 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
-function Calendar() {
+function Calendar({ events }) {
+  console.log(events);
   return (
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
       initialView="dayGridMonth"
+      locale='fr'
+      locales={[frLocale]} // Ajoutez cette ligne pour inclure la localisation française
       headerToolbar={{
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
       }}
       eventContent={renderEventContent}
-      events={[
-        { title: 'event 1', start: '2024-11-02T14:15:00', end: '2024-11-03T18:52:01' },
-        { title: 'event 2', start: '2024-11-06T14:00:00', end: '2024-11-06T15:35:00' }
-      ]}
+      events={events.map(event => ({
+        title: event.title,
+        start: event.startDate,
+        end: event.endDate,
+        description: event.description,
+        url: `/event/${event.id}`
+      }))} // Transformez les événements pour FullCalendar
     />
   );
 }
 
-function renderEventContent() {
+function renderEventContent(eventInfo) {
   return (
-    <a className="flex flex-col bg-blue-500 text-white w-full h-full" href="/event/29">
-        <b>titre</b>
-        <p className="whitespace-normal">description...</p>
+    <a className="flex flex-col bg-blue-500 text-white w-full h-full" href={eventInfo.event.url}>
+      <b>{eventInfo.event.title}</b>
+      <p className="whitespace-normal">{eventInfo.event.extendedProps.description}</p>
     </a>
   );
 }
@@ -53,12 +61,18 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const loadUser = async () => {
       try {
         const userData = await fetchUser();
         setUser(userData);
+
+        if (userData) {
+          const userEvents = await fetchUserEvents();
+          setEvents(userEvents); // Mettez à jour les événements
+        }
       } catch (err) {
         setError("Erreur lors de la récupération de l'utilisateur :", err);
       } finally {
@@ -80,10 +94,10 @@ export default function Home() {
   return (
     <div>
       {user ? (
-        <Calendar />
+        <Calendar events={events} /> // Passez les événements au composant Calendar
       ) : (
         <>
-          <p>Connectez-vous pour accèder à votre calendrier</p>
+          <p>Connectez-vous pour accéder à votre calendrier</p>
         </>
       )}
     </div>

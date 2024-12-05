@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchUser } from "@/app/api/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
+import { fetchUser, deleteUserAccount } from "@/lib/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,7 +18,8 @@ import {
   updateUserProfile,
   updateUserSettings,
   updateUserProfilePicture,
-} from "@/app/api/data";
+} from "@/lib/data";
+import Image from "next/image";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -30,7 +31,7 @@ export default function ProfilePage() {
   // Form input profile
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState<number | undefined>(undefined);
   const [bio, setBio] = useState("");
   const [image, setImage] = useState("");
 
@@ -47,6 +48,10 @@ export default function ProfilePage() {
   const [errorImage, setErrorImage] = useState("");
   const [successImage, setSuccessImage] = useState("");
 
+  // Form input delete account
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+
   const getUser = async () => {
     try {
       const userData = await fetchUser();
@@ -58,7 +63,7 @@ export default function ProfilePage() {
       setEmail(userData.email);
       setImage(userData.profile_pic);
     } catch (err) {
-      setError("Erreur lors de la récupération des informations utilisateur");
+      router.push("/");
     } finally {
       setLoading(false);
     }
@@ -82,7 +87,7 @@ export default function ProfilePage() {
   }
 
   // Fonction pour mettre à jour le profil utilisateur
-  const handleEditProfile = async (e) => {
+  const handleEditProfile = async (e: any) => {
     e.preventDefault();
     try {
       await updateUserProfile(firstname, lastname, age, bio);
@@ -132,6 +137,23 @@ export default function ProfilePage() {
       return;
     }
 
+    // Delete previous image
+
+    if (image) {
+      try {
+        const response = await fetch(`/api/upload/profile_pic?fileName=${image}`, {
+          method: "DELETE",
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Erreur lors de la suppression de l'ancienne image");
+        }
+      } catch (err: any) {
+        setErrorImage(err.message);
+        return;
+      }
+    }
+
     const formData = new FormData();
     formData.append("file", profilePicture);
 
@@ -141,13 +163,35 @@ export default function ProfilePage() {
         body: formData,
       });
       const data = await response.json();
-      const imageUrl = data.url;
+      const imageUrl = data.fileName;
 
       await updateUserProfilePicture(imageUrl);
       setSuccessImage("Image de profil mise à jour avec succès");
       getUser();
     } catch (err) {
       setErrorImage("Erreur lors de la mise à jour de l'image de profil");
+    }
+  };
+
+
+  // Fonction pour supprimer le compte utilisateur
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await deleteUserAccount(deletePassword);
+
+      if (response.error) {
+        if (response.error === 'Invalid password') {
+          setDeleteError("Mot de passe incorrect. Veuillez vérifier votre mot de passe.");
+        } else {
+          setDeleteError(response.error);
+        }
+        return;
+      }
+
+      window.location.reload();
+    } catch (err) {
+      setDeleteError("Erreur lors de la suppression du compte. Veuillez vérifier votre mot de passe.");
     }
   };
 
@@ -173,21 +217,21 @@ export default function ProfilePage() {
               Modifier les informations de votre profil utilisateur.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="firstname">
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="firstname" className="text-right">
                 Prénom
               </label>
-                <Input
-                  id="firstname"
-                  value={firstname}
-                  onChange={(e) => setFirstname(e.target.value)}
-                  className="col-span-3"
-                />
+              <Input
+                id="firstname"
+                value={firstname}
+                onChange={(e) => setFirstname(e.target.value)}
+                className="col-span-3"
+              />
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="lastname">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="lastname" className="text-right">
                 Nom
               </label>
               <Input
@@ -198,28 +242,31 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="age">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="age" className="text-right">
                 Âge
               </label>
               <Input
                 id="age"
-                type="number"
                 value={age}
-                placeholder="Entrez votre age"
-                onChange={(e) => setAge(e.target.value)}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value >= 0) {
+                    setAge(value);
+                  }
+                }}
                 className="col-span-3"
-                />
+                type="number"
+              />
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="bio">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="bio" className="text-right">
                 Biographie
               </label>
               <Input
                 id="bio"
                 value={bio}
-                placeholder="Entrez votre biographie"
                 onChange={(e) => setBio(e.target.value)}
                 className="col-span-3"
               />
@@ -243,16 +290,16 @@ export default function ProfilePage() {
             Modifier les paramètres
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[750px]">
           <DialogHeader>
             <DialogTitle>Modifier mes paramètres</DialogTitle>
             <DialogDescription>
               Modifier les informations de connexion.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="email">
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="email" className="text-right">
                 Email
               </label>
               <Input
@@ -263,8 +310,8 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="password">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="password" className="text-right">
                 Mot de passe
               </label>
               <Input
@@ -276,8 +323,8 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="newPassword">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="newPassword" className="text-right">
                 Nouveau mot de passe
               </label>
               <Input
@@ -289,8 +336,8 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="newPasswordValidator">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="newPasswordValidator" className="text-right">
                 Confirmer le nouveau mot de passe
               </label>
               <Input
@@ -318,16 +365,59 @@ export default function ProfilePage() {
         </DialogContent>
       </Dialog>
 
+      {/* Delete User Account */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="destructive" className="hover:bg-red-700 mb-2 mt-4">
+            Supprimer mon compte
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Supprimer mon compte</DialogTitle>
+            <DialogDescription>
+              Veuillez entrer votre mot de passe pour confirmer la suppression de votre compte.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="deletePassword" className="text-right">
+                Mot de passe
+              </label>
+              <Input
+                id="deletePassword"
+                type="password"
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                className="col-span-3"
+              />
+              {deleteError && (
+                <div className="col-span-4 text-red-500 text-start">
+                  {deleteError}
+                </div>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="destructive" onClick={handleDeleteAccount}>
+              Supprimer mon compte
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Edit User Image */}
       <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">
         <Dialog>
           <DialogTrigger asChild>
             {/* <Button className="hover:bg-primary/70 mb-2">Modifier la photo de profil</Button> */}
             <div className="aspect-square w-32 md:w-64 hover:cursor-pointer  lg:order-2">
-              <img
+              <Image
                 className="rounded-lg object-cover hover:opacity-75  h-full w-full"
-                src={image ? `/uploads/profile_pictures/${image}` : "img.png"}              
+                src={image ? `/uploads/profile_pictures/${image}` : "/img.webp"}
                 alt={`Image de profil de ${firstname}`}
+                width={200}
+                height={200}
               />
             </div>
           </DialogTrigger>
@@ -366,6 +456,9 @@ export default function ProfilePage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+
+
         <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
           <h4 className="hidden md:block mt-2.5 mb-8 font-bold text-xl md:text-2xl">
             Mon Profil
