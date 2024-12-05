@@ -158,108 +158,106 @@ class UserController extends AbstractController
         return new JsonResponse(['error' => 'Invalid image URL'], 400);
     }
 
-/**
- * @Route("/api/unique-user-names", name="unique-user-names", methods={"GET"})
- */
-public function getUniqueUserNames(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $searchTerm = $request->query->get('q', '');
+    /**
+     * @Route("/api/unique-user-names", name="unique-user-names", methods={"GET"})
+     */
+    public function getUniqueUserNames(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $searchTerm = $request->query->get('q', '');
 
-    $queryBuilder = $entityManager->getRepository(User::class)
-        ->createQueryBuilder('u')
-        ->select('u.firstname, COUNT(e.id) AS event_count')
-        ->join(Event::class, 'e', 'WITH', 'e.creator = u.id AND e.privacy = 1')
-        ->where('u.firstname LIKE :searchTerm')
-        ->setParameter('searchTerm', '%' . $searchTerm . '%')
-        ->groupBy('u.id')
-        ->orderBy('event_count', 'DESC')
-        ->setMaxResults(10);
+        $queryBuilder = $entityManager->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->select('u.firstname, COUNT(e.id) AS event_count')
+            ->join(Event::class, 'e', 'WITH', 'e.creator = u.id AND e.privacy = 1')
+            ->where('u.firstname LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->groupBy('u.id')
+            ->orderBy('event_count', 'DESC')
+            ->setMaxResults(10);
 
-    $userFirstNames = $queryBuilder->getQuery()->getResult();
+        $userFirstNames = $queryBuilder->getQuery()->getResult();
 
-    return $this->json($userFirstNames);
-}
-}
-
-public function isUserRegisteredToEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
-{
-    $user = $this->isLogged($request);
-    if (!$user instanceof User) {
-        return $user; // Retourne la réponse d'erreur de isLogged
+        return $this->json($userFirstNames);
     }
 
-    $event = $entityManager->getRepository(Event::class)
-                           ->createQueryBuilder('e')
-                           ->leftJoin('e.userEvents', 'ue')
-                           ->addSelect('ue')
-                           ->where('e.id = :id')
-                           ->setParameter('id', $id)
-                           ->getQuery()
-                           ->getOneOrNullResult();
-
-    if (!$event) {
-        return new JsonResponse(['error' => 'Event not found'], 404);
-    }
-
-    $isRegistered = false;
-
-    // Vérifier si l'utilisateur est enregistré à l'événement
-    foreach ($event->getUserEvents() as $userEvent) {
-        if ($userEvent->getUser()->getId() === $user->getId()) {
-            $isRegistered = true;
-            break;
+    public function isUserRegisteredToEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->isLogged($request);
+        if (!$user instanceof User) {
+            return $user; // Retourne la réponse d'erreur de isLogged
         }
+
+        $event = $entityManager->getRepository(Event::class)
+                            ->createQueryBuilder('e')
+                            ->leftJoin('e.userEvents', 'ue')
+                            ->addSelect('ue')
+                            ->where('e.id = :id')
+                            ->setParameter('id', $id)
+                            ->getQuery()
+                            ->getOneOrNullResult();
+
+        if (!$event) {
+            return new JsonResponse(['error' => 'Event not found'], 404);
+        }
+
+        $isRegistered = false;
+
+        // Vérifier si l'utilisateur est enregistré à l'événement
+        foreach ($event->getUserEvents() as $userEvent) {
+            if ($userEvent->getUser()->getId() === $user->getId()) {
+                $isRegistered = true;
+                break;
+            }
+        }
+
+        return new JsonResponse(['isRegistered' => $isRegistered]);
     }
 
-    return new JsonResponse(['isRegistered' => $isRegistered]);
-}
+    /**
+     * @Route("/api/user-events", name="user-events", methods={"GET"})
+     */
+    public function getUserEvents(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Récupérer le token depuis le cookie
+        $token = $request->cookies->get('token');
 
-/**
- * @Route("/api/user-events", name="user-events", methods={"GET"})
- */
-public function getUserEvents(Request $request, EntityManagerInterface $entityManager): JsonResponse
-{
-    // Récupérer le token depuis le cookie
-    $token = $request->cookies->get('token');
+        if (!$token) {
+            return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
+        }
 
-    if (!$token) {
-        return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
+        // Décoder le token pour obtenir les informations de l'utilisateur
+        $data = $this->jwtEncoder->decode($token);
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
+
+        if (!$user) {
+            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Récupérer les événements où l'utilisateur est inscrit ou créateur
+        $userEvents = $entityManager->getRepository(UserEvent::class)->findBy(['user' => $user]);
+        $createdEvents = $entityManager->getRepository(Event::class)->findBy(['creator' => $user]);
+
+        $events = array_merge(
+            array_map(fn($ue) => $ue->getEvent(), $userEvents),
+            $createdEvents
+        );
+
+        // Filtrer les informations spécifiques des événements
+        $filteredEvents = array_map(function($event) {
+            return [
+                'id' => $event->getId(),
+                'title' => $event->getTitle(),
+                'startDate' => $event->getStartDate(),
+                'endDate' => $event->getEndDate(),
+                'privacy' => $event->isPrivacy(),
+                'location' => $event->getLocation(),
+                'creator' => $event->getCreator()->getEmail(),
+                'description' => $event->getDescription(),
+                'image' => $event->getImage()
+            ];
+        }, $events);
+
+        return new JsonResponse($filteredEvents);
     }
-
-    // Décoder le token pour obtenir les informations de l'utilisateur
-    $data = $this->jwtEncoder->decode($token);
-    $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
-
-    if (!$user) {
-        return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
-    }
-
-    // Récupérer les événements où l'utilisateur est inscrit ou créateur
-    $userEvents = $entityManager->getRepository(UserEvent::class)->findBy(['user' => $user]);
-    $createdEvents = $entityManager->getRepository(Event::class)->findBy(['creator' => $user]);
-
-    $events = array_merge(
-        array_map(fn($ue) => $ue->getEvent(), $userEvents),
-        $createdEvents
-    );
-
-    // Filtrer les informations spécifiques des événements
-    $filteredEvents = array_map(function($event) {
-        return [
-            'id' => $event->getId(),
-            'title' => $event->getTitle(),
-            'startDate' => $event->getStartDate(),
-            'endDate' => $event->getEndDate(),
-            'privacy' => $event->isPrivacy(),
-            'location' => $event->getLocation(),
-            'creator' => $event->getCreator()->getEmail(),
-            'description' => $event->getDescription(),
-            'image' => $event->getImage()
-        ];
-    }, $events);
-
-    return new JsonResponse($filteredEvents);
-}
-
     
 }

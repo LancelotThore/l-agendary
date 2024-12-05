@@ -35,9 +35,12 @@ export async function fetchHighlightedEvents() {
   }
 }
 
-export async function fetchUniqueLocations() {
+export async function fetchUniqueLocations(searchTerm: string) {
   try {
-    const res = await fetch("https://localhost/api/unique-locations");
+    const url = searchTerm
+      ? `https://localhost/api/unique-locations?q=${encodeURIComponent(searchTerm)}`
+      : `https://localhost/api/unique-locations`;
+    const res = await fetch(url);
     const data = await res.json();
     return data.map((location: { location: string }) => location.location);
   } catch (error) {
@@ -46,9 +49,12 @@ export async function fetchUniqueLocations() {
   }
 }
 
-export async function fetchUniqueUserNames() {
+export async function fetchUniqueUserNames(searchTerm: string) {
   try {
-    const res = await fetch("https://localhost/api/unique-user-names");
+    const url = searchTerm
+      ? `https://localhost/api/unique-user-names?q=${encodeURIComponent(searchTerm)}`
+      : `https://localhost/api/unique-user-names`;
+    const res = await fetch(url);
     const data = await res.json();
     return data.map((user: { firstname: string }) => String(user.firstname));
   } catch (error) {

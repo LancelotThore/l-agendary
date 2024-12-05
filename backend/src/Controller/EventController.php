@@ -94,42 +94,42 @@ class EventController extends AbstractController
         return $this->json($eventData);
     }
 
-/**
- * @Route("/api/unique-locations", name="unique-locations", methods={"GET"})
- */
-public function getUniqueLocations(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $searchTerm = $request->query->get('q', '');
+    /**
+     * @Route("/api/unique-locations", name="unique-locations", methods={"GET"})
+     */
+    public function getUniqueLocations(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $searchTerm = $request->query->get('q', '');
 
-    $queryBuilder = $entityManager->getRepository(Event::class)
-        ->createQueryBuilder('e')
-        ->select('DISTINCT e.location, COUNT(e.id) AS event_count')
-        ->where('e.privacy = 1')
-        ->andWhere('e.location LIKE :searchTerm')
-        ->setParameter('searchTerm', '%' . $searchTerm . '%')
-        ->groupBy('e.location')
-        ->orderBy('event_count', 'DESC')
-        ->setMaxResults(10);
+        $queryBuilder = $entityManager->getRepository(Event::class)
+            ->createQueryBuilder('e')
+            ->select('DISTINCT e.location, COUNT(e.id) AS event_count')
+            ->where('e.privacy = 1')
+            ->andWhere('e.location LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->groupBy('e.location')
+            ->orderBy('event_count', 'DESC')
+            ->setMaxResults(10);
 
-    $locations = $queryBuilder->getQuery()->getResult();
+        $locations = $queryBuilder->getQuery()->getResult();
 
-    return $this->json($locations);
-}
+        return $this->json($locations);
+    }
 
-/**
- * @Route("/api/nb-public-events", name="nb-public-events", methods={"GET"})
- */
-public function nbPublicEvents(EntityManagerInterface $entityManager): Response
-{
-    $nb_events = $entityManager->getRepository(Event::class)
-        ->createQueryBuilder('e')
-        ->select('COUNT(e.id)')
-        ->where('e.privacy = 1')
-        ->getQuery()
-        ->getSingleScalarResult();
+    /**
+     * @Route("/api/nb-public-events", name="nb-public-events", methods={"GET"})
+     */
+    public function nbPublicEvents(EntityManagerInterface $entityManager): Response
+    {
+        $nb_events = $entityManager->getRepository(Event::class)
+            ->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
+            ->where('e.privacy = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
 
-    return $this->json($nb_events);
-}
+        return $this->json($nb_events);
+    }
 
     /**
      * @Route("/api/search-events", name="search-events", methods={"GET"})
@@ -377,15 +377,16 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         }
 
         return $this->json(['success' => 'Event deleted successfully']);
-    $serializer = $this->container->get('serializer');
-    $events_json = $serializer->serialize($events, 'json', ['circular_reference_handler' => function ($object) {
-        return $object->getId();
-    }]);
+        
+        $serializer = $this->container->get('serializer');
+        $events_json = $serializer->serialize($events, 'json', ['circular_reference_handler' => function ($object) {
+            return $object->getId();
+        }]);
 
-    return new Response($events_json, 200, ['Content-Type' => 'application/json']);
-}
+        return new Response($events_json, 200, ['Content-Type' => 'application/json']);
+    }
 
-/**
+    /**
      * @Route("/api/update-event/{id}", name="update-event", methods={"PATCH"})
      */
     public function updateEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse

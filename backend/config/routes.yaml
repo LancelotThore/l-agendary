@@ -92,10 +92,6 @@ unique_user_names:
 
 # Users
 
-user:
-    path: /api/user/{id}
-    controller: App\Controller\UserController::user
-    
 user_profile_update:
     path: /api/user/update/profile
     controller: App\Controller\UserController::updateProfile
