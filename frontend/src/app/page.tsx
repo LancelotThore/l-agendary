@@ -66,9 +66,10 @@ export default function Home() {
         <Image
           src="/bgToolCards.webp"
           alt="Background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           className="z-[-1] rounded-2xl"
+          priority
         />
         <h1
           className={`${agbalumo.className} text-3xl md:text-4xl pb-14 text-center text-secondary`}
