@@ -24,3 +24,6 @@ INSERT INTO event (creator_id, title, description, privacy, start_date, end_date
 
 (5, 'Course de 5km', 'Participez à une course de 5 kilomètres pour soutenir une cause caritative.', 1, '2024-11-17 08:00:00', '2024-11-17 10:00:00', 'Parc de la Ville', 'paysage.webp'),
 (5, 'Festival de musique électronique', 'Festival de musique électronique avec des DJ internationaux.', 2, '2024-11-27 22:00:00', '2024-11-28 05:00:00', 'Salle de concert Zenith', 'paysage.webp'),
+
+Pour que le mailer marche, dans le .env.local (pas dans le .env pour ne pas push) :
+MAILER_DSN=gmail+smtp://{adressegmail}:{motdepasse}@smtp.gmail.com

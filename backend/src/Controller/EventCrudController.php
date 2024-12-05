@@ -28,7 +28,6 @@ class EventCrudController extends AbstractCrudController
             DateTimeField::new('start_date'),
             DateTimeField::new('end_date'),
             AssociationField::new('creator'),
-            // BooleanField::new('isActive'),
             // Ajoutez d'autres champs ici selon vos besoins
         ];
     }

@@ -5,6 +5,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,43 +41,65 @@ class AuthController extends AbstractController
     }
 
     // Méthode pour gérer l'enregistrement
-    public function register(Request $request): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-        
-        // Vérifiez que l'email et le mot de passe sont fournis
-        if (!isset($data['email'], $data['password'], $data['firstname'], $data['name'])) {
-            return new JsonResponse(['error' => 'Tous les champs sont requis.'], 400);
-        }
+public function register(Request $request): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+    
+    // Vérifiez que l'email et le mot de passe sont fournis
+    if (!isset($data['email'], $data['password'], $data['firstname'], $data['name'])) {
+        return new JsonResponse(['error' => 'Tous les champs sont requis.'], 400);
+    }
 
-        // Vérifiez si l'utilisateur existe déjà
-        $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
-        if ($existingUser) {
+    // Vérifiez si l'utilisateur existe déjà
+    $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+    if ($existingUser) {
+        if (in_array('ROLE_EMAIL', $existingUser->getRoles())) {
+            // Modifier les informations de l'utilisateur existant
+            $existingUser->setPassword(password_hash($data['password'], PASSWORD_BCRYPT)); // Hashage du mot de passe
+            $existingUser->setFirstname($data['firstname']);
+            $existingUser->setLastname($data['name']);
+            $existingUser->setRoles([]);
+            $existingUser->setBio('Je m\'appelle ' . $existingUser->getFirstname() . ' ' . $existingUser->getLastname() . ', et je suis un utilisateur de l\'application.');
+            $existingUser->setAge(0);
+
+            // Mettre à jour les événements utilisateur relatifs à l'utilisateur
+            $events = $this->entityManager->getRepository(UserEvent::class)->findBy(['user' => $existingUser]);
+            foreach ($events as $event) {
+                $event->setValidation(true);
+            }
+
+            $this->entityManager->persist($existingUser);
+            $this->entityManager->flush();
+
+            // Générer un token JWT pour l'utilisateur mis à jour
+            $token = $this->jwtManager->create($existingUser);
+            setcookie('token', $token, time() + 3600, '/', 'localhost', true, true);
+
+            return new JsonResponse(200);
+        } else {
             return new JsonResponse(['error' => 'Cet email est déjà utilisé.'], 400);
         }
-
-        // Créer un nouvel utilisateur
-        $user = new User();
-        $user->setEmail($data['email']);
-        $user->setPassword(password_hash($data['password'], PASSWORD_BCRYPT)); // Hashage du mot de passe
-        $user->setFirstname($data['firstname']);
-        $user->setLastname($data['name']);
-        $user->setBio('Je m\'appelle ' . $user->getFirstname() . ' ' . $user->getLastname() . ', et je suis un utilisateur de l\'application.');
-        $user->setAge(0);
-
-
-
-        // Persister l'utilisateur
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        // Générer un token JWT pour l'utilisateur nouvellement enregistré
-        $token = $this->jwtManager->create($user);
-        setcookie('token', $token, time() + 3600, '/', 'localhost', true, true);
-
-
-        return new JsonResponse(201);
     }
+
+    // Créer un nouvel utilisateur
+    $user = new User();
+    $user->setEmail($data['email']);
+    $user->setPassword(password_hash($data['password'], PASSWORD_BCRYPT)); // Hashage du mot de passe
+    $user->setFirstname($data['firstname']);
+    $user->setLastname($data['name']);
+    $user->setBio('Je m\'appelle ' . $user->getFirstname() . ' ' . $user->getLastname() . ', et je suis un utilisateur de l\'application.');
+    $user->setAge(0);
+
+    // Persister l'utilisateur
+    $this->entityManager->persist($user);
+    $this->entityManager->flush();
+
+    // Générer un token JWT pour l'utilisateur nouvellement enregistré
+    $token = $this->jwtManager->create($user);
+    setcookie('token', $token, time() + 3600, '/', 'localhost', true, true);
+
+    return new JsonResponse(201);
+}
 
     // Méthode pour gérer la connexion
     public function login(Request $request): JsonResponse
@@ -88,7 +111,7 @@ class AuthController extends AbstractController
             throw new BadCredentialsException('Invalid credentials');
         }
 
-        if (!$user->isActive()) {
+        if ($user->getIsActive() != null) {
             return new JsonResponse(['error' => 'Account is not active'], 401);
         }
 
@@ -123,6 +146,10 @@ class AuthController extends AbstractController
 
         if (!$user) {
             return new JsonResponse(['error' => 'User not found'], 404);
+        }
+
+        if ($user->getIsActive() != null) {
+            return new JsonResponse(['error' => 'Account is not active'], 401);
         }
 
         // Retourner un tableau avec les propriétés nécessaires

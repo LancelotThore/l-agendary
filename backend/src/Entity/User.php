@@ -15,27 +15,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ApiPlatform\Metadata\ApiResource;
-use App\Controller\UserController;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[ApiResource(
-    operations: [
-        new GetCollection(
-            name: 'unique-user-names',
-            uriTemplate: '/unique-user-names',
-            controller: UserController::class . '::getUniqueUserNames',
-            // outputFormats: ['json' => ['application/ld+json']],
-        ),
-        new Get(), // Get one event by ID
-        new GetCollection(), // Get all events
-        new Post(), // Create a new event
-        new Patch(), // Patch an event
-        new Delete(), // Delete an event
-    ]
-)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -65,13 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'creator')]
     private Collection $created_events;
 
-    /**
-     * @var Collection<int, Event>
-     */
-    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'registered_users')]
-    private Collection $registered_events;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
@@ -89,15 +66,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $plainPassword = null;
 
-    #[ORM\Column]
-    private ?bool $isActive = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $isActive = null;
+    
+    /**
+     * @var Collection<int, UserEvent>
+     */
+    #[ORM\OneToMany(targetEntity: UserEvent::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $userEvents;
 
     public function __construct()
     {
-        
         $this->created_events = new ArrayCollection();
-        $this->registered_events = new ArrayCollection();
-    	$this->isActive = true;
+        $this->userEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,33 +186,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Event>
-     */
-    public function getRegisteredEvents(): Collection
-    {
-        return $this->registered_events;
-    }
-
-    public function addRegisteredEvent(Event $registeredEvent): static
-    {
-        if (!$this->registered_events->contains($registeredEvent)) {
-            $this->registered_events->add($registeredEvent);
-            $registeredEvent->addRegisteredUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRegisteredEvent(Event $registeredEvent): static
-    {
-        if ($this->registered_events->removeElement($registeredEvent)) {
-            $registeredEvent->removeRegisteredUser($this);
-        }
-
-        return $this;
-    }
-
     public function getFirstname(): ?string
     {
         return $this->firstname;
@@ -308,15 +262,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    
+    /**
+     * @return Collection<int, UserEvent>
+     */
+    public function getUserEvents(): Collection
+    {
+        return $this->userEvents;
+    }
 
-    public function isActive(): ?bool
+    public function addUserEvent(UserEvent $userEvent): static
+    {
+        if (!$this->userEvents->contains($userEvent)) {
+            $this->userEvents->add($userEvent);
+            $userEvent->setUser($this);
+        }
+
+        return $this;
+    }
+
+    // Update the getter method
+    public function getIsActive(): ?\DateTimeInterface
     {
         return $this->isActive;
     }
 
-    public function setIsActive(bool $isActive): static
+    // Update the setter method
+    public function setIsActive(?\DateTimeInterface $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function removeUserEvent(UserEvent $userEvent): static
+    {
+        if ($this->userEvents->removeElement($userEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($userEvent->getUser() === $this) {
+                $userEvent->setUser(null);
+            }
+        }
 
         return $this;
     }

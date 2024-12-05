@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchUser } from "@/app/api/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
+import { fetchUser, deleteUserAccount } from "@/app/api/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -48,6 +48,10 @@ export default function ProfilePage() {
   const [errorImage, setErrorImage] = useState("");
   const [successImage, setSuccessImage] = useState("");
 
+  // Form input delete account
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+
   const getUser = async () => {
     try {
       const userData = await fetchUser();
@@ -59,7 +63,7 @@ export default function ProfilePage() {
       setEmail(userData.email);
       setImage(userData.profile_pic);
     } catch (err) {
-      setError("Erreur lors de la récupération des informations utilisateur");
+      router.push("/");
     } finally {
       setLoading(false);
     }
@@ -166,6 +170,28 @@ export default function ProfilePage() {
       getUser();
     } catch (err) {
       setErrorImage("Erreur lors de la mise à jour de l'image de profil");
+    }
+  };
+
+
+  // Fonction pour supprimer le compte utilisateur
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await deleteUserAccount(deletePassword);
+
+      if (response.error) {
+        if (response.error === 'Invalid password') {
+          setDeleteError("Mot de passe incorrect. Veuillez vérifier votre mot de passe.");
+        } else {
+          setDeleteError(response.error);
+        }
+        return;
+      }
+      
+      window.location.reload();
+    } catch (err) {
+      setDeleteError("Erreur lors de la suppression du compte. Veuillez vérifier votre mot de passe.");
     }
   };
 
@@ -339,6 +365,47 @@ export default function ProfilePage() {
         </DialogContent>
       </Dialog>
 
+      {/* Delete User Account */}
+      <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="destructive" className="hover:bg-red-700 mb-2 mt-4">
+              Supprimer mon compte
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Supprimer mon compte</DialogTitle>
+              <DialogDescription>
+                Veuillez entrer votre mot de passe pour confirmer la suppression de votre compte.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label htmlFor="deletePassword" className="text-right">
+                  Mot de passe
+                </label>
+                <Input
+                  id="deletePassword"
+                  type="password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  className="col-span-3"
+                />
+                {deleteError && (
+                  <div className="col-span-4 text-red-500 text-start">
+                    {deleteError}
+                  </div>
+                )}
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="destructive" onClick={handleDeleteAccount}>
+                Supprimer mon compte
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
       {/* Edit User Image */}
       <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">
         <Dialog>
@@ -389,6 +456,9 @@ export default function ProfilePage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        
+
         <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
           <h4 className="hidden md:block mt-2.5 mb-8 font-bold text-xl md:text-2xl">
             Mon Profil

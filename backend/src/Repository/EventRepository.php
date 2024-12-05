@@ -32,9 +32,9 @@ class EventRepository extends ServiceEntityRepository
 
         foreach ($results as $result) {
             if ($result['privacy']) {
-                $data['private'] = $result['count'];
-            } else {
                 $data['public'] = $result['count'];
+            } else {
+                $data['private'] = $result['count'];
             }
         }
 

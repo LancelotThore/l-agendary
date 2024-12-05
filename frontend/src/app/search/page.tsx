@@ -47,7 +47,7 @@ export default function SearchPage() {
     <div className="w-full">
       <Filter />
       <EventsTable events={events} />
-      <div className="mt-5 flex w-full justify-center">
+      <div className="mt-5 flex w-full justify-center items-start">
         <Pagination totalPages={totalPages} />
       </div>
     </div>

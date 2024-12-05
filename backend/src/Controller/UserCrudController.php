@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -34,7 +35,7 @@ class UserCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             EmailField::new('email'),
             ArrayField::new('roles'),
-            BooleanField::new('isActive'),
+            DateTimeField::new('isActive'),
             TextField::new('firstname'),
             TextField::new('lastname'),
             TextField::new('bio'),
@@ -63,7 +64,6 @@ class UserCrudController extends AbstractCrudController
         $entityInstance->setPlainPassword(null);
 
         parent::persistEntity($entityManager, $entityInstance);
-
     }
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
@@ -86,6 +86,5 @@ class UserCrudController extends AbstractCrudController
         $entityInstance->setPlainPassword(null);
 
         parent::updateEntity($entityManager, $entityInstance);
-
     }
 }

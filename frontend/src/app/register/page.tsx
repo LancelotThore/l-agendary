@@ -41,7 +41,7 @@ export default function RegisterPage() {
         return;
       }
       await register(email, name, firstname, password, router);
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message);
     } finally {
       setSpinnerActive(false);
@@ -57,7 +57,7 @@ export default function RegisterPage() {
       name: "Prénom",
       type: "text",
       value: firstname,
-      onChange: (e) => setFirstname(e.target.value),
+      onChange: (e: any) => setFirstname(e.target.value),
     },
     {
       required: true,
@@ -65,7 +65,7 @@ export default function RegisterPage() {
       name: "Nom",
       type: "text",
       value: name,
-      onChange: (e) => setName(e.target.value),
+      onChange: (e: any) => setName(e.target.value),
     },
     {
       required: true,
@@ -73,7 +73,7 @@ export default function RegisterPage() {
       name: "Email",
       type: "email",
       value: email,
-      onChange: (e) => setEmail(e.target.value),
+      onChange: (e: any) => setEmail(e.target.value),
     },
     {
       required: true,
@@ -81,7 +81,7 @@ export default function RegisterPage() {
       name: "Mot de passe",
       type: "password",
       value: password,
-      onChange: (e) => setPassword(e.target.value),
+      onChange: (e: any) => setPassword(e.target.value),
     },
     {
       required: true,
@@ -89,7 +89,7 @@ export default function RegisterPage() {
       name: "Confirmer le mot de passe",
       type: "password",
       value: passwordVerify,
-      onChange: (e) => setPasswordVerify(e.target.value),
+      onChange: (e: any) => setPasswordVerify(e.target.value),
     },
   ];
 

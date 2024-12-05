@@ -99,6 +99,7 @@ export function Navbar() {
                             {isAdmin && (
                                 <Link
                                     href="/admin"
+                                    target="_blank"
                                     className="flex items-center space-x-2 rtl:space-x-reverse block py-2 rounded font-medium text-xl"
                                 >
                                     <Button variant={"secondary"} >Admin</Button>
@@ -168,6 +169,7 @@ export function Navbar() {
                                 <li>
                                     <Link
                                         href="/admin"
+                                        target="_blank"
                                         className="flex items-center space-x-2 rtl:space-x-reverse block py-2 rounded font-medium text-xl"
                                     >
                                         <Button variant={"secondary"} >Admin</Button>
