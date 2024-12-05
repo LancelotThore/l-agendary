@@ -90,6 +90,10 @@ unique_user_names:
     path: /api/unique-user-names
     controller: App\Controller\UserController::getUniqueUserNames
 
+user-events:
+    path: /api/user-events
+    controller: App\Controller\UserController::getUserEvents
+
 # Users
 
 user:

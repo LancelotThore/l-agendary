@@ -305,3 +305,19 @@ export async function confirmRegistration(token: string) {
       throw error;
   }
 }
+
+export async function fetchUserEvents() {
+  try {
+    const res = await fetch("https://localhost/api/user-events", {
+      credentials: 'include'
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user events:", error);
+    return null;
+  }
+}

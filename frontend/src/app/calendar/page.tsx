@@ -10,6 +10,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { fetchUser } from "@/app/api/data";
 import frLocale from '@fullcalendar/core/locales/fr';
+import { fetchUserEvents } from "@/app/api/event"; // Importez la nouvelle fonction
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -62,6 +63,11 @@ export default function Home() {
       try {
         const userData = await fetchUser();
         setUser(userData);
+
+        if (userData) {
+          const userEvents = await fetchUserEvents();
+          console.log(userEvents); // Affichez les événements dans la console
+        }
       } catch (err) {
         setError("Erreur lors de la récupération de l'utilisateur :", err);
       } finally {

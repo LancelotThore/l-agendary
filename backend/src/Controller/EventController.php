@@ -476,4 +476,5 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
 
         return $this->json(['status' => 'success']);
     }
+
 }
