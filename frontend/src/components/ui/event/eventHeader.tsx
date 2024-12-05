@@ -15,7 +15,7 @@ interface Event {
   endDate: string; // datetime string
   location: string;
   image: string;
-  userEvents: string[]; // Change to array
+  participant_count: number; // Utiliser le nombre de participants directement
 }
 
 interface EventProps {
@@ -100,7 +100,7 @@ export default function EventHeader({ event }: EventProps) {
         </div>
         <div className="flex items-center gap-1.5 font-semibold">
           <PeopleFill className="w-5 min-w-5" />
-          <p>{event.userEvents.filter(userEvent => userEvent.validation === 1).length} participant(s)</p> {/* Count elements in array */}
+          <p>{event.participant_count} participant(s)</p>
         </div>
       </div>
     </div>

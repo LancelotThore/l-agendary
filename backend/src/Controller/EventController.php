@@ -59,12 +59,39 @@ class EventController extends AbstractController
     {
         $event = $entityManager->getRepository(Event::class)->find($id);
 
-        $serializer = $this->container->get('serializer');
-        $event_json = $serializer->serialize($event, 'json', ['circular_reference_handler' => function ($object) {
-            return $object->getId();
-        }]);
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
+        }
 
-        return new Response($event_json, 200, ['Content-Type' => 'application/json']);
+        $creator = $event->getCreator();
+        $creatorData = [
+            'id' => $creator->getId(),
+            'email' => $creator->getEmail(),
+            'firstname' => $creator->getFirstname(),
+            'lastname' => $creator->getLastname(),
+            'bio' => $creator->getBio(),
+            'age' => $creator->getAge(),
+            'profilePicture' => $creator->getProfilePicture(),
+        ];
+
+        $participantCount = count(array_filter($event->getUserEvents()->toArray(), function ($userEvent) {
+            return $userEvent->isValidation();
+        }));
+
+        $eventData = [
+            'id' => $event->getId(),
+            'title' => $event->getTitle(),
+            'description' => $event->getDescription(),
+            'privacy' => $event->isPrivacy(),
+            'startDate' => $event->getStartDate(),
+            'endDate' => $event->getEndDate(),
+            'location' => $event->getLocation(),
+            'image' => $event->getImage(),
+            'creator' => $creatorData,
+            'participant_count' => $participantCount,
+        ];
+
+        return $this->json($eventData);
     }
 
     /**

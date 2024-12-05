@@ -109,7 +109,8 @@ export default function Event({ params }) {
           setIsRegistered(true);
           setEvent((prevEvent) => ({
             ...prevEvent,
-            userEvents: [...prevEvent.userEvents, user.id],
+            userEvents: prevEvent.userEvents ? [...prevEvent.userEvents, user.id] : [user.id],
+            participant_count: prevEvent.participant_count + 1,
           }));
           await upEvent();
         } catch (error) {
@@ -127,7 +128,8 @@ export default function Event({ params }) {
         setIsRegistered(false);
         setEvent((prevEvent) => ({
           ...prevEvent,
-          userEvents: prevEvent.userEvents.filter((userId) => userId !== user.id),
+          userEvents: prevEvent.userEvents ? prevEvent.userEvents.filter((userId) => userId !== user.id) : [],
+          participant_count: prevEvent.participant_count - 1,
         }));
         await upEvent();
       } catch (error) {
