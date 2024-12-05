@@ -11,6 +11,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { fetchUser } from "@/lib/data";
 import frLocale from '@fullcalendar/core/locales/fr';
 import { fetchUserEvents } from "@/lib/data"; // Importez la nouvelle fonction
+import Link from "next/link";
+import { StarIcon } from "@/components/ui/icons";
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -23,8 +25,8 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
-function Calendar({ events }) {
-  console.log(events);
+function Calendar({ events, user }) {
+
   return (
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
@@ -39,21 +41,39 @@ function Calendar({ events }) {
       eventContent={renderEventContent}
       events={events.map(event => ({
         title: event.title,
-        start: event.startDate,
-        end: event.endDate,
+        start: event.startDate.date,
+        end: event.endDate.date,
         description: event.description,
-        url: `/event/${event.id}`
+        url: `/event/${event.id}`,
+        creator: event.creator,
+        userConnected: user.email
       }))} // Transformez les événements pour FullCalendar
     />
   );
 }
 
 function renderEventContent(eventInfo) {
+  console.log(eventInfo);
+
+  let creatorEmail = eventInfo.event.extendedProps.creator;
+  let userAuth = eventInfo.event.extendedProps.userConnected;
+
   return (
-    <a className="flex flex-col bg-blue-500 text-white w-full h-full" href={eventInfo.event.url}>
-      <b>{eventInfo.event.title}</b>
-      <p className="whitespace-normal">{eventInfo.event.extendedProps.description}</p>
-    </a>
+    <Link className={`flex flex-col p-2 w-full h-full text-white no-underline decoration-white ${creatorEmail === userAuth ? 'bg-destructive' : 'bg-blue-500'}`} href={eventInfo.event.url}>
+      <b className="whitespace-normal text-white">{eventInfo.event.title}</b>
+      {creatorEmail === userAuth ? (
+        <div className="flex items-center gap-2 pt-2">
+          <StarIcon className="w-3 h-3 text-white" />
+          <p className="whitespace-wrap text-white">Propriétaire</p>
+        </div>
+      ) : (
+        <p className="whitespace-wrap pt-2 text-white">
+          {creatorEmail.length > 8
+            ? `${creatorEmail.substring(0, 8)}...`
+            : creatorEmail}
+        </p>
+      )}
+    </Link>
   );
 }
 
@@ -94,7 +114,7 @@ export default function Home() {
   return (
     <div>
       {user ? (
-        <Calendar events={events} /> // Passez les événements au composant Calendar
+        <Calendar events={events} user={user} /> // Passez les événements au composant Calendar
       ) : (
         <>
           <p>Connectez-vous pour accéder à votre calendrier</p>

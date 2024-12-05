@@ -158,7 +158,7 @@ export function Navbar() {
                             </li>
                             <li>
                                 <Link
-                                    href="/event/create"
+                                    href="/calendar"
                                     className="flex items-center space-x-2 rtl:space-x-reverse block py-2 px-3 rounded font-medium text-xl"
                                 >
                                     <span>Calendrier</span>
