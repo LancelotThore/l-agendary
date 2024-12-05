@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import { Search, MenuBurger, Home, Close, Profil, PlusCircle, CalendarIcon } from "@/components/ui/icons";
 import { Logo } from "@/components/ui/logos";
 import { Button } from '@/components/ui/button';
-import { fetchUser } from "@/app/api/data";
+import { fetchUser } from "@/lib/data";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { logout } from "@/app/api/login";
-import { isAdmin as isLoggedAdmin } from "@/app/api/data";
+import { logout } from "@/lib/login";
+import { isAdmin as isLoggedAdmin } from "@/lib/data";
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

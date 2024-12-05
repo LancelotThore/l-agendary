@@ -13,9 +13,9 @@ import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogT
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
 import { FormElement } from "@/components/ui/form/formElement";
-import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/app/api/event";
+import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/lib/event";
 import { toast } from "sonner";
-import { fetchUser } from "@/app/api/data";
+import { fetchUser } from "@/lib/data";
 import PageEventSkeleton from "./loading";
 import NotFound from "@/app/not-found";
 import Image from "next/image";

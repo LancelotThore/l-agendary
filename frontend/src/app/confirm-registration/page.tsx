@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { confirmRegistration } from "../api/event";
+import { confirmRegistration } from "../../lib/event";
 
 export default function ConfirmRegistration() {
     const router = useRouter();

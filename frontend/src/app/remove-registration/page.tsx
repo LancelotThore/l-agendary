@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { removeRegistration } from "../api/event";
+import { removeRegistration } from "../../lib/event";
 
 export default function RemoveRegistration() {
     const router = useRouter();

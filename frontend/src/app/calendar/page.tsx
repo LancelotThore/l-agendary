@@ -8,9 +8,9 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import { fetchUser } from "@/app/api/data";
+import { fetchUser } from "@/lib/data";
 import frLocale from '@fullcalendar/core/locales/fr';
-import { fetchUserEvents } from "@/app/api/data"; // Importez la nouvelle fonction
+import { fetchUserEvents } from "@/lib/data"; // Importez la nouvelle fonction
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -51,8 +51,8 @@ function Calendar({ events }) {
 function renderEventContent(eventInfo) {
   return (
     <a className="flex flex-col bg-blue-500 text-white w-full h-full" href={eventInfo.event.url}>
-        <b>{eventInfo.event.title}</b>
-        <p className="whitespace-normal">{eventInfo.event.extendedProps.description}</p>
+      <b>{eventInfo.event.title}</b>
+      <p className="whitespace-normal">{eventInfo.event.extendedProps.description}</p>
     </a>
   );
 }

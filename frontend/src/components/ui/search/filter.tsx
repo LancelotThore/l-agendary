@@ -5,7 +5,7 @@ import { SearchBar } from "@/components/ui/search/searchBar";
 import { SearchInput } from "@/components/ui/search/searchInput";
 import { Input } from "@/components/ui/input";
 import { Clock, LocationOn, User, Filtre } from '@/components/ui/icons';
-import { fetchUniqueLocations, fetchUniqueUserNames } from "@/app/api/event";
+import { fetchUniqueLocations, fetchUniqueUserNames } from "@/lib/event";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 export default function Filter() {
@@ -114,7 +114,7 @@ export default function Filter() {
           placeholder="Lieu"
           onSelect={handleLocationSelect}
           value={location}
-          
+
         />
         <SearchInput
           img={<User className='w-4 md:w-6' />}

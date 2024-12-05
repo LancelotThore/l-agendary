@@ -5,7 +5,7 @@ import Filter from "@/components/ui/search/filter";
 import { useSearchParams } from 'next/navigation';
 import EventsTable from '@/components/ui/search/table';
 import Pagination from '@/components/ui/search/pagination';
-import { fetchSearchEvents } from "@/app/api/event";
+import { fetchSearchEvents } from "@/lib/event";
 
 const ITEMS_PER_PAGE = 9;
 
