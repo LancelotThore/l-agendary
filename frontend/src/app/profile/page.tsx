@@ -20,6 +20,7 @@ import {
   updateUserProfilePicture,
 } from "@/lib/data";
 import Image from "next/image";
+import PageProfileSkeleton from "./loading";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -74,7 +75,7 @@ export default function ProfilePage() {
   }, []);
 
   if (loading) {
-    return <p>Chargement...</p>;
+    return <PageProfileSkeleton />;
   }
 
   if (error) {
