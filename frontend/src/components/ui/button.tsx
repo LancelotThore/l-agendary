@@ -23,6 +23,8 @@ const buttonVariants = cva(
         public: "bg-accent text-accent-foreground rounded-full hover:scale-105",
         private:
           "bg-destructive text-destructive-foreground rounded-full hover:scale-105",
+        transparent: "hover:bg-primary hover:text-primary-foreground hover:scale-105",
+        none: "",
       },
       size: {
         default: "px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-base",

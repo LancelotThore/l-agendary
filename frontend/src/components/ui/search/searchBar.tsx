@@ -1,6 +1,7 @@
 import { forwardRef, InputHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Search } from "@/components/ui/icons";
+import { Input } from "@/components/ui/input";
 
 export interface SearchBarProps extends InputHTMLAttributes<HTMLInputElement> {
   startImg?: ReactNode;
@@ -12,7 +13,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     return (
       <div className="relative flex items-center w-full md:max-w-lg">
         {startImg && <div className="absolute left-3">{startImg}</div>}
-        <input
+        <Input
           type={type}
           className={cn(
             "flex h-10 w-full md:max-w-lg rounded-md border border-input bg-secondary px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",

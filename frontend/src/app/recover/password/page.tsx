@@ -1,7 +1,8 @@
 import { Raleway, Agbalumo } from "next/font/google";
 import { Input } from "@/components/ui/input";
-import { Button } from "../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Logo } from "@/components/ui/logos";
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -42,7 +43,7 @@ export default function LoginPage() {
       className={`${ralewayMedium.className} flex flex-col h-screen justify-center items-center text-xs`}
     >
       <Link href="/">
-        <img className="w-24 md:w-40" src="/logo2.svg" alt="Logo Icon" />
+        <Logo className="w-24 md:w-40" />
       </Link>
 
       <form

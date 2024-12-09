@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { Raleway } from "next/font/google";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/login";
 import Image from "next/image";
+import { Logo } from "@/components/ui/logos";
+
 
 const ralewaySemBold = Raleway({
   subsets: ["latin"],
@@ -62,7 +64,7 @@ export default function LoginPage() {
       className={`${ralewayMedium.className} flex flex-col h-screen justify-center items-center text-xs`}
     >
       <Link href="/">
-        <img className="w-24 md:w-40" src="./logo2.svg" alt="Logo Icon" />
+        <Logo className="w-40"/>
       </Link>
 
       <form
@@ -90,12 +92,12 @@ export default function LoginPage() {
                 className="text-xs placeholder:text-FormBorder border-FormBorder md:text-base"
               />
               {input.id === "password" && (
-                <a
+                <Link
                   href="/recover/account"
                   className="text-cardDate text-sm text-right hover:underline hover:underline-offset-2 transition-transform"
                 >
                   Mot de passe oublié
-                </a>
+                </Link>
               )}
             </div>
           ))}

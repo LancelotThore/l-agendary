@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
+import { LockOpenIcon, LockClosedIcon, Close } from "@/components/ui/icons";
 import { FormElement } from "@/components/ui/form/formElement";
 import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/lib/event";
 import { toast } from "sonner";
@@ -304,10 +304,12 @@ export default function Event({ params }) {
     <>
       {event ? (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
-          <img
+          <Image
             src={`/uploads/event_pictures/${event.image}`}
             alt="Card"
             className="rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md"
+            width={500}
+            height={300}
           />
           <div className="lg:col-span-3">
             <EventHeader event={event} />
@@ -487,7 +489,7 @@ export default function Event({ params }) {
                           Image de couverture
                         </label>
                         {typeof image === "string" && (
-                          <img src={`/uploads/event_pictures/${image}`} alt="Image de couverture événement" className="w-32 h-32 rounded" />
+                          <Image src={`/uploads/event_pictures/${image}`} alt="Image de couverture événement" className="w-32 h-32 rounded" width={512} height={512}/>
                         )}
                         <Input
                           id="image"
@@ -537,12 +539,10 @@ export default function Event({ params }) {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
-            <button onClick={closeModal} type="button" className="absolute top-2 right-2 bg-transparent rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-200 focus:outline-none">
+            <Button onClick={closeModal} variant={"transparent"} size={"icon"} className="absolute top-2 right-2">
               <span className="sr-only">Close menu</span>
-              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+              <Close className="w-5"/>
+            </Button>
             <h2 className="text-lg font-bold ">Connexion à l'application</h2>
             <p className="">En vous connectant, vous pouvez vous inscrire à plusieurs événements et les suivre facilement.</p>
             <Link className="h-fit w-fit" href="/login"><Button>Se connecter</Button></Link>
@@ -576,12 +576,10 @@ export default function Event({ params }) {
       {isSuccessModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
-            <button onClick={closeSuccessModal} type="button" className="absolute top-2 right-2 bg-transparent rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-200 focus:outline-none">
+            <Button onClick={closeModal}>
               <span className="sr-only">Close menu</span>
-              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+              <Close className="w-5"/>
+            </Button>
             <h2 className="text-lg font-bold ">Inscription réussie</h2>
             <p className="">Votre inscription a bien été prise en compte, vous allez recevoir un mail de confirmation.</p>
             <Button onClick={closeSuccessModal}>Fermer</Button>

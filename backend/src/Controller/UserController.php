@@ -191,14 +191,12 @@ class UserController extends AbstractController
         return $response;
     }
 
-        /**
- * @Route("/api/unique-user-names", name="unique-user-names", methods={"GET"})
- */
-public function getUniqueUserNames(EntityManagerInterface $entityManager): Response
-{
-    $queryBuilder = $entityManager->getRepository(User::class)
-        ->createQueryBuilder('u')
-        ->select('DISTINCT u.firstname');
+    /**
+     * @Route("/api/unique-user-names", name="unique-user-names", methods={"GET"})
+     */
+    public function getUniqueUserNames(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $searchTerm = $request->query->get('q', '');
 
         $queryBuilder = $entityManager->getRepository(User::class)
             ->createQueryBuilder('u')
@@ -253,19 +251,9 @@ public function getUniqueUserNames(EntityManagerInterface $entityManager): Respo
      */
     public function getUserEvents(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
-
-        if (!$token) {
-            return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
-        }
-
-        // Décoder le token pour obtenir les informations de l'utilisateur
-        $data = $this->jwtEncoder->decode($token);
-        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
-
-        if (!$user) {
-            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        $user = $this->isLogged($request);
+        if (!$user instanceof User) {
+            return $user; // Retourne la réponse d'erreur de isLogged
         }
 
         // Récupérer les événements où l'utilisateur est inscrit ou créateur

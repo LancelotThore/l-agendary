@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Clock, LocationOn, User, Filtre } from '@/components/ui/icons';
 import { fetchUniqueLocations, fetchUniqueUserNames } from "@/lib/event";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button"
 
 export default function Filter() {
   const searchParams = useSearchParams();
@@ -86,12 +87,12 @@ export default function Filter() {
           onChange={handleSearchTermChange}
           className='text-xs placeholder:text-FormBorder border-FormBorder md:text-base w-full'
         />
-        <button
+        <Button variant={'outline'}
           className='block md:hidden flex h-10 w-12 rounded-md border border-input items-center bg-background px-3 py-2 text-sm'
           onClick={toggleFilters}
         >
           <Filtre className='w-6' />
-        </button>
+        </Button>
       </div>
       <div className={`w-full flex-col gap-5 ${showFilters ? 'flex' : 'hidden'} md:grid md:grid-cols-4`}>
         <Input

@@ -117,13 +117,13 @@ export function Navbar() {
                         </>
                     )}
                 </div>
-                <button
+                <Button variant={'none'}
                     type="button"
                     className="inline-flex items-center p-2 justify-center text-sm text-primary rounded-lg lg:hidden transition-all duration-300"
                     onClick={toggleMenu}
                 >
                     {isMenuOpen ? <Close className="w-8" /> : <MenuBurger className="w-8" />}
-                </button>
+                </Button>
             </div>
             <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
                 <ul className="font-medium flex flex-col py-4 rounded-lg bg-secondary items-end w-10/12 m-auto">
