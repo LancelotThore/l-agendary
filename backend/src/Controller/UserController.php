@@ -255,16 +255,12 @@ class UserController extends AbstractController
         if (!$user instanceof User) {
             return $user; // Retourne la réponse d'erreur de isLogged
         }
-
-        // Récupérer les événements où l'utilisateur est inscrit ou créateur
+    
+        // Récupérer les événements où l'utilisateur est inscrit
         $userEvents = $entityManager->getRepository(UserEvent::class)->findBy(['user' => $user]);
-        $createdEvents = $entityManager->getRepository(Event::class)->findBy(['creator' => $user]);
-
-        $events = array_merge(
-            array_map(fn($ue) => $ue->getEvent(), $userEvents),
-            $createdEvents
-        );
-
+    
+        $events = array_map(fn($ue) => $ue->getEvent(), $userEvents);
+    
         // Filtrer les informations spécifiques des événements
         $filteredEvents = array_map(function($event) {
             return [
@@ -279,7 +275,7 @@ class UserController extends AbstractController
                 'image' => $event->getImage()
             ];
         }, $events);
-
+    
         return new JsonResponse($filteredEvents);
     }
 
