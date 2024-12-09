@@ -70,7 +70,7 @@ export function Navbar() {
                     {user && (
                         <>
                             <Link
-                                href="/calendar"
+                                href="/event/create"
                                 className="hidden lg:flex items-center space-x-2 py-2 px-3 rounded hover:bg-background font-medium text-base"
                             >
                                 <span>Créer un événement</span>
