@@ -38,17 +38,19 @@ class EventController extends AbstractController
         ->leftJoin('e.userEvents', 'ue', 'WITH', 'ue.validation = 1') // Ajouter une condition au join
         ->groupBy('e.id')
         ->where('e.privacy = 1')
+        ->andWhere('e.end_date > :currentDate')
+        ->setParameter('currentDate', new \DateTime())
         ->orderBy('COUNT(ue.user)', 'DESC')
         ->setMaxResults(6)
         ->getQuery()
         ->getResult();
+        
     
-
         $serializer = $this->container->get('serializer');
         $highlighted_events_json = $serializer->serialize($highlighted_events, 'json', ['circular_reference_handler' => function ($object) {
             return $object->getId();
         }]);
-
+    
         return new Response($highlighted_events_json, 200, ['Content-Type' => 'application/json']);
     }
 
