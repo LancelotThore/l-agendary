@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { logout } from "@/lib/login";
 import { isAdmin as isLoggedAdmin } from "@/lib/data";
+import { usePathname } from 'next/navigation';
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,6 +17,7 @@ export function Navbar() {
     const [isLoading, setIsLoading] = useState(true); // État de chargement
     const [isAdmin, setIsAdmin] = useState(false); // État admin
     const router = useRouter(); // Pour la redirection
+    const pathname = usePathname();
 
     useEffect(() => {
         // Fonction pour charger l'utilisateur
@@ -44,6 +46,10 @@ export function Navbar() {
 
         checkAdmin();
     }, []);
+
+    useEffect(() => {
+        setIsMenuOpen(false);
+    }, [pathname]);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);

@@ -136,10 +136,10 @@ export default function Home() {
       >
         A propos de nous
       </h2>
-      <section className="w-full flex justify-center mb-20">
-        <div className="w-9/12 flex flex-col gap-5 text-sm lg:text-base lg:flex-row-reverse md:w-full">
+      <section className="w-full flex justify-center">
+        <div className="flex flex-col gap-5 text-sm lg:text-base lg:flex-row-reverse">
           <Image
-            className="object-cover rounded-md md:w-full lg:w-6/12"
+            className="object-cover rounded-md w-full lg:w-6/12"
             src="/teams.jpg"
             alt="Image teams"
             width={500}
