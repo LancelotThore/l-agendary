@@ -6,10 +6,15 @@ import { SearchInput } from "@/components/ui/search/searchInput";
 import { Input } from "@/components/ui/input";
 import { Clock, LocationOn, User, Filtre } from '@/components/ui/icons';
 import { fetchUniqueLocations, fetchUniqueUserNames } from "@/lib/event";
+import { fetchUserUniqueLocations } from "@/lib/data";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 
-export default function Filter() {
+interface FilterProps {
+  variant?: 'default' | 'noCreator';
+}
+
+export default function Filter({ variant = 'default' }: FilterProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -26,34 +31,38 @@ export default function Filter() {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
-    if (searchTerm) {
-      params.set('query', searchTerm);
-    } else {
-      params.delete('query');
-    }
-    if (location) {
-      params.set('location', location);
-    } else {
-      params.delete('location');
-    }
-    if (startDate) {
-      params.set('startDate', startDate);
-    } else {
-      params.delete('startDate');
-    }
-    if (endDate) {
-      params.set('endDate', endDate);
-    } else {
-      params.delete('endDate');
-    }
-    if (creatorFirstname) {
-      params.set('creatorFirstname', creatorFirstname);
-    } else {
-      params.delete('creatorFirstname');
-    }
-    router.replace(`${pathname}?${params.toString()}`);
+    const timeoutId = setTimeout(() => {
+      const params = new URLSearchParams(searchParams);
+      params.set('page', '1');
+      if (searchTerm) {
+        params.set('query', searchTerm);
+      } else {
+        params.delete('query');
+      }
+      if (location) {
+        params.set('location', location);
+      } else {
+        params.delete('location');
+      }
+      if (startDate) {
+        params.set('startDate', startDate);
+      } else {
+        params.delete('startDate');
+      }
+      if (endDate) {
+        params.set('endDate', endDate);
+      } else {
+        params.delete('endDate');
+      }
+      if (creatorFirstname) {
+        params.set('creatorFirstname', creatorFirstname);
+      } else {
+        params.delete('creatorFirstname');
+      }
+      router.replace(`${pathname}?${params.toString()}`);
+    }, 1000); // Délai de 1000ms après que l'utilisateur ait arrêté d'écrire
+
+    return () => clearTimeout(timeoutId);
   }, [searchTerm, location, startDate, endDate, creatorFirstname]);
 
   const handleSearchTermChange = (e) => {
@@ -75,6 +84,8 @@ export default function Filter() {
   const handleCreatorFirstnameSelect = (selectedCreatorFirstname: string) => {
     setCreatorFirstname(selectedCreatorFirstname);
   };
+
+  const locationFetchFunction = variant === 'noCreator' ? fetchUserUniqueLocations : fetchUniqueLocations;
 
   return (
     <div className='flex flex-col gap-5'>
@@ -111,19 +122,21 @@ export default function Filter() {
         />
         <SearchInput
           img={<LocationOn className='w-4 md:w-6' />}
-          fetchOptions={fetchUniqueLocations}
+          fetchOptions={locationFetchFunction}
           placeholder="Lieu"
           onSelect={handleLocationSelect}
           value={location}
 
         />
-        <SearchInput
-          img={<User className='w-4 md:w-6' />}
-          fetchOptions={fetchUniqueUserNames}
-          placeholder="Créateur"
-          onSelect={handleCreatorFirstnameSelect}
-          value={creatorFirstname}
-        />
+        {variant === 'default' && (
+          <SearchInput
+            img={<User className='w-4 md:w-6' />}
+            fetchOptions={fetchUniqueUserNames}
+            placeholder="Créateur"
+            onSelect={handleCreatorFirstnameSelect}
+            value={creatorFirstname}
+          />
+        )}
       </div>
     </div>
   );

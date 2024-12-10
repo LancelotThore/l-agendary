@@ -132,6 +132,22 @@ export async function fetchUserEvents() {
     }
 }
 
+export async function fetchUserCreatedEvents() {
+    try {
+      const res = await fetch("https://localhost/api/user-created-events", {
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching user events:", error);
+      return null;
+    }
+}
+
 
 export async function deleteUserAccount(password: string) {
     try {
@@ -157,5 +173,48 @@ export async function deleteUserAccount(password: string) {
     } catch (error) {
         console.error("Error deleting user account:", error);
         return { error: error.message };
+    }
+}
+
+export async function fetchUserUniqueLocations(searchTerm: string) {
+    try {
+      const url = searchTerm
+        ? `https://localhost/api/user-unique-locations?q=${encodeURIComponent(searchTerm)}`
+        : `https://localhost/api/user-unique-locations`;
+      const res = await fetch(url, {
+        credentials: 'include'
+      });
+      const data = await res.json();
+      return data.map((location: { location: string }) => location.location);
+    } catch (error) {
+      console.error("Error fetching unique locations:", error);
+      return [];
+    }
+}
+
+export async function fetchUserSearchEvents(query: string | null, location: string | null, startDate: string | null, endDate: string | null, limit: number, offset: number) {
+    try {
+        const url = new URL(`https://localhost/api/user-created-events`);
+        if (query) url.searchParams.append('q', query);
+        if (location) url.searchParams.append('location', location);
+        if (startDate) url.searchParams.append('startDate', startDate);
+        if (endDate) url.searchParams.append('endDate', endDate);
+        url.searchParams.append('limit', limit.toString());
+        url.searchParams.append('offset', offset.toString());
+
+        const res = await fetch(url.toString(), {
+            credentials: 'include' // Inclure les cookies dans la requête
+        });
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        return {
+            total: data.total,
+            events: data.events
+        };
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        return null;
     }
 }

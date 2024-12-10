@@ -101,16 +101,15 @@ export default function Home() {
           <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
             {!loading && (
               highlights.map((card, index) => (
-                <Link className="w-full" key={index} href={`/event/${card.id}`}>
-                  <CardEvent
-                    id={card.id}
-                    nom={card.title}
-                    lieu={card.location}
-                    startDate={card.startDate}
-                    endDate={card.endDate}
-                    img={card.image}
-                  />
-                </Link>
+                <CardEvent
+                  id={card.id}
+                  nom={card.title}
+                  lieu={card.location}
+                  startDate={card.startDate}
+                  endDate={card.endDate}
+                  img={card.image}
+                  index={index}
+                />
               ))
             )}
           </ul>

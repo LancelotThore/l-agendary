@@ -21,6 +21,13 @@ import {
 } from "@/lib/data";
 import Image from "next/image";
 import PageProfileSkeleton from "./loading";
+import Filter from "@/components/ui/search/filter";
+import { useSearchParams } from 'next/navigation';
+import EventsTable from '@/components/ui/search/table';
+import Pagination from '@/components/ui/search/pagination';
+import { fetchUserSearchEvents } from "@/lib/data";
+
+const ITEMS_PER_PAGE = 9;
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -28,6 +35,37 @@ export default function ProfilePage() {
   const [error, setError] = useState("");
   const [globalSuccess, setGlobalSuccess] = useState("");
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const query = searchParams.get('query') || '';
+  const location = searchParams.get('location') || '';
+  const startDate = searchParams.get('startDate') || '';
+  const endDate = searchParams.get('endDate') || '';
+  const currentPage = Number(searchParams.get('page')) || 1;
+
+  const [events, setEvents] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchData = async () => {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const data = await fetchUserSearchEvents(
+      query,
+      location,
+      startDate,
+      endDate,
+      ITEMS_PER_PAGE,
+      offset
+    );
+    if (data) {
+      setEvents(data.events);
+      setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, query, location, startDate, endDate]);
 
   // Form input profile
   const [firstname, setFirstname] = useState("");
@@ -478,6 +516,14 @@ export default function ProfilePage() {
           <p className="line-clamp-3 md:line-clamp-none text-sm">
             {bio ? bio : "Pas de biographie"}
           </p>
+        </div>
+      </div>
+
+      <div className="w-full mt-10">
+        <Filter variant="noCreator" />
+        <EventsTable events={events} />
+        <div className="mt-5 flex w-full justify-center items-start">
+          <Pagination totalPages={totalPages} />
         </div>
       </div>
     </>

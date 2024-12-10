@@ -53,7 +53,6 @@ function Calendar({ events, user }) {
 }
 
 function renderEventContent(eventInfo) {
-  console.log(eventInfo);
 
   let creatorEmail = eventInfo.event.extendedProps.creator;
   let userAuth = eventInfo.event.extendedProps.userConnected;

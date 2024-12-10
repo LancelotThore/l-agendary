@@ -42,7 +42,6 @@ export default function SearchPage() {
   useEffect(() => {
     fetchData();
   }, [currentPage, query, location, startDate, endDate, creatorFirstname]);
-
   return (
     <div className="w-full">
       <Filter />
