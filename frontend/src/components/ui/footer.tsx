@@ -16,29 +16,31 @@ const ralewayMedium = Raleway({
 
 export function Footer() {
   return (
-    <footer className="flex items-center flex-col p-5 bg-foreground text-background">
-      <LogoReverse className="w-40" />
+    <footer className="flex items-center flex-col gap-6 p-5 bg-foreground text-background">
+      <Link href="/"><LogoReverse className="w-40" /></Link>
 
-      <div className={`${ralewayBold.className} flex my-5 text-sm md:text-xl`}>
-        <Link href="/" className="border-r-4 border-background pr-5">
+      <div className={`${ralewayBold.className} flex text-sm md:text-lg items-center gap-5`}>
+        <Link href="/mentions-legales">
           Mentions Légales
         </Link>
-        <Link href="/" className="pl-5">
-          Contact
+        <hr className="bg-background w-5 rotate-90" />
+        <Link href="/politique-de-confidentialite">
+          Politique de confidentialité
         </Link>
       </div>
 
-      <div className={`${ralewayMedium.className} flex mt-5 text-sm`}>
-        <Link href="/" className="border-r-2 border-background pr-2">
+      <div className={`${ralewayMedium.className} flex text-sm items-center gap-2`}>
+        <Link href="/">
           © L’agendary
         </Link>
-        <Link href="/" className="border-r-2 border-background px-2 underline">
+        <hr className="bg-background w-5 rotate-90" />
+        <span className="underline">
           Tous droits réservés
-        </Link>
-        <Link href="/" className="pl-2">
-          2024
-        </Link>
+        </span>
+        <hr className="bg-background w-5 rotate-90" />
+        <span>2024</span>
       </div>
+
     </footer>
   );
 }

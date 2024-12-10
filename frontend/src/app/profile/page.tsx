@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchUser, deleteUserAccount } from "@/app/api/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
+import { fetchUser, deleteUserAccount } from "@/lib/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,8 +18,9 @@ import {
   updateUserProfile,
   updateUserSettings,
   updateUserProfilePicture,
-} from "@/app/api/data";
+} from "@/lib/data";
 import Image from "next/image";
+import PageProfileSkeleton from "./loading";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -74,7 +75,7 @@ export default function ProfilePage() {
   }, []);
 
   if (loading) {
-    return <p>Chargement...</p>;
+    return <PageProfileSkeleton />;
   }
 
   if (error) {
@@ -188,7 +189,7 @@ export default function ProfilePage() {
         }
         return;
       }
-      
+
       window.location.reload();
     } catch (err) {
       setDeleteError("Erreur lors de la suppression du compte. Veuillez vérifier votre mot de passe.");
@@ -367,44 +368,44 @@ export default function ProfilePage() {
 
       {/* Delete User Account */}
       <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="destructive" className="hover:bg-red-700 mb-2 mt-4">
+        <DialogTrigger asChild>
+          <Button variant="destructive" className="hover:bg-red-700 mb-2 mt-4">
+            Supprimer mon compte
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Supprimer mon compte</DialogTitle>
+            <DialogDescription>
+              Veuillez entrer votre mot de passe pour confirmer la suppression de votre compte.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="deletePassword" className="text-right">
+                Mot de passe
+              </label>
+              <Input
+                id="deletePassword"
+                type="password"
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                className="col-span-3"
+              />
+              {deleteError && (
+                <div className="col-span-4 text-red-500 text-start">
+                  {deleteError}
+                </div>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="destructive" onClick={handleDeleteAccount}>
               Supprimer mon compte
             </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>Supprimer mon compte</DialogTitle>
-              <DialogDescription>
-                Veuillez entrer votre mot de passe pour confirmer la suppression de votre compte.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label htmlFor="deletePassword" className="text-right">
-                  Mot de passe
-                </label>
-                <Input
-                  id="deletePassword"
-                  type="password"
-                  value={deletePassword}
-                  onChange={(e) => setDeletePassword(e.target.value)}
-                  className="col-span-3"
-                />
-                {deleteError && (
-                  <div className="col-span-4 text-red-500 text-start">
-                    {deleteError}
-                  </div>
-                )}
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="destructive" onClick={handleDeleteAccount}>
-                Supprimer mon compte
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit User Image */}
       <div className="flex w-full p-1.5 bg-secondary rounded-lg gap-2 md:gap-6 md:px-8 md:py-5 lg:h-full shadow-md">
@@ -414,7 +415,7 @@ export default function ProfilePage() {
             <div className="aspect-square w-32 md:w-64 hover:cursor-pointer  lg:order-2">
               <Image
                 className="rounded-lg object-cover hover:opacity-75  h-full w-full"
-                src={image ? `/uploads/profile_pictures/${image}` : "/img.webp"}              
+                src={image ? `/uploads/profile_pictures/${image}` : "/img.webp"}
                 alt={`Image de profil de ${firstname}`}
                 width={200}
                 height={200}
@@ -457,7 +458,7 @@ export default function ProfilePage() {
           </DialogContent>
         </Dialog>
 
-        
+
 
         <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
           <h4 className="hidden md:block mt-2.5 mb-8 font-bold text-xl md:text-2xl">

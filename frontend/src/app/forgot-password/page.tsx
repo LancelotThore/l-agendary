@@ -1,7 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import { Raleway } from "next/font/google";
 import { Input } from "@/components/ui/input";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../components/ui/button";
 import Link from "next/link";
+import { sendRecoverPassword } from "@/lib/login";
 
 const ralewaySemBold = Raleway({
   subsets: ["latin"],
@@ -16,13 +20,37 @@ const ralewayMedium = Raleway({
 });
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   let inputs = [
     {
       id: "email",
       name: "Email",
       type: "email",
+      value: email,
+      onChange: (e: any) => setEmail(e.target.value),
     },
   ];
+
+
+
+  const handlerRecoverEmail = async (e: any) => {
+    e.preventDefault();
+    console.log(email);
+    try {
+      await sendRecoverPassword(email);
+      setError("");
+      setSuccess("Un email de réinitialisation vous a été envoyé");
+
+    } catch (error: any) {
+      setSuccess("");
+      setError(error.message);
+    }
+  };
+
+
   return (
     <div
       className={`${ralewayMedium.className} flex flex-col h-screen justify-center items-center text-xs`}
@@ -39,11 +67,10 @@ export default function LoginPage() {
         <h2
           className={`${ralewaySemBold.className} text-base md:text-3xl w-full text-start md:text-center`}
         >
-          Récupérer le compte
+          Mot de passe oublié
         </h2>
         <p className="w-full text-start mt-3 text-xs md:text-base md:text-center">
-          Rentrez votre mail pour que nous puissions vous envoyer un email de
-          récupération.
+          Rentrez votre adresse email pour recevoir un lien de réinitialisation de votre mot de passe.
         </p>
 
         <div className="w-full lg:w-96">
@@ -57,12 +84,20 @@ export default function LoginPage() {
                 placeholder={input.name}
                 type={input.type}
                 className="text-xs placeholder:text-FormBorder border-FormBorder md:text-base"
+                onChange={input.onChange}
               />
             </div>
           ))}
 
+          {error && (
+            <p className="text-red-500 text-xs md:text-base">{error}</p>
+          )}
+          {success && (
+            <p className="text-green-500 text-xs md:text-base">{success}</p>
+          )}
+
           <div className="flex justify-center flex-col">
-            <Button size="default" className="mt-4 mx-auto">
+            <Button onClick={handlerRecoverEmail} size="default" className="mt-4 mx-auto">
               Envoyer
             </Button>
           </div>

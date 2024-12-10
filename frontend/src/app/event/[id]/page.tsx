@@ -13,11 +13,12 @@ import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogT
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
 import { FormElement } from "@/components/ui/form/formElement";
-import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/app/api/event";
+import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/lib/event";
 import { toast } from "sonner";
-import { fetchUser } from "@/app/api/data";
+import { fetchUser } from "@/lib/data";
 import PageEventSkeleton from "./loading";
 import NotFound from "@/app/not-found";
+import Image from "next/image";
 
 export default function Event({ params }) {
   const [id, setId] = useState(null);
@@ -43,6 +44,8 @@ export default function Event({ params }) {
   const [formEmail, setFormEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+  const [spinnerActive, setSpinnerActive] = useState(false);
 
   useEffect(() => {
     if (!params?.id) return;
@@ -81,20 +84,24 @@ export default function Event({ params }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    const updatedForm = {
-      email: formEmail,
-      event: event.id,
-    };
-  
-    try {
-      await createEventRegistration(updatedForm.email, updatedForm.event);
-      setIsModalOpen(false);
-      setIsSuccessModalOpen(true);
-    } catch (error) {
-      console.error("Erreur lors de l'inscription à l'événement :", error);
-      setErrorMessage("Erreur lors de l'inscription à l'événement. Veuillez réessayer.");
+    if (!spinnerActive) {
+      e.preventDefault();
+      setSpinnerActive(true);
+      const updatedForm = {
+        email: formEmail,
+        event: event.id,
+      };
+
+      try {
+        await createEventRegistration(updatedForm.email, updatedForm.event);
+        setIsModalOpen(false);
+        setIsSuccessModalOpen(true);
+        setSpinnerActive(false);
+      } catch (error) {
+        console.error("Erreur lors de l'inscription à l'événement :", error);
+        setErrorMessage("Erreur lors de l'inscription à l'événement. Veuillez réessayer.");
+        setSpinnerActive(false);
+      }
     }
   };
 
@@ -109,7 +116,8 @@ export default function Event({ params }) {
           setIsRegistered(true);
           setEvent((prevEvent) => ({
             ...prevEvent,
-            userEvents: [...prevEvent.userEvents, user.id],
+            userEvents: prevEvent.userEvents ? [...prevEvent.userEvents, user.id] : [user.id],
+            participant_count: prevEvent.participant_count + 1,
           }));
           await upEvent();
         } catch (error) {
@@ -127,7 +135,8 @@ export default function Event({ params }) {
         setIsRegistered(false);
         setEvent((prevEvent) => ({
           ...prevEvent,
-          userEvents: prevEvent.userEvents.filter((userId) => userId !== user.id),
+          userEvents: prevEvent.userEvents ? prevEvent.userEvents.filter((userId) => userId !== user.id) : [],
+          participant_count: prevEvent.participant_count - 1,
         }));
         await upEvent();
       } catch (error) {
@@ -246,7 +255,12 @@ export default function Event({ params }) {
 
     // Delete previous image
 
-    if (inputImage) {
+    console.log(inputImage);
+    
+    let newImage = image;
+
+
+    if (inputImage != null ) {
       try {
         const response = await fetch(`/api/upload/event_pic?fileName=${image}`, {
           method: "DELETE",
@@ -259,26 +273,27 @@ export default function Event({ params }) {
         setError(err.message);
         return;
       }
+
+
+      const formData = new FormData();
+      formData.append("file", inputImage);
+
+      try {
+        const response = await fetch("/api/upload/event_pic", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        newImage = data.fileName;
+        console.log(data);
+      } catch (err) {
+        setError("Erreur lors de la mise à jour de l'image de l'event");
+        return;
+      }
     }
 
-    const formData = new FormData();
-    formData.append("file", inputImage);
-
-    let newImage = image;
-
-    try {
-      const response = await fetch("/api/upload/event_pic", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      newImage = data.fileName;
-      console.log(data);
-    } catch (err) {
-      setError("Erreur lors de la mise à jour de l'image de l'event");
-      return;
-    }
     
+
 
 
     try {
@@ -337,14 +352,14 @@ export default function Event({ params }) {
             )}
             {!user && (
               <Button
-              variant="accent"
-              size="lg"
-              onClick={handleJoinEvent}
-            >
-              Rejoindre l'événement
+                variant="accent"
+                size="lg"
+                onClick={handleJoinEvent}
+              >
+                Rejoindre l'événement
               </Button>
             )}
-            
+
             {user && user.id === event.creator.id && (
               <>
                 <Dialog>
@@ -520,7 +535,7 @@ export default function Event({ params }) {
           {loading ? (
             <PageEventSkeleton />
           ) : (
-            <NotFound/>
+            <NotFound />
           )}
         </>
       )}
@@ -531,16 +546,16 @@ export default function Event({ params }) {
             <button onClick={closeModal} type="button" className="absolute top-2 right-2 bg-transparent rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-200 focus:outline-none">
               <span className="sr-only">Close menu</span>
               <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
             <h2 className="text-lg font-bold ">Connexion à l'application</h2>
             <p className="">En vous connectant, vous pouvez vous inscrire à plusieurs événements et les suivre facilement.</p>
             <Link className="h-fit w-fit" href="/login"><Button>Se connecter</Button></Link>
-            <hr/>
+            <hr />
             <h2 className="text-lg font-bold ">Inscription par email</h2>
             <p className="">Vous pouvez également vous inscrire avec votre adresse mail, sans connexion. Un email vous sera envoyé.</p>
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>            
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <FormElement
                 variant="input"
                 type="email"
@@ -554,7 +569,10 @@ export default function Event({ params }) {
               />
               {errorMessage && <p className="text-red-500">{errorMessage}</p>}
               <div className="flex justify-end gap-2">
-                <Button type="submit" variant="accent">S'inscrire</Button>
+                <Button type="submit" variant="accent" className={spinnerActive ? 'disabled' : ''}>
+                  <Image width={5} height={5} className={`animate-spin h-5 w-5 mr-3 ${spinnerActive ? '' : 'hidden'}`} src="/spinner-black.svg" alt="Spiner svg" />
+                  S'inscrire
+                </Button>
               </div>
             </form>
           </div>
@@ -567,7 +585,7 @@ export default function Event({ params }) {
             <button onClick={closeSuccessModal} type="button" className="absolute top-2 right-2 bg-transparent rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-200 focus:outline-none">
               <span className="sr-only">Close menu</span>
               <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
             <h2 className="text-lg font-bold ">Inscription réussie</h2>

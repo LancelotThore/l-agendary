@@ -15,7 +15,7 @@ interface Event {
   endDate: string; // datetime string
   location: string;
   image: string;
-  userEvents: string[]; // Change to array
+  participant_count: number; // Utiliser le nombre de participants directement
 }
 
 interface EventProps {
@@ -61,7 +61,7 @@ export default function EventHeader({ event }: EventProps) {
     const minutes = date.getMinutes().toString().padStart(2, "0");
   
     return `${dayOfWeek} ${day} ${month} ${year}, ${hours}h${minutes}`;
-  };
+  };  
 
   return (
     <div className="flex w-full rounded-lg px-3 md:px-8 py-5 bg-gradient-to-b from-transparent from-45% to-primary min-h-72 md:min-h-fit relative overflow-hidden items-end md:bg-none md:bg-secondary text-primary-foreground md:text-secondary-foreground lg:h-full lg:items-start shadow-md">
@@ -100,7 +100,7 @@ export default function EventHeader({ event }: EventProps) {
         </div>
         <div className="flex items-center gap-1.5 font-semibold">
           <PeopleFill className="w-5 min-w-5" />
-          <p>{event.userEvents.filter(userEvent => userEvent.validation === 1).length} participant(s)</p> {/* Count elements in array */}
+          <p>{event.participant_count} participant{event.participant_count <= 1 ? '' : 's'}</p>
         </div>
       </div>
     </div>

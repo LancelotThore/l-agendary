@@ -75,6 +75,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserEvent::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userEvents;
 
+    #[ORM\Column(length: 1000, nullable: true)]
+    private ?string $passwordToken = null;
+
     public function __construct()
     {
         $this->created_events = new ArrayCollection();
@@ -291,7 +294,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(?\DateTimeInterface $isActive): static
     {
         $this->isActive = $isActive;
-
+        
         return $this;
     }
 
@@ -303,6 +306,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $userEvent->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPasswordToken(): ?string
+    {
+        return $this->passwordToken;
+    }
+
+    public function setPasswordToken(?string $passwordToken): static
+    {
+        $this->passwordToken = $passwordToken;
 
         return $this;
     }

@@ -39,6 +39,14 @@
 
 # Fonctionnalités Implémentées
 
+### Période : 02/12/2024 - 06/12/2024
+- Ajout des événements auquel l'utilisateur connecté participe et si il est le créateur sur le calendrier
+- Ajout de l'inscription par email avec désinscription
+- Popup de cookies
+- Revue du footer avec page politique de confidentialité et mentions légales
+- Amélioration du filtrage par location et par créateur sur la page recherche
+
+
 ### Période : 25/11/2024 - 29/11/2024
 - Le backoffice https://localhost/admin
 - La fonction de recherche fonctionnel avec la pagination

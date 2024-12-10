@@ -24,6 +24,18 @@ auth_logout:
     path: /api/logout
     controller: App\Controller\AuthController::logout
 
+recover_password:
+    path: /api/password/recover
+    controller: App\Controller\AuthController::recoverPassword
+
+validate_password_token:
+    path: /api/password/validate-token
+    controller: App\Controller\AuthController::validatePasswordToken
+
+reset_password:
+    path: /api/password/reset
+    controller: App\Controller\AuthController::resetPassword
+
 
 # -------------------------
 # API
@@ -50,14 +62,6 @@ update_event:
     path: /api/update-event/{id}
     controller: App\Controller\EventController::updateEvent
 
-paginated_events:
-    path: /api/paginated-events
-    controller: App\Controller\EventController::paginatedEvents
-
-nb_public_events:
-    path: /api/nb-public-events
-    controller: App\Controller\EventController::nbPublicEvents
-
 search_events:
     path: /api/search-events
     controller: App\Controller\EventController::searchEvents
@@ -69,6 +73,10 @@ register_event:
 confirm_registration:
     path: /api/confirm-registration
     controller: App\Controller\EventController::confirmRegistration
+
+remove_registration:
+    path: /api/remove-registration
+    controller: App\Controller\EventController::removeRegistration
 
 is_user_registered:
     path: /api/users/is-registered/{id}

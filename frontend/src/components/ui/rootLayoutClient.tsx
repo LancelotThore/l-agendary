@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Navbar } from '@/components/navBar';
 import { Footer } from "@/components/ui/footer";
 import { Toaster } from "@/components/ui/sonner";
+import CookiePopup from '@/components/ui/cookiePopup';
 
 interface RootLayoutClientProps {
   children: ReactNode;
@@ -12,7 +13,7 @@ interface RootLayoutClientProps {
 
 const RootLayoutClient = ({ children }: RootLayoutClientProps) => {
   const pathname = usePathname();
-  const noLayoutPages = ['/register', '/login', '/recover/account', '/recover/password'];
+  const noLayoutPages = ['/register', '/login', '/forgot-password', '/reset-password'];
 
   return (
     <body className='flex flex-col min-h-screen'>
@@ -26,6 +27,7 @@ const RootLayoutClient = ({ children }: RootLayoutClientProps) => {
               {children}
             </div>
           </main>
+          <CookiePopup />
           <Toaster />
           <Footer />
         </>

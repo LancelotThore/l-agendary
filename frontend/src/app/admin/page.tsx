@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { isAdmin } from "@/app/api/data";
+import { isAdmin } from "@/lib/data";
 
 export default function ProfilePage() {
   const router = useRouter();

@@ -41,6 +41,7 @@ class UserCrudController extends AbstractCrudController
             TextField::new('bio'),
             IntegerField::new('age'),
             TextField::new('profile_picture'),
+            TextField::new('passwordToken')->onlyOnForms()->setRequired(false),
             TextField::new('plainPassword', 'Password')->onlyOnForms()->setRequired(false),
             // TextField::new('password'),
             // Ajoutez d'autres champs ici selon vos besoins

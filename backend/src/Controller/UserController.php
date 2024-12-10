@@ -18,6 +18,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use App\Entity\Event;
 use App\Entity\UserEvent; // Ajoutez cet import
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
 
 class UserController extends AbstractController
 {
@@ -26,26 +29,29 @@ class UserController extends AbstractController
     private $jwtManager;
     private $passwordEncoder;
     private $validator;
+    private $mailer;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         JWTTokenManagerInterface $jwtManager,
         UserPasswordHasherInterface $passwordHasher,
         ValidatorInterface $validator,
-        JWTEncoderInterface $jwtEncoder
+        JWTEncoderInterface $jwtEncoder,
+        MailerInterface $mailer
     ) {
         $this->entityManager = $entityManager;
         $this->jwtManager = $jwtManager;
         $this->jwtEncoder = $jwtEncoder;
         $this->passwordHasher = $passwordHasher;
         $this->validator = $validator;
+        $this->mailer = $mailer;
     }
 
     // Function to know if the user is logged
     public function isLogged(Request $request) 
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return new JsonResponse(['error' => 'Token not found'], 401);
@@ -172,16 +178,34 @@ class UserController extends AbstractController
             return new JsonResponse(['error' => 'Invalid password'], 400);
         }
 
-
-
+        $user->setIsActive(new \DateTime());
 
         // Supprimer les événements créés par l'utilisateur
         $createdEvents = $user->getCreatedEvents();
         foreach ($createdEvents as $event) {
-            $this->entityManager->remove($event);
+            $event->setDeleted(new \DateTime());
+            $users = $event->getUserEvents();
+            foreach ($users as $user) {
+                $user = $user->getUser();
+                $email = (new Email())
+                    ->from('your_email@example.com')
+                    ->to($user->getEmail())
+                    ->subject('Suppression d\'un événement auquel vous étiez inscrit')
+                    ->html('
+                        <p>Bonjour ' . $user->getFirstname() . ',</p>
+                        <p>L\'événement "' . $event->getTitle() . '" auquel vous étiez inscrit a été supprimé.</p>
+                        <p>Vous pouvez consulter les autres événements sur notre site.</p>
+                    
+                    ');
+
+                $this->mailer->send($email);
+
+                        
+            }
+            $this->entityManager->persist($event);
         }
 
-        $this->entityManager->remove($user);
+        $this->entityManager->persist($user);
         $this->entityManager->flush();
 
         // Supprimer le cookie contenant le token
@@ -200,94 +224,91 @@ public function getUniqueUserNames(EntityManagerInterface $entityManager): Respo
         ->createQueryBuilder('u')
         ->select('DISTINCT u.firstname');
 
-    $userNames = $queryBuilder->getQuery()->getResult();
+        $queryBuilder = $entityManager->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->select('u.firstname, COUNT(e.id) AS event_count')
+            ->join(Event::class, 'e', 'WITH', 'e.creator = u.id AND e.privacy = 1')
+            ->where('u.firstname LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->groupBy('u.id')
+            ->orderBy('event_count', 'DESC')
+            ->setMaxResults(10);
 
-    return $this->json($userNames);
-}
+        $userFirstNames = $queryBuilder->getQuery()->getResult();
 
-public function isUserRegisteredToEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
-{
-    $user = $this->isLogged($request);
-    if (!$user instanceof User) {
-        return $user; // Retourne la réponse d'erreur de isLogged
+        return $this->json($userFirstNames);
     }
 
-    $event = $entityManager->getRepository(Event::class)
-                           ->createQueryBuilder('e')
-                           ->leftJoin('e.userEvents', 'ue')
-                           ->addSelect('ue')
-                           ->where('e.id = :id')
-                           ->setParameter('id', $id)
-                           ->getQuery()
-                           ->getOneOrNullResult();
-
-    if (!$event) {
-        return new JsonResponse(['error' => 'Event not found'], 404);
-    }
-
-    $isRegistered = false;
-
-    // Vérifier si l'utilisateur est enregistré à l'événement
-    foreach ($event->getUserEvents() as $userEvent) {
-        if ($userEvent->getUser()->getId() === $user->getId()) {
-            $isRegistered = true;
-            break;
+    public function isUserRegisteredToEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->isLogged($request);
+        if (!$user instanceof User) {
+            return $user; // Retourne la réponse d'erreur de isLogged
         }
+
+        $event = $entityManager->getRepository(Event::class)
+                            ->createQueryBuilder('e')
+                            ->leftJoin('e.userEvents', 'ue')
+                            ->addSelect('ue')
+                            ->where('e.id = :id')
+                            ->setParameter('id', $id)
+                            ->getQuery()
+                            ->getOneOrNullResult();
+
+        if (!$event) {
+            return new JsonResponse(['error' => 'Event not found'], 404);
+        }
+
+        $isRegistered = false;
+
+        // Vérifier si l'utilisateur est enregistré à l'événement
+        foreach ($event->getUserEvents() as $userEvent) {
+            if ($userEvent->getUser()->getId() === $user->getId()) {
+                $isRegistered = true;
+                break;
+            }
+        }
+
+        return new JsonResponse(['isRegistered' => $isRegistered]);
     }
 
-    return new JsonResponse(['isRegistered' => $isRegistered]);
-}
+    /**
+     * @Route("/api/user-events", name="user-events", methods={"GET"})
+     */
+    public function getUserEvents(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->isLogged($request);
+        if (!$user instanceof User) {
+            return $user; // Retourne la réponse d'erreur de isLogged
+        }
 
-/**
- * @Route("/api/user-events", name="user-events", methods={"GET"})
- */
-public function getUserEvents(Request $request, EntityManagerInterface $entityManager): JsonResponse
-{
-    // Récupérer le token depuis le cookie
-    $token = $request->cookies->get('token');
+        // Récupérer les événements où l'utilisateur est inscrit ou créateur
+        $userEvents = $entityManager->getRepository(UserEvent::class)->findBy(['user' => $user]);
+        $createdEvents = $entityManager->getRepository(Event::class)->findBy(['creator' => $user]);
 
-    if (!$token) {
-        return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
+        $events = array_merge(
+            array_map(fn($ue) => $ue->getEvent(), $userEvents),
+            $createdEvents
+        );
+
+
+        // Filtrer les informations spécifiques des événements
+        $filteredEvents = array_map(function($event) {
+            return [
+                'id' => $event->getId(),
+                'title' => $event->getTitle(),
+                'startDate' => $event->getStartDate(),
+                'endDate' => $event->getEndDate(),
+                'privacy' => $event->isPrivacy(),
+                'location' => $event->getLocation(),
+                'creator' => $event->getCreator()->getEmail(),
+                'description' => $event->getDescription(),
+                'image' => $event->getImage()
+            ];
+        }, $events);
+
+
+        return new JsonResponse($filteredEvents);
     }
 
-    // Décoder le token pour obtenir les informations de l'utilisateur
-    $data = $this->jwtEncoder->decode($token);
-    $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
-
-    if (!$user) {
-        return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
-    }
-
-    // Récupérer les événements où l'utilisateur est inscrit ou créateur
-    $userEvents = $entityManager->getRepository(UserEvent::class)->findBy(['user' => $user]);
-    $createdEvents = $entityManager->getRepository(Event::class)->findBy(['creator' => $user]);
-
-    $events = array_merge(
-        array_map(fn($ue) => $ue->getEvent(), $userEvents),
-        $createdEvents
-    );
-
-    // Filtrer les informations spécifiques des événements
-    $filteredEvents = array_map(function($event) {
-        return [
-            'id' => $event->getId(),
-            'title' => $event->getTitle(),
-            'startDate' => $event->getStartDate(),
-            'endDate' => $event->getEndDate(),
-            'privacy' => $event->isPrivacy(),
-            'location' => $event->getLocation(),
-            'creator' => $event->getCreator()->getEmail(),
-            'description' => $event->getDescription(),
-            'image' => $event->getImage()
-        ];
-    }, $events);
-
-    return new JsonResponse($filteredEvents);
 }
-
-
-
-}
-
-
-

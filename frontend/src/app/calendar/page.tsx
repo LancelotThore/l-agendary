@@ -8,9 +8,11 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import { fetchUser } from "@/app/api/data";
+import { fetchUser } from "@/lib/data";
 import frLocale from '@fullcalendar/core/locales/fr';
-import { fetchUserEvents } from "@/app/api/data"; // Importez la nouvelle fonction
+import { fetchUserEvents } from "@/lib/data"; // Importez la nouvelle fonction
+import Link from "next/link";
+import { StarIcon } from "@/components/ui/icons";
 
 const agbalumo = Agbalumo({
   subsets: ["latin"],
@@ -23,7 +25,8 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
-function Calendar() {
+function Calendar({ events, user }) {
+
   return (
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
@@ -36,20 +39,41 @@ function Calendar() {
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
       }}
       eventContent={renderEventContent}
-      events={[
-        { title: 'événement 1', start: '2024-12-02T14:15:00', end: '2024-11-03T18:52:01' },
-        { title: 'événement 2', start: '2024-11-06T14:00:00', end: '2024-11-06T15:35:00' }
-      ]}
+      events={events.map(event => ({
+        title: event.title,
+        start: event.startDate.date,
+        end: event.endDate.date,
+        description: event.description,
+        url: `/event/${event.id}`,
+        creator: event.creator,
+        userConnected: user.email
+      }))} // Transformez les événements pour FullCalendar
     />
   );
 }
 
-function renderEventContent() {
+function renderEventContent(eventInfo) {
+  console.log(eventInfo);
+
+  let creatorEmail = eventInfo.event.extendedProps.creator;
+  let userAuth = eventInfo.event.extendedProps.userConnected;
+
   return (
-    <a className="flex flex-col bg-blue-500 text-white w-full h-full" href="/event/29">
-        <b>titre</b>
-        <p className="whitespace-normal">description...</p>
-    </a>
+    <Link className={`flex flex-col p-2 w-full h-full text-white no-underline decoration-white ${creatorEmail === userAuth ? 'bg-destructive' : 'bg-blue-500'}`} href={eventInfo.event.url}>
+      <b className="whitespace-normal text-white">{eventInfo.event.title}</b>
+      {creatorEmail === userAuth ? (
+        <div className="flex items-center gap-2 pt-2">
+          <StarIcon className="w-3 h-3 text-white" />
+          <p className="whitespace-wrap text-white">Propriétaire</p>
+        </div>
+      ) : (
+        <p className="whitespace-wrap pt-2 text-white">
+          {creatorEmail.length > 8
+            ? `${creatorEmail.substring(0, 8)}...`
+            : creatorEmail}
+        </p>
+      )}
+    </Link>
   );
 }
 
@@ -57,6 +81,7 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -66,7 +91,7 @@ export default function Home() {
 
         if (userData) {
           const userEvents = await fetchUserEvents();
-          console.log(userEvents); // Affichez les événements dans la console
+          setEvents(userEvents); // Mettez à jour les événements
         }
       } catch (err) {
         setError("Erreur lors de la récupération de l'utilisateur :", err);
@@ -89,7 +114,7 @@ export default function Home() {
   return (
     <div>
       {user ? (
-        <Calendar />
+        <Calendar events={events} user={user} /> // Passez les événements au composant Calendar
       ) : (
         <>
           <p>Connectez-vous pour accéder à votre calendrier</p>

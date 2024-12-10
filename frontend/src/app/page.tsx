@@ -8,8 +8,8 @@ import { CardEvent } from "../components/ui/event/cardEvent";
 import { CardEventSkeleton } from "../components/ui/event/cardEventSkeleton";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
-import { fetchHighlightedEvents } from "@/app/api/event";
-import { fetchUser } from "@/app/api/data";
+import { fetchHighlightedEvents } from "@/lib/event";
+import { fetchUser } from "@/lib/data";
 import { Suspense } from 'react';
 
 const agbalumo = Agbalumo({
@@ -66,9 +66,10 @@ export default function Home() {
         <Image
           src="/bgToolCards.webp"
           alt="Background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           className="z-[-1] rounded-2xl"
+          priority
         />
         <h1
           className={`${agbalumo.className} text-3xl md:text-4xl pb-14 text-center text-secondary`}

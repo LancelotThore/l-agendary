@@ -59,43 +59,62 @@ class EventController extends AbstractController
     {
         $event = $entityManager->getRepository(Event::class)->find($id);
 
-        $serializer = $this->container->get('serializer');
-        $event_json = $serializer->serialize($event, 'json', ['circular_reference_handler' => function ($object) {
-            return $object->getId();
-        }]);
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
+        }
 
-        return new Response($event_json, 200, ['Content-Type' => 'application/json']);
+        $creator = $event->getCreator();
+        $creatorData = [
+            'id' => $creator->getId(),
+            'email' => $creator->getEmail(),
+            'firstname' => $creator->getFirstname(),
+            'lastname' => $creator->getLastname(),
+            'bio' => $creator->getBio(),
+            'age' => $creator->getAge(),
+            'profilePicture' => $creator->getProfilePicture(),
+        ];
+
+        $participantCount = count(array_filter($event->getUserEvents()->toArray(), function ($userEvent) {
+            return $userEvent->isValidation();
+        }));
+
+        $eventData = [
+            'id' => $event->getId(),
+            'title' => $event->getTitle(),
+            'description' => $event->getDescription(),
+            'privacy' => $event->isPrivacy(),
+            'startDate' => $event->getStartDate(),
+            'endDate' => $event->getEndDate(),
+            'location' => $event->getLocation(),
+            'image' => $event->getImage(),
+            'creator' => $creatorData,
+            'participant_count' => $participantCount,
+        ];
+
+        return $this->json($eventData);
     }
 
     /**
- * @Route("/api/unique-locations", name="unique-locations", methods={"GET"})
- */
-public function getUniqueLocations(EntityManagerInterface $entityManager): Response
-{
-    $queryBuilder = $entityManager->getRepository(Event::class)
-        ->createQueryBuilder('e')
-        ->select('DISTINCT e.location')
-        ->where('e.privacy = 1');
+     * @Route("/api/unique-locations", name="unique-locations", methods={"GET"})
+     */
+    public function getUniqueLocations(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $searchTerm = $request->query->get('q', '');
 
-    $locations = $queryBuilder->getQuery()->getResult();
+        $queryBuilder = $entityManager->getRepository(Event::class)
+            ->createQueryBuilder('e')
+            ->select('DISTINCT e.location, COUNT(e.id) AS event_count')
+            ->where('e.privacy = 1')
+            ->andWhere('e.location LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->groupBy('e.location')
+            ->orderBy('event_count', 'DESC')
+            ->setMaxResults(10);
 
-    return $this->json($locations);
-}
+        $locations = $queryBuilder->getQuery()->getResult();
 
-/**
- * @Route("/api/nb-public-events", name="nb-public-events", methods={"GET"})
- */
-public function nbPublicEvents(EntityManagerInterface $entityManager): Response
-{
-    $nb_events = $entityManager->getRepository(Event::class)
-        ->createQueryBuilder('e')
-        ->select('COUNT(e.id)')
-        ->where('e.privacy = 1')
-        ->getQuery()
-        ->getSingleScalarResult();
-
-    return $this->json($nb_events);
-}
+        return $this->json($locations);
+    }
 
     /**
      * @Route("/api/search-events", name="search-events", methods={"GET"})
@@ -174,7 +193,7 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
     public function joinEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
@@ -217,7 +236,7 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
     public function leaveEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
@@ -261,7 +280,7 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
     public function createEvent(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
@@ -310,7 +329,7 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
     public function deleteEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
@@ -343,15 +362,16 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         }
 
         return $this->json(['success' => 'Event deleted successfully']);
-    $serializer = $this->container->get('serializer');
-    $events_json = $serializer->serialize($events, 'json', ['circular_reference_handler' => function ($object) {
-        return $object->getId();
-    }]);
+        
+        $serializer = $this->container->get('serializer');
+        $events_json = $serializer->serialize($events, 'json', ['circular_reference_handler' => function ($object) {
+            return $object->getId();
+        }]);
 
-    return new Response($events_json, 200, ['Content-Type' => 'application/json']);
-}
+        return new Response($events_json, 200, ['Content-Type' => 'application/json']);
+    }
 
-/**
+    /**
      * @Route("/api/update-event/{id}", name="update-event", methods={"PATCH"})
      */
     public function updateEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
@@ -369,10 +389,7 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         $event->setLocation($eventData['location']);
         $event->setStartDate(new \DateTime($eventData['start_date']));
         $event->setEndDate(new \DateTime($eventData['end_date']));
-
-        if (isset($eventData['image']) && !empty($eventData['image'])) {
-            $event->setImage($eventData['image']);
-        }
+        $event->setImage($eventData['image']);
 
         try {
             $entityManager->persist($event);
@@ -394,11 +411,6 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         $eventId = $data['event'];
         $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         $event = $entityManager->getRepository(Event::class)->find($eventId);
-        
-        // Créer l'inscription
-        $eventUser = new UserEvent();
-        $eventUser->setToken(bin2hex(random_bytes(32)));
-        $eventUser->setEvent($event);
 
         if (!$existingUser) {
             // Création d'un utilisateur fictif
@@ -410,6 +422,9 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
             $user->setRoles(['ROLE_EMAIL']);
             $entityManager->persist($user);
             
+            $eventUser = new UserEvent();
+            $eventUser->setToken(bin2hex(random_bytes(32)));
+            $eventUser->setEvent($event);
             $eventUser->setUser($user);
             $eventUser->setValidation(false);    
             $entityManager->persist($eventUser);  
@@ -422,18 +437,40 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
                 ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
                         <a href="https://localhost:3000/confirm-registration?token=' . $eventUser->getToken() . '">
                             <button>Confirmer l\'inscription</button>
-                        </a>');
+                        </a>
+                        Si vous souhaitez vous désinscrire de l\'événement, cliquez sur le bouton ci-dessous.
+                            <a href="https://localhost:3000/remove-registration?token=' . $eventUser->getToken() . '">
+                                <button>Se désinscrire de l\'event</button>
+                            </a>');
 
                 $mailer->send($email);
         } else {
             $existingEventUser = $entityManager->getRepository(UserEvent::class)->findOneBy(['event' => $event, 'user' => $existingUser]);
             if($existingEventUser) {
                 if ($existingEventUser->isValidation() === true) {
-                    return $this->json(['error' => 'Vous êtes déjà inscrit et validé à cet événement'], 400);
+                    return $this->json(['error' => 'Vous êtes déjà inscrit à cet événement'], 400);
+                } else {
+                    $email = (new Email())
+                    ->from('your_email@example.com')
+                    ->to($existingUser->getEmail())
+                    ->subject('Confirmation d\'inscription à un événement')
+                    ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
+                            <a href="https://localhost:3000/confirm-registration?token=' . $existingEventUser->getToken() . '">
+                                <button>Confirmer l\'inscription</button>
+                            </a>
+                            Si vous souhaitez vous désinscrire de l\'événement, cliquez sur le bouton ci-dessous.
+                            <a href="https://localhost:3000/remove-registration?token=' . $existingEventUser->getToken() . '">
+                                <button>Se désinscrire de l\'event</button>
+                            </a>');
+    
+                    $mailer->send($email);
+                    return $this->json(['success' => 'Un email de confirmation a été envoyé à votre adresse email.'], 200);
                 }
-                return $this->json(['error' => 'Vous êtes déjà inscrit à cet événement'], 400);
             }
             if (in_array('ROLE_EMAIL', $existingUser->getRoles())) {
+                $eventUser = new UserEvent();
+                $eventUser->setToken(bin2hex(random_bytes(32)));
+                $eventUser->setEvent($event);
                 $eventUser->setUser($existingUser);
                 $eventUser->setValidation(false);
                 $entityManager->persist($eventUser);  
@@ -446,7 +483,11 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
                 ->html('<p>Vous vous êtes inscrit à l\'événement ' . $event->getTitle() . ' sur notre site. Pour confirmer votre inscription, veuillez cliquer sur le bouton ci-dessous.</p>
                         <a href="https://localhost:3000/confirm-registration?token=' . $eventUser->getToken() . '">
                             <button>Confirmer l\'inscription</button>
-                        </a>');
+                        </a>
+                        Si vous souhaitez vous désinscrire de l\'événement, cliquez sur le bouton ci-dessous.
+                            <a href="https://localhost:3000/remove-registration?token=' . $eventUser->getToken() . '">
+                                <button>Se désinscrire de l\'event</button>
+                            </a>');
 
                 $mailer->send($email);
             } else {
@@ -480,4 +521,22 @@ public function nbPublicEvents(EntityManagerInterface $entityManager): Response
         return $this->json(['status' => 'success']);
     }
 
+    /**
+     * @Route("/remove-registration", name="remove-registration", methods={"POST"})
+     */
+    public function removeRegistration(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['token'];    
+        $userEvent = $entityManager->getRepository(UserEvent::class)->findOneBy(['token' => $token]);
+
+        if (!$userEvent) {
+            return $this->json(['error' => 'Invalid token'], 400);
+        }
+
+        $entityManager->remove($userEvent);
+        $entityManager->flush();
+
+        return $this->json(['status' => 'success']);
+    }
 }

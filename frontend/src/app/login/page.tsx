@@ -6,7 +6,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { login } from "@/app/api/login";
+import { login } from "@/lib/login";
 import Image from "next/image";
 
 const ralewaySemBold = Raleway({
@@ -91,7 +91,7 @@ export default function LoginPage() {
               />
               {input.id === "password" && (
                 <a
-                  href="/recover/account"
+                  href="/forgot-password"
                   className="text-cardDate text-sm text-right hover:underline hover:underline-offset-2 transition-transform"
                 >
                   Mot de passe oublié

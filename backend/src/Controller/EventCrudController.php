@@ -27,6 +27,7 @@ class EventCrudController extends AbstractCrudController
             BooleanField::new('privacy'),
             DateTimeField::new('start_date'),
             DateTimeField::new('end_date'),
+            DateTimeField::new('deleted'),
             AssociationField::new('creator'),
             // Ajoutez d'autres champs ici selon vos besoins
         ];
