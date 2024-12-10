@@ -16,7 +16,7 @@ export default function ConfirmRegistration() {
         const token = searchParams.get('token');
 
         if (!token) {
-            // Rediriger vers une autre page si le token n'est pas présent
+            // Rediriger vers la page d'accueil
             router.replace('/');
         }
     }, [searchParams, router]);
@@ -28,6 +28,7 @@ export default function ConfirmRegistration() {
                 await confirmRegistration(token);
                 setIsSuccess(true);
                 setPopupMessage("Inscription réussie !");
+                router.replace('/');
             } catch (error: any) {
                 if (error.message === 'Inscription déjà validée') {
                     setIsSuccess(false);
@@ -58,10 +59,6 @@ export default function ConfirmRegistration() {
             {popupMessage && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
-                        <Button onClick={closePopup}>
-                            <span className="sr-only">Close menu</span>
-                            <Close className="w-5"/>
-                        </Button>
                         <h2 className="text-lg font-bold">{isSuccess ? "Inscription réussie" : "Erreur"}</h2>
                         <p>{popupMessage}</p>
                         <Button onClick={closePopup}>Fermer</Button>

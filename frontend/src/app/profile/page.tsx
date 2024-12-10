@@ -464,6 +464,7 @@ export default function ProfilePage() {
                 alt={`Image de profil de ${firstname}`}
                 width={200}
                 height={200}
+                priority
               />
             </div>
           </DialogTrigger>
