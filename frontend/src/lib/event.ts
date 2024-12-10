@@ -276,7 +276,7 @@ export async function createEventRegistration(email: string, event: string) {
           return data;
       } else {
           const errorData = await response.json();
-          if (response.status === 409) { // Conflict status code for duplicate unique data
+          if (response.status === 409) {
               throw new Error('Erreur: Données dupliquées');
           }
           throw new Error(`Erreur lors de l'inscription à l'événement: ${response.status} ${response.statusText} - ${errorData.errors || 'Données incorrectes'}`);

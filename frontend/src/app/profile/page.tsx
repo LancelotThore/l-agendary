@@ -26,6 +26,13 @@ import { useSearchParams } from 'next/navigation';
 import EventsTable from '@/components/ui/search/table';
 import Pagination from '@/components/ui/search/pagination';
 import { fetchUserSearchEvents } from "@/lib/data";
+import { Raleway } from "next/font/google";
+
+const raleway = Raleway({
+  subsets: ["latin"],
+  weight: "900",
+  variable: "--font-raleway",
+});
 
 const ITEMS_PER_PAGE = 9;
 
@@ -518,7 +525,11 @@ export default function ProfilePage() {
           </p>
         </div>
       </div>
-
+      <h2
+        className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}
+      >
+        Mes événements créés
+      </h2>
       <div className="w-full mt-10">
         <Filter variant="noCreator" />
         <EventsTable events={events} />

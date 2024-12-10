@@ -23,7 +23,7 @@ export async function updateUserProfile(firstname: string, lastname: string, age
     try {
         const response = await fetch("https://localhost:443/api/user/update/profile", {
             method : "POST",
-            credentials: "include", // Inclure les cookies dans la requête
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -53,7 +53,7 @@ export async function updateUserSettings(email: string, password: string, newPas
     try {
         const response = await fetch("https://localhost:443/api/user/update/settings", {
             method : "POST",
-            credentials: "include", // Inclure les cookies dans la requête
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -83,7 +83,7 @@ export async function updateUserProfilePicture(imageUrl: string) {
         const response = await fetch('https://localhost:443/api/user/update/image', {
             method: 'POST',
             body: JSON.stringify({ imageUrl }),
-            credentials: 'include', // Inclure les cookies dans la requête
+            credentials: 'include',
         });
 
         if (!response.ok) {
@@ -153,7 +153,7 @@ export async function deleteUserAccount(password: string) {
     try {
         const response = await fetch("https://localhost:443/api/user/delete", {
             method: "POST",
-            credentials: "include", // Inclure les cookies dans la requête
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -203,7 +203,7 @@ export async function fetchUserSearchEvents(query: string | null, location: stri
         url.searchParams.append('offset', offset.toString());
 
         const res = await fetch(url.toString(), {
-            credentials: 'include' // Inclure les cookies dans la requête
+            credentials: 'include'
         });
         if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
