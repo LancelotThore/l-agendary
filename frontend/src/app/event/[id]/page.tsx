@@ -576,10 +576,6 @@ export default function Event({ params }) {
       {isSuccessModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
-            <Button onClick={closeModal}>
-              <span className="sr-only">Close menu</span>
-              <Close className="w-5"/>
-            </Button>
             <h2 className="text-lg font-bold ">Inscription réussie</h2>
             <p className="">Votre inscription a bien été prise en compte, vous allez recevoir un mail de confirmation.</p>
             <Button onClick={closeSuccessModal}>Fermer</Button>
