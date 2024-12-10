@@ -16,6 +16,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 
@@ -31,13 +33,15 @@ class AuthController extends AbstractController
         JWTTokenManagerInterface $jwtManager,
         UserPasswordHasherInterface $passwordHasher,
         ValidatorInterface $validator,
-        JWTEncoderInterface $jwtEncoder
+        JWTEncoderInterface $jwtEncoder,
+        MailerInterface $mailer
     ) {
         $this->entityManager = $entityManager;
         $this->jwtManager = $jwtManager;
         $this->jwtEncoder = $jwtEncoder;
         $this->passwordHasher = $passwordHasher;
         $this->validator = $validator;
+        $this->mailer = $mailer;
     }
 
     // Méthode pour gérer l'enregistrement
@@ -73,7 +77,7 @@ public function register(Request $request): JsonResponse
 
             // Générer un token JWT pour l'utilisateur mis à jour
             $token = $this->jwtManager->create($existingUser);
-            setcookie('token', $token, time() + 3600, '/', 'localhost', true, true);
+            setcookie('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true);
 
             return new JsonResponse(200);
         } else {
@@ -94,9 +98,20 @@ public function register(Request $request): JsonResponse
     $this->entityManager->persist($user);
     $this->entityManager->flush();
 
+    $email = (new Email())
+        ->from('your_email@example.com')
+        ->to($data['email'])
+        ->subject('Confirmation de la création de votre compte')
+        ->html('<h1>Bonjour  ' . $data['firstname'] . ' !</h1> </br></br>
+        <p>Nous vous confirmons que votre compte a bien été créé.</p></br>
+        <p>Merci de la confiance que vous nous portez !</p>'
+        );
+
+    $this->mailer->send($email);
+
     // Générer un token JWT pour l'utilisateur nouvellement enregistré
     $token = $this->jwtManager->create($user);
-    setcookie('token', $token, time() + 3600, '/', 'localhost', true, true);
+    setcookie('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true);
 
     return new JsonResponse(201);
 }
@@ -117,13 +132,13 @@ public function register(Request $request): JsonResponse
 
         // Créer le token JWT
         $token = $this->jwtManager->create($user);
-        setcookie('token', $token, time() + 3600, '/', 'localhost', true, true);
+        setcookie('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true);
         return new JsonResponse(200);
     }
 
     public function logout(): JsonResponse
     {
-        setcookie('token', '', time() - 3600, '/', 'localhost', true, true);
+        setcookie('redirectImage', '', time() - 3600, '/', 'localhost', true, true);
         return new JsonResponse(200);
     }
 
@@ -135,7 +150,7 @@ public function register(Request $request): JsonResponse
     public function logged(Request $request): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return new JsonResponse(['error' => 'Token not found'], 401);
@@ -167,7 +182,7 @@ public function register(Request $request): JsonResponse
     }
 
     public function isAdmin(Request $request) {
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return new JsonResponse(['error' => 'Token not found'], 401);
@@ -185,6 +200,109 @@ public function register(Request $request): JsonResponse
         }
 
         return new JsonResponse(['isAdmin' => false], 401);
+    }
+
+
+
+    public function recoverPassword(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'];
+
+        // Vérifier si l'utilisateur existe
+        $user = $this->getUserRepository()->findOneBy(['email' => $email]);
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
+
+        // Générer un token de réinitialisation de mot de passe
+        $resetToken = $this->jwtManager->createFromPayload($user, [
+            'purpose' => 'password_reset',
+            'exp' => (new \DateTime('+1 hour'))->getTimestamp() // Token expire dans 1 heure
+        ]);
+
+
+        // Créer et persister l'entité PasswordToken
+        $user->setPasswordToken($resetToken);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        // Créer le lien de réinitialisation de mot de passe
+        $resetLink = 'https://localhost:3000/reset-password?token=' . $resetToken;
+
+
+        // Envoyer l'email
+        $email = (new Email())
+            ->from('your_email@example.com')
+            ->to($user->getEmail())
+            ->subject('Password Reset Request')
+            ->html('<p>To reset your password, please click on the following link: <a href="' . $resetLink . '">Reset Password</a></p>');
+
+        $this->mailer->send($email);
+
+        return new JsonResponse(['message' => 'Password reset email sent'], 200);
+    }
+
+    public function validatePasswordToken(Request $request): JsonResponse
+    {
+        $token = $request->query->get('token');
+
+        // Vérifier si le token est présent
+        if (!$token) {
+            return new JsonResponse(['error' => 'Token not provided'], 400);
+        }
+
+        try {
+            // Décoder le token
+            $data = $this->jwtEncoder->decode($token);
+
+            // Vérifier si le token est valide et a le bon claim
+            if (!$data || $data['purpose'] !== 'password_reset') {
+                return new JsonResponse(['error' => 'Invalid or expired token'], 400);
+            }
+
+            return new JsonResponse(['message' => 'Token is valid'], 200);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Invalid token format'], 400);
+        }
+    }
+
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['token'];
+        $password = $data['password'];
+
+        // Vérifier si le token est présent
+        if (!$token) {
+            return new JsonResponse(['error' => 'Token not provided'], 400);
+        }
+
+        try {
+            // Décoder le token
+            $data = $this->jwtEncoder->decode($token);
+    
+            // Vérifier si le token est valide et a le bon claim
+            if (!$data || $data['purpose'] !== 'password_reset') {
+                return new JsonResponse(['error' => 'Invalid or expired token'], 400);
+            }
+    
+            // Récupérer l'utilisateur associé au token
+            $user = $this->getUserRepository()->findOneBy(['email' => $data['username']]);
+            if (!$user) {
+                return new JsonResponse(['error' => 'User not found'], 404);
+            }
+    
+            // Mettre à jour le mot de passe de l'utilisateur
+            $user->setPassword($this->passwordHasher->hashPassword($user, $password));
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+    
+            return new JsonResponse(['message' => 'Password updated successfully'], 200);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Invalid token format'], 400);
+        }
     }
 
 }

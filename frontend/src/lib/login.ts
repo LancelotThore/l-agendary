@@ -80,3 +80,49 @@ export async function register(
     throw new Error('Erreur lors de l\'inscription');
   }
 }
+
+
+export async function sendRecoverPassword(email: string): Promise<void> {
+  try {
+    const response = await fetch('https://localhost:443/api/password/recover', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de l\'envoi du mail');
+    }
+  } catch (error) {
+    throw new Error('Erreur lors de l\'envoi du mail');
+  }
+}
+
+
+export async function resetPassword(
+  password: string,
+  token: string,
+  router: useRouter
+): Promise<void> {
+  try {
+    const response = await fetch('https://localhost:443/api/password/reset', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password, token }),
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      router.push('/login');
+    } else {
+      throw new Error('Erreur lors de la réinitialisation du mot de passe');
+    }
+  } catch (error) {
+    throw new Error('Erreur lors de la réinitialisation du mot de passe');
+  }
+}

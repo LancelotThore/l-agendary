@@ -255,7 +255,12 @@ export default function Event({ params }) {
 
     // Delete previous image
 
-    if (inputImage) {
+    console.log(inputImage);
+    
+    let newImage = image;
+
+
+    if (inputImage != null ) {
       try {
         const response = await fetch(`/api/upload/event_pic?fileName=${image}`, {
           method: "DELETE",
@@ -268,26 +273,24 @@ export default function Event({ params }) {
         setError(err.message);
         return;
       }
+
+
+      const formData = new FormData();
+      formData.append("file", inputImage);
+
+      try {
+        const response = await fetch("/api/upload/event_pic", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        newImage = data.fileName;
+        console.log(data);
+      } catch (err) {
+        setError("Erreur lors de la mise à jour de l'image de l'event");
+        return;
+      }
     }
-
-    const formData = new FormData();
-    formData.append("file", inputImage);
-
-    let newImage = image;
-
-    try {
-      const response = await fetch("/api/upload/event_pic", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      newImage = data.fileName;
-      console.log(data);
-    } catch (err) {
-      setError("Erreur lors de la mise à jour de l'image de l'event");
-      return;
-    }
-
 
 
     try {

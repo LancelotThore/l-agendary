@@ -195,7 +195,7 @@ class EventController extends AbstractController
     public function joinEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
@@ -238,7 +238,7 @@ class EventController extends AbstractController
     public function leaveEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
@@ -282,7 +282,7 @@ class EventController extends AbstractController
     public function createEvent(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
@@ -331,7 +331,7 @@ class EventController extends AbstractController
     public function deleteEvent(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);

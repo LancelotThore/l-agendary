@@ -18,6 +18,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use App\Entity\Event;
 use App\Entity\UserEvent; // Ajoutez cet import
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
 
 class UserController extends AbstractController
 {
@@ -26,26 +29,29 @@ class UserController extends AbstractController
     private $jwtManager;
     private $passwordEncoder;
     private $validator;
+    private $mailer;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         JWTTokenManagerInterface $jwtManager,
         UserPasswordHasherInterface $passwordHasher,
         ValidatorInterface $validator,
-        JWTEncoderInterface $jwtEncoder
+        JWTEncoderInterface $jwtEncoder,
+        MailerInterface $mailer
     ) {
         $this->entityManager = $entityManager;
         $this->jwtManager = $jwtManager;
         $this->jwtEncoder = $jwtEncoder;
         $this->passwordHasher = $passwordHasher;
         $this->validator = $validator;
+        $this->mailer = $mailer;
     }
 
     // Function to know if the user is logged
     public function isLogged(Request $request) 
     {
         // Récupérer le token depuis le cookie
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             return new JsonResponse(['error' => 'Token not found'], 401);
@@ -172,16 +178,34 @@ class UserController extends AbstractController
             return new JsonResponse(['error' => 'Invalid password'], 400);
         }
 
-
-
+        $user->setIsActive(new \DateTime());
 
         // Supprimer les événements créés par l'utilisateur
         $createdEvents = $user->getCreatedEvents();
         foreach ($createdEvents as $event) {
-            $this->entityManager->remove($event);
+            $event->setDeleted(new \DateTime());
+            $users = $event->getUserEvents();
+            foreach ($users as $user) {
+                $user = $user->getUser();
+                $email = (new Email())
+                    ->from('your_email@example.com')
+                    ->to($user->getEmail())
+                    ->subject('Suppression d\'un événement auquel vous étiez inscrit')
+                    ->html('
+                        <p>Bonjour ' . $user->getFirstname() . ',</p>
+                        <p>L\'événement "' . $event->getTitle() . '" auquel vous étiez inscrit a été supprimé.</p>
+                        <p>Vous pouvez consulter les autres événements sur notre site.</p>
+                    
+                    ');
+
+                $this->mailer->send($email);
+
+                        
+            }
+            $this->entityManager->persist($event);
         }
 
-        $this->entityManager->remove($user);
+        $this->entityManager->persist($user);
         $this->entityManager->flush();
 
         // Supprimer le cookie contenant le token

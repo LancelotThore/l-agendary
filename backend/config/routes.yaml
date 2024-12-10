@@ -24,6 +24,18 @@ auth_logout:
     path: /api/logout
     controller: App\Controller\AuthController::logout
 
+recover_password:
+    path: /api/password/recover
+    controller: App\Controller\AuthController::recoverPassword
+
+validate_password_token:
+    path: /api/password/validate-token
+    controller: App\Controller\AuthController::validatePasswordToken
+
+reset_password:
+    path: /api/password/reset
+    controller: App\Controller\AuthController::resetPassword
+
 
 # -------------------------
 # API

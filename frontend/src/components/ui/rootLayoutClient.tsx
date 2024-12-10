@@ -13,7 +13,7 @@ interface RootLayoutClientProps {
 
 const RootLayoutClient = ({ children }: RootLayoutClientProps) => {
   const pathname = usePathname();
-  const noLayoutPages = ['/register', '/login', '/recover/account', '/recover/password'];
+  const noLayoutPages = ['/register', '/login', '/forgot-password', '/reset-password'];
 
   return (
     <body className='flex flex-col min-h-screen'>

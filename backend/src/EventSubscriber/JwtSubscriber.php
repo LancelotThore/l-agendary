@@ -35,7 +35,7 @@ class JwtSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $token = $request->cookies->get('token');
+        $token = $request->cookies->get('redirectImage');
 
         if (!$token) {
             throw new AccessDeniedHttpException('Token not found');

@@ -50,6 +50,10 @@ class Event
     #[ORM\OneToMany(targetEntity: UserEvent::class, mappedBy: 'event', orphanRemoval: true)]
     private Collection $userEvents;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $deleted = null;
+
+
     public function __construct()
     {
         $this->userEvents = new ArrayCollection();
@@ -163,4 +167,18 @@ class Event
     {
         return $this->userEvents;
     }
+
+    public function getDeleted(): ?\DateTimeInterface
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?\DateTimeInterface $deleted): static
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    
 }

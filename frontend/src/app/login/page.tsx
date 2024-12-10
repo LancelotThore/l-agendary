@@ -92,8 +92,8 @@ export default function LoginPage() {
                 className="text-xs placeholder:text-FormBorder border-FormBorder md:text-base"
               />
               {input.id === "password" && (
-                <Link
-                  href="/recover/account"
+                <a
+                  href="/forgot-password"
                   className="text-cardDate text-sm text-right hover:underline hover:underline-offset-2 transition-transform"
                 >
                   Mot de passe oublié
