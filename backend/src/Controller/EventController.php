@@ -38,6 +38,7 @@ class EventController extends AbstractController
         ->leftJoin('e.userEvents', 'ue', 'WITH', 'ue.validation = 1') // Ajouter une condition au join
         ->groupBy('e.id')
         ->where('e.privacy = 1')
+        ->andWhere('e.deleted IS NOT NULL')
         ->orderBy('COUNT(ue.user)', 'DESC')
         ->setMaxResults(6)
         ->getQuery()
