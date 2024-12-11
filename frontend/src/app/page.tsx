@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
-import { ToolCard } from "../components/ui/toolCard";
-import { CardEvent } from "../components/ui/event/cardEvent";
-import { CardEventSkeleton } from "../components/ui/event/cardEventSkeleton";
-import { Button } from "../components/ui/button";
+import { ToolCard } from "@/components/ui/toolCard";
+import { CardEvent } from "@/components/ui/event/cardEvent";
+import { CardEventSkeleton } from "@/components/ui/event/cardEventSkeleton";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { fetchHighlightedEvents } from "@/lib/event";
 import { fetchUser } from "@/lib/data";

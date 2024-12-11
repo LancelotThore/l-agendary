@@ -1,5 +1,5 @@
 import {
-  Clock,
+  CalendarIcon,
   LocationOn,
   PeopleFill,
   LockOpenIcon,
@@ -85,7 +85,7 @@ export default function EventHeader({ event }: EventProps) {
           </Button>
         </div>
         <div className="flex items-center gap-1.5 font-semibold">
-          <Clock className="w-5 min-w-5" />
+          <CalendarIcon className="w-5 min-w-5" />
           <div>
             <p>
               Du {formatDateTime(event.startDate)}
