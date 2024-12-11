@@ -60,7 +60,7 @@ export default function Filter({ variant = 'default' }: FilterProps) {
         params.delete('creatorFirstname');
       }
       router.replace(`${pathname}?${params.toString()}`);
-    }, 1000); // Délai de 1000ms après que l'utilisateur ait arrêté d'écrire
+    }, 1000);
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm, location, startDate, endDate, creatorFirstname]);

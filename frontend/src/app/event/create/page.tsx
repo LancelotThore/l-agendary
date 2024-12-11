@@ -121,7 +121,7 @@ export default function CreateEvent() {
                     id="description"
                     name="description"
                     placeholder="Description"
-                    maxLength={500}
+                    maxLength={700}
                     rows={5}
                     required
                     value={formData.description}

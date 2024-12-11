@@ -320,10 +320,10 @@ export default function Event({ params }) {
           <div className="lg:col-span-4">
             <EventOrganizer organisateur={event.creator} />
           </div>
-          <div className="lg:col-span-3 xl:col-span-4">
+          <div className="lg:col-span-4">
             <EventDescription description={event.description} />
           </div>
-          <div className="lg:col-span-4 xl:col-span-3">
+          <div className="lg:col-span-3">
             <EventShare />
           </div>
           <div className="flex flex-col items-center justify-center gap-4 lg:col-span-7">
@@ -388,12 +388,14 @@ export default function Event({ params }) {
                         <label htmlFor="descrition" className="text-left">
                           Description
                         </label>
-                        <Input
-                          id="title"
-                          name="description"
+                        <textarea
+                          className="col-span-3 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          id="description"
+                          maxLength={700}
+                          rows={5}
                           value={description}
+                          name="description"
                           onChange={(e) => setDescription(e.target.value)}
-                          className="col-span-3"
                         />
                       </div>
                       <div className="flex flex-col gap mt-2">
