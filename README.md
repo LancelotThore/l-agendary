@@ -46,6 +46,11 @@
    - Possibilité de se rendre sur la page via le calendrier
    - Différence visuelle si l'évenement est le tien ou pas
 - Amélioration du responsive de la navBar
+- Amélioration du systeme de connexion
+   - Mot de passe oublié
+   - Confirmation de l'inscription à l'app par email
+   - Gestion de la suppression du compte
+   - Vérification de la complexité du mot de passe
 
 
 ### Période : 02/12/2024 - 06/12/2024
