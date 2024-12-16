@@ -31,6 +31,8 @@ export default function Page() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isValidToken, setIsValidToken] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
 
     const validateToken = async (token: string) => {
         try {
@@ -76,6 +78,15 @@ export default function Page() {
         }
         try {
             setSpinnerActive(true);
+            if (password !== passwordVerify) {
+                setError("Les mots de passe ne correspondent pas");
+                return;
+            }
+
+            if (!validatePasswordComplexity(password)) {
+                return;
+            }
+
             await resetPassword(password, searchParams.get('token'), router);
         } catch (err: any) {
             setError(err.message);
@@ -83,22 +94,49 @@ export default function Page() {
             setSpinnerActive(false);
         }
     };
+
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+      };
+    
+      const validatePasswordComplexity = (password: string): boolean => {
+        if (password.length < 8) {
+          setError('Le mot de passe doit contenir au moins 8 caractères');
+          return false;
+        }
+        if (!/[A-Z]/.test(password)) {
+          setError('Le mot de passe doit contenir au moins une majuscule');
+          return false;
+        }
+        if (!/[a-z]/.test(password)) {
+          setError('Le mot de passe doit contenir au moins une minuscule');
+          return false;
+        }
+        if (!/[0-9]/.test(password)) {
+          setError('Le mot de passe doit contenir au moins un chiffre');
+          return false;
+        }
+        return true;
+      };
     
     let inputs = [
         {
+            required: true,
             id: "password",
             name: "Nouveau mot de passe",
-            type: "password",
+            type: showPassword ? "text" : "password",
             value: password,
-            onChange: (e) => setPassword(e.target.value),
-        },
-        {
+            onChange: (e: any) => setPassword(e.target.value),
+          },
+          {
+            required: true,
             id: "passwordVerify",
             name: "Confirmation du nouveau mot de passe",
-            type: "password",
+            type: showPassword ? "text" : "password",
             value: passwordVerify,
-            onChange: (e) => setPasswordVerify(e.target.value),
-        },
+            onChange: (e: any) => setPasswordVerify(e.target.value),
+          },
     ];
 
     if (isValidToken) {
@@ -136,7 +174,11 @@ export default function Page() {
                     />
                     </div>
                 ))}
-    
+
+                <button type="button" onClick={toggleShowPassword}>
+                    {showPassword ? "Cacher" : "Montrer"} le mot de passe
+                </button>
+        
                 {/* Afficher un message d'erreur si nécessaire */}
                 {error && (
                     <div className="text-red-500 text-center mt-4">{error}</div>

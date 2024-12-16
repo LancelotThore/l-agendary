@@ -335,22 +335,5 @@ function StarIcon(props: SVGAttributes<SVGElement>) {
   );
 }
 
-function PenIcon(props: SVGAttributes<SVGElement>) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF" {...props}>
-      <path d="M8.707 19.707 18 10.414 13.586 6l-9.293 9.293a1.003 1.003 0 0 0-.263.464L3 21l5.242-1.03c.176-.044.337-.135.465-.263zM21 7.414a2 2 0 0 0 0-2.828L19.414 3a2 2 0 0 0-2.828 0L15 4.586 19.414 9 21 7.414z"></path>
-    </svg>
-  );
-}
 
-function EyeIcon(props: SVGAttributes<SVGElement>) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FFFFFF" viewBox="0 0 16 16" {...props}>
-      <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-      <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-    </svg>
-  );
-}
-
-
-export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, Link, User, Filtre, ArrowLeft, PlusCircle, CalendarIcon, StarIcon, PenIcon, EyeIcon };
+export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, Link, User, Filtre, ArrowLeft, PlusCircle, CalendarIcon, StarIcon };

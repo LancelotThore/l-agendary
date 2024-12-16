@@ -1,7 +1,6 @@
 import { Raleway } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
-import { LocationOn, CalendarIcon } from '@/components/ui/icons';
 
 const ralewayBold = Raleway({
   subsets: ['latin'],
@@ -41,13 +40,10 @@ export function CardEvent({ nom, lieu, startDate, endDate, img, id, index }: Car
         <section className='flex flex-col justify-between w-full h-full p-3.5 pr-0'>
           <div className='text-sm md:text-lg'>
             <p className={`${ralewayBold.className}`}>{nom}</p>
-            <div className='flex gap-2 items-center'>
-              <LocationOn className='w-5 h-5' />
-              <p className={`${ralewayMedium.className}`}>{lieu}</p>
-            </div>
+            <p className={`${ralewayMedium.className}`}>{lieu}</p>
           </div>
-          <div className='flex items-center gap-2 text-cardDate text-xs md:text-sm'>
-            <CalendarIcon className='w-5 h-5' />
+          <div className='flex gap-2 text-cardDate text-xs md:text-sm'>
+            <img src="./calendar.svg" alt="calendar Icon" />
             <p className={`${ralewayMedium.className}`}>Du <strong>{formatDateTime(startDate)}</strong> Au <strong>{formatDateTime(endDate)}</strong></p>
           </div>
         </section>

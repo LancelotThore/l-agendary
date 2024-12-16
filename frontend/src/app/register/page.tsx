@@ -31,6 +31,7 @@ export default function RegisterPage() {
   const [errorPassword, setErrorPassword] = useState('');
   const [error, setError] = useState("");
   const [spinnerActive, setSpinnerActive] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -41,12 +42,41 @@ export default function RegisterPage() {
         setErrorPassword('Les mots de passe ne correspondent pas');
         return;
       }
+
+      if (!validatePasswordComplexity(password)) {
+        return;
+      }
+
       await register(email, name, firstname, password, router);
     } catch (err: any) {
       setError(err.message);
     } finally {
       setSpinnerActive(false);
     }
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const validatePasswordComplexity = (password: string): boolean => {
+    if (password.length < 8) {
+      setErrorPassword('Le mot de passe doit contenir au moins 8 caractères');
+      return false;
+    }
+    if (!/[A-Z]/.test(password)) {
+      setErrorPassword('Le mot de passe doit contenir au moins une majuscule');
+      return false;
+    }
+    if (!/[a-z]/.test(password)) {
+      setErrorPassword('Le mot de passe doit contenir au moins une minuscule');
+      return false;
+    }
+    if (!/[0-9]/.test(password)) {
+      setErrorPassword('Le mot de passe doit contenir au moins un chiffre');
+      return false;
+    }
+    return true;
   };
 
   // Inputs liés aux états
@@ -80,7 +110,7 @@ export default function RegisterPage() {
       required: true,
       id: "password",
       name: "Mot de passe",
-      type: "password",
+      type: showPassword ? "text" : "password",
       value: password,
       onChange: (e: any) => setPassword(e.target.value),
     },
@@ -88,7 +118,7 @@ export default function RegisterPage() {
       required: true,
       id: "passwordVerify",
       name: "Confirmer le mot de passe",
-      type: "password",
+      type: showPassword ? "text" : "password",
       value: passwordVerify,
       onChange: (e: any) => setPasswordVerify(e.target.value),
     },
@@ -128,7 +158,12 @@ export default function RegisterPage() {
                 className="text-xs placeholder:text-FormBorder border-FormBorder md:text-base"
               />
             </div>
+
           ))}
+          
+          <button type="button" onClick={toggleShowPassword}>
+            {showPassword ? "Cacher" : "Montrer"} le mot de passe
+          </button>
 
           {errorPassword && (
             <div className="text-red-500 text-center mt-4">{errorPassword}</div>
