@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Agbalumo, Raleway } from "next/font/google";
-import { ToolCard } from "../components/ui/toolCard";
-import { CardEvent } from "../components/ui/event/cardEvent";
-import { CardEventSkeleton } from "../components/ui/event/cardEventSkeleton";
-import { Button } from "../components/ui/button";
+import { ToolCard } from "@/components/ui/toolCard";
+import { CardEvent } from "@/components/ui/event/cardEvent";
+import { CardEventSkeleton } from "@/components/ui/event/cardEventSkeleton";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { fetchHighlightedEvents } from "@/lib/event";
 import { fetchUser } from "@/lib/data";
@@ -101,16 +101,15 @@ export default function Home() {
           <ul className="flex items-center gap-5 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
             {!loading && (
               highlights.map((card, index) => (
-                <Link className="w-full" key={index} href={`/event/${card.id}`}>
-                  <CardEvent
-                    id={card.id}
-                    nom={card.title}
-                    lieu={card.location}
-                    startDate={card.startDate}
-                    endDate={card.endDate}
-                    img={card.image}
-                  />
-                </Link>
+                <CardEvent
+                  id={card.id}
+                  nom={card.title}
+                  lieu={card.location}
+                  startDate={card.startDate}
+                  endDate={card.endDate}
+                  img={card.image}
+                  index={index}
+                />
               ))
             )}
           </ul>
@@ -137,10 +136,10 @@ export default function Home() {
       >
         A propos de nous
       </h2>
-      <section className="w-full flex justify-center mb-20">
-        <div className="w-9/12 flex flex-col gap-5 text-sm lg:text-base lg:flex-row-reverse md:w-full">
+      <section className="w-full flex justify-center">
+        <div className="flex flex-col gap-5 text-sm lg:text-base lg:flex-row-reverse">
           <Image
-            className="object-cover rounded-md md:w-full lg:w-6/12"
+            className="object-cover rounded-md w-full lg:w-6/12"
             src="/teams.jpg"
             alt="Image teams"
             width={500}

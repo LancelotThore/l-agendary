@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { register } from "@/lib/login";
 import Image from "next/image";
+import { Logo } from "@/components/ui/logos";
 
 const ralewaySemBold = Raleway({
   subsets: ["latin"],
@@ -98,7 +99,7 @@ export default function RegisterPage() {
       className={`${ralewayMedium.className} flex flex-col h-screen justify-center items-center text-xs`}
     >
       <Link href="/">
-        <img className="w-24 md:w-40" src="./logo2.svg" alt="Logo Icon" />
+        <Logo className="w-24 md:w-40"/>
       </Link>
 
       <form

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button"; // Assurez-vous que l'import est correct
+import { Button } from "@/components/ui/button";
 
 export default function CookiePopup() {
   const [showPopup, setShowPopup] = useState(false);

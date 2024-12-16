@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { logout } from "@/lib/login";
 import { isAdmin as isLoggedAdmin } from "@/lib/data";
+import { usePathname } from 'next/navigation';
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,6 +17,7 @@ export function Navbar() {
     const [isLoading, setIsLoading] = useState(true); // État de chargement
     const [isAdmin, setIsAdmin] = useState(false); // État admin
     const router = useRouter(); // Pour la redirection
+    const pathname = usePathname();
 
     useEffect(() => {
         // Fonction pour charger l'utilisateur
@@ -45,6 +47,10 @@ export function Navbar() {
         checkAdmin();
     }, []);
 
+    useEffect(() => {
+        setIsMenuOpen(false);
+    }, [pathname]);
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
@@ -64,7 +70,7 @@ export function Navbar() {
                         href="/search"
                         className="hidden lg:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
                     >
-                        <span>Rechercher</span>
+                        <span className='lg:hidden xl:block'>Rechercher</span>
                         <Search className="w-5 h-5 min-w-5" aria-hidden="true" />
                     </Link>
                     {user && (
@@ -73,14 +79,14 @@ export function Navbar() {
                                 href="/event/create"
                                 className="hidden lg:flex items-center space-x-2 py-2 px-3 rounded hover:bg-background font-medium text-base"
                             >
-                                <span>Créer un événement</span>
+                                <span className='lg:hidden xl:block'>Créer un événement</span>
                                 <PlusCircle className="w-5 h-5 min-w-5" aria-hidden="true" />
                             </Link>
                             <Link
                                 href="/calendar"
                                 className="hidden lg:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
                             >
-                                <span>Calendrier</span>
+                                <span className='lg:hidden xl:block'>Calendrier</span>
                                 <CalendarIcon className="w-5 h-5 min-w-5" aria-hidden="true" />
                             </Link>
                         </>
@@ -117,13 +123,13 @@ export function Navbar() {
                         </>
                     )}
                 </div>
-                <button
+                <Button variant={'none'}
                     type="button"
                     className="inline-flex items-center p-2 justify-center text-sm text-primary rounded-lg lg:hidden transition-all duration-300"
                     onClick={toggleMenu}
                 >
                     {isMenuOpen ? <Close className="w-8" /> : <MenuBurger className="w-8" />}
-                </button>
+                </Button>
             </div>
             <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-mobile">
                 <ul className="font-medium flex flex-col py-4 rounded-lg bg-secondary items-end w-10/12 m-auto">

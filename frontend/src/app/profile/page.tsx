@@ -21,6 +21,20 @@ import {
 } from "@/lib/data";
 import Image from "next/image";
 import PageProfileSkeleton from "./loading";
+import Filter from "@/components/ui/search/filter";
+import { useSearchParams } from 'next/navigation';
+import EventsTable from '@/components/ui/search/table';
+import Pagination from '@/components/ui/search/pagination';
+import { fetchUserSearchEvents } from "@/lib/data";
+import { Raleway } from "next/font/google";
+
+const raleway = Raleway({
+  subsets: ["latin"],
+  weight: "900",
+  variable: "--font-raleway",
+});
+
+const ITEMS_PER_PAGE = 9;
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -28,6 +42,37 @@ export default function ProfilePage() {
   const [error, setError] = useState("");
   const [globalSuccess, setGlobalSuccess] = useState("");
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const query = searchParams.get('query') || '';
+  const location = searchParams.get('location') || '';
+  const startDate = searchParams.get('startDate') || '';
+  const endDate = searchParams.get('endDate') || '';
+  const currentPage = Number(searchParams.get('page')) || 1;
+
+  const [events, setEvents] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchData = async () => {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const data = await fetchUserSearchEvents(
+      query,
+      location,
+      startDate,
+      endDate,
+      ITEMS_PER_PAGE,
+      offset
+    );
+    if (data) {
+      setEvents(data.events);
+      setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, query, location, startDate, endDate]);
 
   // Form input profile
   const [firstname, setFirstname] = useState("");
@@ -419,6 +464,7 @@ export default function ProfilePage() {
                 alt={`Image de profil de ${firstname}`}
                 width={200}
                 height={200}
+                priority
               />
             </div>
           </DialogTrigger>
@@ -458,8 +504,6 @@ export default function ProfilePage() {
           </DialogContent>
         </Dialog>
 
-
-
         <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
           <h4 className="hidden md:block mt-2.5 mb-8 font-bold text-xl md:text-2xl">
             Mon Profil
@@ -478,6 +522,18 @@ export default function ProfilePage() {
           <p className="line-clamp-3 md:line-clamp-none text-sm">
             {bio ? bio : "Pas de biographie"}
           </p>
+        </div>
+      </div>
+      <h2
+        className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}
+      >
+        Mes événements créés
+      </h2>
+      <div className="w-full mt-10">
+        <Filter variant="noCreator" />
+        <EventsTable events={events} />
+        <div className="mt-5 flex w-full justify-center items-start">
+          <Pagination totalPages={totalPages} />
         </div>
       </div>
     </>

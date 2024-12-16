@@ -117,10 +117,17 @@ user-events:
     path: /api/user-events
     controller: App\Controller\UserController::getUserEvents
 
+user-created-events:
+    path: /api/user-created-events
+    controller: App\Controller\UserController::getUserCreatedEvents
+
 user_delete:
     path: /api/user/delete
     controller: App\Controller\UserController::deleteUser
 
+user-unique-locations:
+    path: /api/user-unique-locations
+    controller: App\Controller\UserController::getUserUniqueLocations
 
 # -------------------------
 # Admin

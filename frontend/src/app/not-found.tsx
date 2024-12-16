@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export default function NotFound() {
   return (
-    <div className='flex items-center justify-center flex-col'>
+    <div className='flex items-center justify-center flex-col m-auto'>
       <h1 className='text-7xl font-bold mb-4'>404</h1>
       <div className='md:grid grid-cols-2 gap-4 items-center justify-center'>
         <Image src="/calendar404.webp" alt='Illustration calendrier erreur 404' width={500} height={500} className='w-full'/>

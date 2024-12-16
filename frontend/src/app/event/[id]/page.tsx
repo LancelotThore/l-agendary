@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { LockOpenIcon, LockClosedIcon } from "@/components/ui/icons";
+import { LockOpenIcon, LockClosedIcon, Close } from "@/components/ui/icons";
 import { FormElement } from "@/components/ui/form/formElement";
 import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/lib/event";
 import { toast } from "sonner";
@@ -292,9 +292,6 @@ export default function Event({ params }) {
       }
     }
 
-    
-
-
 
     try {
       await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, newImage);
@@ -310,10 +307,12 @@ export default function Event({ params }) {
     <>
       {event ? (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
-          <img
+          <Image
             src={`/uploads/event_pictures/${event.image}`}
             alt="Card"
             className="rounded-lg hidden object-cover md:block w-full col-span-7 h-96 shadow-md"
+            width={500}
+            height={300}
           />
           <div className="lg:col-span-3">
             <EventHeader event={event} />
@@ -321,10 +320,10 @@ export default function Event({ params }) {
           <div className="lg:col-span-4">
             <EventOrganizer organisateur={event.creator} />
           </div>
-          <div className="lg:col-span-3 xl:col-span-4">
+          <div className="lg:col-span-4">
             <EventDescription description={event.description} />
           </div>
-          <div className="lg:col-span-4 xl:col-span-3">
+          <div className="lg:col-span-3">
             <EventShare />
           </div>
           <div className="flex flex-col items-center justify-center gap-4 lg:col-span-7">
@@ -389,12 +388,14 @@ export default function Event({ params }) {
                         <label htmlFor="descrition" className="text-left">
                           Description
                         </label>
-                        <Input
-                          id="title"
-                          name="description"
+                        <textarea
+                          className="col-span-3 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          id="description"
+                          maxLength={700}
+                          rows={5}
                           value={description}
+                          name="description"
                           onChange={(e) => setDescription(e.target.value)}
-                          className="col-span-3"
                         />
                       </div>
                       <div className="flex flex-col gap mt-2">
@@ -493,7 +494,7 @@ export default function Event({ params }) {
                           Image de couverture
                         </label>
                         {typeof image === "string" && (
-                          <img src={`/uploads/event_pictures/${image}`} alt="Image de couverture événement" className="w-32 h-32 rounded" />
+                          <Image src={`/uploads/event_pictures/${image}`} alt="Image de couverture événement" className="w-32 h-32 rounded" width={512} height={512}/>
                         )}
                         <Input
                           id="image"
@@ -543,12 +544,10 @@ export default function Event({ params }) {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
-            <button onClick={closeModal} type="button" className="absolute top-2 right-2 bg-transparent rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-200 focus:outline-none">
+            <Button onClick={closeModal} variant={"transparent"} size={"icon"} className="absolute top-2 right-2">
               <span className="sr-only">Close menu</span>
-              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+              <Close className="w-5"/>
+            </Button>
             <h2 className="text-lg font-bold ">Connexion à l'application</h2>
             <p className="">En vous connectant, vous pouvez vous inscrire à plusieurs événements et les suivre facilement.</p>
             <Link className="h-fit w-fit" href="/login"><Button>Se connecter</Button></Link>
@@ -582,12 +581,6 @@ export default function Event({ params }) {
       {isSuccessModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
-            <button onClick={closeSuccessModal} type="button" className="absolute top-2 right-2 bg-transparent rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-200 focus:outline-none">
-              <span className="sr-only">Close menu</span>
-              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
             <h2 className="text-lg font-bold ">Inscription réussie</h2>
             <p className="">Votre inscription a bien été prise en compte, vous allez recevoir un mail de confirmation.</p>
             <Button onClick={closeSuccessModal}>Fermer</Button>

@@ -215,14 +215,12 @@ class UserController extends AbstractController
         return $response;
     }
 
-        /**
- * @Route("/api/unique-user-names", name="unique-user-names", methods={"GET"})
- */
-public function getUniqueUserNames(EntityManagerInterface $entityManager): Response
-{
-    $queryBuilder = $entityManager->getRepository(User::class)
-        ->createQueryBuilder('u')
-        ->select('DISTINCT u.firstname');
+    /**
+     * @Route("/api/unique-user-names", name="unique-user-names", methods={"GET"})
+     */
+    public function getUniqueUserNames(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $searchTerm = $request->query->get('q', '');
 
         $queryBuilder = $entityManager->getRepository(User::class)
             ->createQueryBuilder('u')
@@ -281,17 +279,12 @@ public function getUniqueUserNames(EntityManagerInterface $entityManager): Respo
         if (!$user instanceof User) {
             return $user; // Retourne la réponse d'erreur de isLogged
         }
-
-        // Récupérer les événements où l'utilisateur est inscrit ou créateur
+    
+        // Récupérer les événements où l'utilisateur est inscrit
         $userEvents = $entityManager->getRepository(UserEvent::class)->findBy(['user' => $user]);
-        $createdEvents = $entityManager->getRepository(Event::class)->findBy(['creator' => $user]);
-
-        $events = array_merge(
-            array_map(fn($ue) => $ue->getEvent(), $userEvents),
-            $createdEvents
-        );
-
-
+    
+        $events = array_map(fn($ue) => $ue->getEvent(), $userEvents);
+    
         // Filtrer les informations spécifiques des événements
         $filteredEvents = array_map(function($event) {
             return [
@@ -303,12 +296,113 @@ public function getUniqueUserNames(EntityManagerInterface $entityManager): Respo
                 'location' => $event->getLocation(),
                 'creator' => $event->getCreator()->getEmail(),
                 'description' => $event->getDescription(),
+                'image' => $event->getImage(),
+                'participant_count' => count($event->getUserEvents()) // Ajouter le nombre de participants
+            ];
+        }, $events);
+    
+        return new JsonResponse($filteredEvents);
+    }
+
+    /**
+     * @Route("/api/user-unique-locations", name="user-unique-locations", methods={"GET"})
+     */
+    public function getUserUniqueLocations(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->isLogged($request);
+        if (!$user instanceof User) {
+            return $user; // Retourne la réponse d'erreur de isLogged
+        }
+    
+        $searchTerm = $request->query->get('q', '');
+    
+        $queryBuilder = $entityManager->getRepository(Event::class)
+            ->createQueryBuilder('e')
+            ->select('DISTINCT e.location, COUNT(e.id) AS event_count')
+            ->where('e.creator = :user')
+            ->andWhere('e.location LIKE :searchTerm')
+            ->setParameter('user', $user)
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->groupBy('e.location')
+            ->orderBy('event_count', 'DESC')
+            ->setMaxResults(10);
+    
+        $locations = $queryBuilder->getQuery()->getResult();
+    
+        return $this->json($locations);
+    }
+
+    /**
+     * @Route("/api/user-created-events", name="user-created-events", methods={"GET"})
+     */
+    public function getUserCreatedEvents(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->isLogged($request);
+        if (!$user instanceof User) {
+            return $user; // Retourne la réponse d'erreur de isLogged
+        }
+    
+        $searchTerm = $request->query->get('q', null);
+        $location = $request->query->get('location', null);
+        $startDate = $request->query->get('startDate', null);
+        $endDate = $request->query->get('endDate', null);
+        $limit = $request->query->get('limit', 9);
+        $offset = $request->query->get('offset', 0);
+    
+        $queryBuilder = $entityManager->getRepository(Event::class)
+            ->createQueryBuilder('e')
+            ->where('e.creator = :user')
+            ->setParameter('user', $user);
+    
+        if ($searchTerm !== null) {
+            $queryBuilder->andWhere('(e.title LIKE :searchTerm OR e.description LIKE :searchTerm)')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+    
+        if ($location !== null) {
+            $queryBuilder->andWhere('e.location = :location')
+                ->setParameter('location', $location);
+        }
+    
+        if ($startDate !== null) {
+            $queryBuilder->andWhere('e.startDate >= :startDate')
+                ->setParameter('startDate', $startDate);
+        }
+    
+        if ($endDate !== null) {
+            $queryBuilder->andWhere('e.endDate <= :endDate')
+                ->setParameter('endDate', $endDate);
+        }
+    
+        // Clone the query builder for the count query
+        $countQueryBuilder = clone $queryBuilder;
+        $totalEvents = $countQueryBuilder->select('COUNT(e.id)')
+                                         ->getQuery()
+                                         ->getSingleScalarResult();
+    
+        // Set limit and offset for pagination
+        $queryBuilder->setMaxResults($limit)
+                     ->setFirstResult($offset);
+    
+        $events = $queryBuilder->getQuery()->getResult();
+    
+        $filteredEvents = array_map(function($event) {
+            return [
+                'id' => $event->getId(),
+                'title' => $event->getTitle(),
+                'startDate' => $event->getStartDate()->format(\DateTime::ATOM),
+                'endDate' => $event->getEndDate()->format(\DateTime::ATOM),
+                'privacy' => $event->isPrivacy(),
+                'location' => $event->getLocation(),
+                'description' => $event->getDescription(),
                 'image' => $event->getImage()
             ];
         }, $events);
-
-
-        return new JsonResponse($filteredEvents);
+    
+        return new JsonResponse([
+            'total' => $totalEvents,
+            'events' => $filteredEvents
+        ]);
     }
 
 }

@@ -20,9 +20,10 @@ const buttonVariants = cva(
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:scale-105",
         link: "text-primary underline-offset-4 hover:underline hover:scale-105",
-        public: "bg-accent text-accent-foreground rounded-full hover:scale-105",
-        private:
-          "bg-destructive text-destructive-foreground rounded-full hover:scale-105",
+        public: "bg-accent text-accent-foreground rounded-full cursor-default	",
+        private: "bg-destructive text-destructive-foreground rounded-full cursor-default",
+        transparent: "hover:bg-primary hover:text-primary-foreground hover:scale-105",
+        none: "",
       },
       size: {
         default: "px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-base",

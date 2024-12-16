@@ -10,16 +10,15 @@ export default function EventsTable({
     <div className="w-full">
       <ul className="flex items-center gap-5 my-10 flex-col lg:grid lg:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {events.map((event, index) => (
-          <Link href={`/event/${event.id}`} key={index}>
-            <CardEvent
-              nom={event.title}
-              lieu={event.location}
-              startDate={event.startDate}
-              endDate={event.endDate}
-              img={event.image}
-              id={event.id}
-            />
-          </Link>
+          <CardEvent
+            nom={event.title}
+            lieu={event.location}
+            startDate={event.startDate}
+            endDate={event.endDate}
+            img={event.image}
+            id={event.id}
+            index={index}
+          />
         ))}
       </ul>
     </div>

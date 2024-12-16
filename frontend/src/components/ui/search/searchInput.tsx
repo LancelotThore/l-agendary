@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Search, Close } from "@/components/ui/icons";
+import { Input } from "@/components/ui/input";
 
 export interface SelectInputProps extends React.HTMLAttributes<HTMLDivElement> {
   img?: React.ReactNode;
@@ -77,7 +78,7 @@ const SearchInput = React.forwardRef<HTMLDivElement, SelectInputProps>(
         </div>
         {isDropdownOpen && (
           <div className="absolute top-full left-0 mt-1 w-full md:max-w-lg rounded-md border border-input bg-secondary px-3 py-2 text-sm ring-offset-background z-20">
-            <input
+            <Input
               type="text"
               className={cn(
                 "flex h-10 w-full rounded-md border border-input bg-secondary px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",

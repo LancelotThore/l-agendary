@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { confirmRegistration } from "../../lib/event";
+import { confirmRegistration } from "@/lib/event";
+import { Close } from "@/components/ui/icons";
 
 export default function ConfirmRegistration() {
     const router = useRouter();
@@ -15,7 +16,7 @@ export default function ConfirmRegistration() {
         const token = searchParams.get('token');
 
         if (!token) {
-            // Rediriger vers une autre page si le token n'est pas présent
+            // Rediriger vers la page d'accueil
             router.replace('/');
         }
     }, [searchParams, router]);
@@ -27,6 +28,7 @@ export default function ConfirmRegistration() {
                 await confirmRegistration(token);
                 setIsSuccess(true);
                 setPopupMessage("Inscription réussie !");
+                router.replace('/');
             } catch (error: any) {
                 if (error.message === 'Inscription déjà validée') {
                     setIsSuccess(false);
@@ -57,12 +59,6 @@ export default function ConfirmRegistration() {
             {popupMessage && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
-                        <button onClick={closePopup} type="button" className="absolute top-2 right-2 bg-transparent rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-200 focus:outline-none">
-                            <span className="sr-only">Close menu</span>
-                            <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
                         <h2 className="text-lg font-bold">{isSuccess ? "Inscription réussie" : "Erreur"}</h2>
                         <p>{popupMessage}</p>
                         <Button onClick={closePopup}>Fermer</Button>
