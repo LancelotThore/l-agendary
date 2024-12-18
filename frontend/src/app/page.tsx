@@ -151,11 +151,11 @@ export default function Home() {
               une application conviviale qui permet à chacun de créer un
               événement en seulement quelques secondes. Que vous souhaitiez
               organiser une fête d'anniversaire intime, une grande convention,
-              ou un événement culturel d'envergure, Agendary vous facilite la
+              ou un événement culturel d'envergure, L'Agendary vous facilite la
               tâche.
             </p>
             <p>
-              Avec Agendary, vous avez la possibilité de rendre votre événement
+              Avec L'Agendary, vous avez la possibilité de rendre votre événement
               privé, accessible uniquement aux personnes que vous invitez, ou
               public, ouvert à toute la communauté des utilisateurs. Cela vous
               donne un contrôle total sur qui peut voir et participer à vos
@@ -169,7 +169,7 @@ export default function Home() {
             </p>
             <p>
               Créez, partagez et rejoignez les événements qui vous passionnent
-              avec Agendary, et ne manquez jamais une occasion de vous divertir
+              avec L'Agendary, et ne manquez jamais une occasion de vous divertir
               ou de vous connecter avec les autres!
             </p>
           </div>
