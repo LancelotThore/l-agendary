@@ -195,5 +195,8 @@ class Event
         return $this;
     }
 
-    
+    public function isDeleted(): bool
+    {
+        return $this->deleted !== null;
+    }
 }

@@ -40,6 +40,7 @@ class EventController extends AbstractController
         ->groupBy('e.id')
         ->where('e.privacy = 1')
         ->andWhere('e.end_date > :currentDate')
+        ->andWhere('e.deleted IS NULL')
         ->setParameter('currentDate', new \DateTime())
         ->orderBy('COUNT(ue.user)', 'DESC')
         ->setMaxResults(6)
@@ -60,7 +61,12 @@ class EventController extends AbstractController
      */
     public function event($id, EntityManagerInterface $entityManager): Response
     {
-        $event = $entityManager->getRepository(Event::class)->find($id);
+        $event = $entityManager->getRepository(Event::class)->createQueryBuilder('e')
+            ->where('e.id = :id')
+            ->andWhere('e.deleted IS NULL')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
 
         if (!$event) {
             return $this->json(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
@@ -110,6 +116,7 @@ class EventController extends AbstractController
             ->select('DISTINCT e.location, COUNT(e.id) AS event_count')
             ->where('e.privacy = 1')
             ->andWhere('e.location LIKE :searchTerm')
+            ->andWhere('e.deleted IS NULL')
             ->setParameter('searchTerm', '%' . $searchTerm . '%')
             ->groupBy('e.location')
             ->orderBy('event_count', 'DESC')
@@ -136,7 +143,8 @@ class EventController extends AbstractController
         $queryBuilder = $entityManager->getRepository(Event::class)
             ->createQueryBuilder('e')
             ->leftJoin('e.creator', 'c')
-            ->where('e.privacy = 1');
+            ->where('e.privacy = 1')
+            ->andWhere('e.deleted IS NULL');
 
         // Check if all search parameters are empty
         $isSearchEmpty = $searchTerm === null && $location === null && $startDate === null && $endDate === null && $creatorFirstname === null;
@@ -339,41 +347,36 @@ class EventController extends AbstractController
         if (!$token) {
             return $this->json(['error' => 'Token not found'], Response::HTTP_UNAUTHORIZED);
         }
-
+    
         // Décoder le token pour obtenir les informations de l'utilisateur
         $data = $this->jwtEncoder->decode($token);
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['username']]);
-
+    
         if (!$user) {
             return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
         }
-
+    
         // Trouver l'événement par ID
         $event = $entityManager->getRepository(Event::class)->find($id);
-
+    
         if (!$event) {
             return $this->json(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
         }
-
+    
         if ($event->getCreator()->getId() !== $user->getId()) {
             return $this->json(['error' => 'User is not the creator of the event'], Response::HTTP_FORBIDDEN);
         }
-
+    
         try {
-            $entityManager->remove($event);
+            // Mettre à jour la colonne deleted avec la date actuelle
+            $event->setDeleted(new \DateTime());
+            $entityManager->persist($event);
             $entityManager->flush();
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return $this->json(['success' => 'Event deleted successfully']);
-        
-        $serializer = $this->container->get('serializer');
-        $events_json = $serializer->serialize($events, 'json', ['circular_reference_handler' => function ($object) {
-            return $object->getId();
-        }]);
-
-        return new Response($events_json, 200, ['Content-Type' => 'application/json']);
+    
+        return $this->json(['success' => 'Event marked as deleted successfully']);
     }
 
     /**

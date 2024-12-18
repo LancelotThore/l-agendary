@@ -227,6 +227,7 @@ class UserController extends AbstractController
             ->select('u.firstname, COUNT(e.id) AS event_count')
             ->join(Event::class, 'e', 'WITH', 'e.creator = u.id AND e.privacy = 1')
             ->where('u.firstname LIKE :searchTerm')
+            ->andWhere('e.deleted IS NULL')
             ->setParameter('searchTerm', '%' . $searchTerm . '%')
             ->groupBy('u.id')
             ->orderBy('event_count', 'DESC')
@@ -281,7 +282,13 @@ class UserController extends AbstractController
         }
     
         // Récupérer les événements où l'utilisateur est inscrit
-        $userEvents = $entityManager->getRepository(UserEvent::class)->findBy(['user' => $user]);
+        $userEvents = $entityManager->getRepository(UserEvent::class)->createQueryBuilder('ue')
+            ->join('ue.event', 'e')
+            ->where('ue.user = :user')
+            ->andWhere('e.deleted IS NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
     
         $events = array_map(fn($ue) => $ue->getEvent(), $userEvents);
     
@@ -321,6 +328,7 @@ class UserController extends AbstractController
             ->select('DISTINCT e.location, COUNT(e.id) AS event_count')
             ->where('e.creator = :user')
             ->andWhere('e.location LIKE :searchTerm')
+            ->andWhere('e.deleted IS NULL')
             ->setParameter('user', $user)
             ->setParameter('searchTerm', '%' . $searchTerm . '%')
             ->groupBy('e.location')
@@ -352,6 +360,7 @@ class UserController extends AbstractController
         $queryBuilder = $entityManager->getRepository(Event::class)
             ->createQueryBuilder('e')
             ->where('e.creator = :user')
+            ->andWhere('e.deleted IS NULL')
             ->setParameter('user', $user);
     
         if ($searchTerm !== null) {
