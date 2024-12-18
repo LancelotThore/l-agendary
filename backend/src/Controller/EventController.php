@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Entity\UserEvent;
+use App\Repository\EventRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -90,6 +91,7 @@ class EventController extends AbstractController
             'location' => $event->getLocation(),
             'image' => $event->getImage(),
             'creator' => $creatorData,
+            'token' => $event->getToken(),
             'participant_count' => $participantCount,
         ];
 
@@ -543,30 +545,32 @@ class EventController extends AbstractController
         return $this->json(['status' => 'success']);
     }
 
-/**
- * @Route("/verifyToken", name="verify-token", methods={"GET"})
- */
-public function verifyToken(Request $request, EventRepository $eventRepository): JsonResponse
-{
-    $eventId = $request->query->get('eventId');
-    $token = $request->query->get('token');
+    /**
+     * @Route("/verifyToken", name="verify-token", methods={"GET"})
+     */
+    public function verifyToken(Request $request, EventRepository $eventRepository): JsonResponse
+    {
+        $eventId = $request->query->get('eventId');
+        $token = $request->query->get('token');
 
-    if (!$eventId || !$token) {
-        return new JsonResponse(['error' => 'Missing parameters'], 400);
+        if (!$eventId || !$token) {
+            return new JsonResponse(['error' => 'Missing parameters'], 400);
+        }
+
+        $event = $eventRepository->find($eventId);
+
+        if (!$event) {
+            return new JsonResponse(['error' => 'Event not found'], 404);
+        }
+
+        // Assuming the event entity has a method getToken() to retrieve the token from the database
+        $storedToken = $event->getToken();
+
+        if ($storedToken !== $token) {
+            return new JsonResponse(['error' => 'Invalid token'], 400);
+        }
+
+        return new JsonResponse(['status' => 'success', 'token' => $token], 200);
     }
 
-    $event = $eventRepository->find($eventId);
-
-    if (!$event) {
-        return new JsonResponse(['error' => 'Event not found'], 404);
-    }
-
-    // Assuming the event entity has a method getToken() to retrieve the token from the database
-    $storedToken = $event->getToken();
-
-    if ($storedToken !== $token) {
-        return new JsonResponse(['error' => 'Invalid token'], 400);
-    }
-
-    return new JsonResponse(['status' => 'success', 'token' => $token], 200);
 }

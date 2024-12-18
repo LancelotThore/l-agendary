@@ -252,7 +252,7 @@ function Mail(props: SVGAttributes<SVGElement>) {
   );
 }
 
-function Link(props: SVGAttributes<SVGElement>) {
+function LinkIcon(props: SVGAttributes<SVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 30" {...props}>
       <g fill="#000">
@@ -369,4 +369,4 @@ function ModifyIcon(props: SVGAttributes<SVGElement>) {
 }
 
 
-export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, Link, User, Filtre, ArrowLeft, PlusCircle, CalendarIcon, StarIcon, PenIcon, EyeIcon, DeleteIcon, ModifyIcon };
+export { Clock, LocationOn, PeopleFill, LockClosedIcon, LockOpenIcon, Search, AddEvent, Calendar, Profil, MenuBurger, Home, Close, Instagram, Facebook, Whatsapp, Linkedin, Mail, LinkIcon, User, Filtre, ArrowLeft, PlusCircle, CalendarIcon, StarIcon, PenIcon, EyeIcon, DeleteIcon, ModifyIcon };

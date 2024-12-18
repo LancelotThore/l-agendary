@@ -20,7 +20,6 @@ import PageEventSkeleton from "./loading";
 import NotFound from "@/app/not-found";
 import Image from "next/image";
 
-
 export default function Event({ params }) {
   const [id, setId] = useState(null);
   const [title, setTitle] = useState("");
@@ -76,6 +75,11 @@ export default function Event({ params }) {
         }
 
         const eventData = await fetchEvent(params.id);
+        if (!eventData) {
+          setLoading(false);
+          setEvent(null);
+          return;
+        }
         setEvent(eventData);
       } catch (error) {
         console.error("Erreur lors du chargement des données :", error);
@@ -99,13 +103,16 @@ export default function Event({ params }) {
 
     const fetchEventData = async () => {
       const eventData = await fetchEvent(params.id);
+      if (!eventData) {
+        setLoading(false);
+        return;
+      }
       setEvent(eventData);
 
       const token = searchParams.get('accessKey');
 
       if (eventData?.privacy === false) {
         setIsTokenValid(true);
-        console.log("Event is public, token is valid");
         fetchData();
       } else if (!user && token) {
         verifyAccessToken(token);
@@ -248,7 +255,7 @@ export default function Event({ params }) {
   }
 
   // Fonction pour mettre à jour l'image de l'event
-  const handleInputImage = (file: any) => {
+  const handleInputImage = (file) => {
     if (file && file.type.startsWith("image/")) {
       setInputImage(file);
       setError("");
@@ -298,11 +305,11 @@ export default function Event({ params }) {
       return `${date}T${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
     };
 
-    const startHourInt = parseInt(startHour.split(":"[0]), 10);
-    const startMinutesInt = parseInt(startHour.split(":"[1]), 10);
+    const startHourInt = parseInt(startHour.split(":")[0], 10);
+    const startMinutesInt = parseInt(startHour.split(":")[1], 10);
 
-    const endHourInt = parseInt(endHour.split(":"[0]), 10);
-    const endMinutesInt = parseInt(endHour.split(":"[1]), 10);
+    const endHourInt = parseInt(endHour.split(":")[0], 10);
+    const endMinutesInt = parseInt(endHour.split(":")[1], 10);
 
     const normalizedStart = normalizeDateTime(startDate, startHourInt + 1, startMinutesInt);
     const normalizedEnd = normalizeDateTime(endDate, endHourInt + 1, endMinutesInt);
@@ -321,11 +328,6 @@ export default function Event({ params }) {
       return;
     }
 
-    // if (!inputImage) {
-    //   setError("Veuillez sélectionner une image");
-    //   return;
-    // }
-
     // Delete previous image
 
     if (inputImage) {
@@ -337,7 +339,7 @@ export default function Event({ params }) {
         if (!response.ok) {
           throw new Error(data.error || "Erreur lors de la suppression de l'ancienne image");
         }
-      } catch (err: any) {
+      } catch (err) {
         setError(err.message);
         return;
       }
@@ -361,8 +363,6 @@ export default function Event({ params }) {
       return;
     }
 
-
-
     try {
       await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, newImage);
       upEvent();
@@ -373,7 +373,7 @@ export default function Event({ params }) {
     }
   };
 
-  const handleSubmitToken = async (event: React.FormEvent) => {
+  const handleSubmitToken = async (event) => {
     event.preventDefault();
     setSpinnerActive(true);
     setErrorMessage('');
@@ -393,9 +393,18 @@ export default function Event({ params }) {
     }
   };
 
+  // if (loading) {
+  //   return <PageEventSkeleton />;
+  // }
+
+  if (!event || event.error) {
+    return <NotFound />;
+  }
+
   return (
     <>
-      {isTokenValid || (event && event.privacy === true) ? (
+      { isTokenValid || (event && event.privacy === true) ? (
+        <>
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
           <Image
             src={`/uploads/event_pictures/${event.image}`}
@@ -415,7 +424,7 @@ export default function Event({ params }) {
             <EventDescription description={event.description} />
           </div>
           <div className="lg:col-span-4 xl:col-span-3">
-            <EventShare handleShare={handleShare} token={event?.privacy == false ? event.token : null} />
+            <EventShare handleShare={handleShare} token={event?.privacy == false ? event.token : null} eventName={event.title}/>
           </div>
           <div className="flex flex-col items-center justify-center gap-4 lg:col-span-7">
             <Button className="md:hidden" size={"lg"} onClick={handleShare}>
@@ -423,19 +432,12 @@ export default function Event({ params }) {
             </Button>
           </div>
         </div>
+        </>
       ) : (
         <div className="flex flex-col items-center text-xs">
-          <div className="flex mt-4 w-full max-w-[700px] gap-4">
-          <Link href="/register">
-              <Button size="default" className="w-full">S'enregistrer</Button>
-            </Link>
-            <Link href="/login">
-              <Button size="default" className="w-full">Connexion</Button>
-            </Link>
-          </div>
           <div className="flex justify-center items-flex-start flex-col shadow-md mt-5 p-4 bg-secondary border border-FormBorder rounded-md md:p-8 w-full max-w-[700px]">
             <h2 className="text-base md:text-lg text-start mt-5">
-              Vous n'avez pas accès à cet événement,<br /> veuillez entrer la clé d'accès pour y participer.
+              Cet événement est privé, veuillez entrer la clé d'accès pour y participer.
             </h2>
       
             <form onSubmit={handleSubmitToken} className="flex flex-col items-center mt-5 w-full">
