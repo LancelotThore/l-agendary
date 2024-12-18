@@ -143,7 +143,7 @@ class EventController extends AbstractController
 
         $queryBuilder = $entityManager->getRepository(Event::class)
             ->createQueryBuilder('e')
-            ->select('e.id, e.title, e.location, e.start_date, e.end_date, e.image') // Modifier la sélection des champs
+            ->select('e.id, e.title, e.description, e.location, e.start_date, e.end_date, e.image') // Modifier la sélection des champs
             ->leftJoin('e.creator', 'c')
             ->where('e.privacy = 1')
             ->andWhere('e.deleted IS NULL');
