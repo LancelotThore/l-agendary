@@ -4,7 +4,6 @@ import { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { Navbar } from '@/components/navBar';
 import { Footer } from "@/components/ui/footer";
-import { Toaster } from "@/components/ui/sonner";
 import CookiePopup from '@/components/ui/cookiePopup';
 
 interface RootLayoutClientProps {
@@ -16,7 +15,7 @@ const RootLayoutClient = ({ children }: RootLayoutClientProps) => {
   const noLayoutPages = ['/register', '/login', '/forgot-password', '/reset-password'];
 
   return (
-    <body className='flex flex-col min-h-screen'>
+    <>
       {noLayoutPages.includes(pathname) ? (
         <>{children}</>
       ) : (
@@ -28,11 +27,10 @@ const RootLayoutClient = ({ children }: RootLayoutClientProps) => {
             </div>
           </main>
           <CookiePopup />
-          <Toaster />
           <Footer />
         </>
       )}
-    </body>
+    </>
   );
 };
 

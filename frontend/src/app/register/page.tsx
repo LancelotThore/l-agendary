@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { register } from "@/lib/login";
 import Image from "next/image";
 import { Logo } from "@/components/ui/logos";
+import { toast } from "sonner";
 
 const ralewaySemBold = Raleway({
   subsets: ["latin"],
@@ -42,6 +43,7 @@ export default function RegisterPage() {
         return;
       }
       await register(email, name, firstname, password, router);
+      toast(`Vous vous êtes bien inscrit ${firstname} ${name} !`);
     } catch (err: any) {
       setError(err.message);
     } finally {

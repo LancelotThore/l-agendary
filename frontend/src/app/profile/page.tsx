@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchUser, deleteUserAccount } from "@/lib/data"; // Assurez-vous d'avoir une fonction pour récupérer les informations de l'utilisateur
+import { fetchUser, deleteUserAccount } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,6 +27,7 @@ import EventsTable from '@/components/ui/search/table';
 import Pagination from '@/components/ui/search/pagination';
 import { fetchUserSearchEvents } from "@/lib/data";
 import { Raleway } from "next/font/google";
+import Link from "next/link";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -524,16 +525,17 @@ export default function ProfilePage() {
           </p>
         </div>
       </div>
-      <h2
-        className={`${raleway.className} text-base text-center md:text-3xl mt-20 mb-10`}
-      >
-        Mes événements créés
-      </h2>
-      <div className="w-full mt-10">
-        <Filter variant="noCreator" />
-        <EventsTable events={events} />
-        <div className="mt-5 flex w-full justify-center items-start">
-          <Pagination totalPages={totalPages} />
+      <div>
+        <div className="flex justify-between items-center mt-20 mb-10">
+          <h2 className={`${raleway.className} text-base md:text-3xl`}>Mes événements créés</h2>
+          <Link href="/event/create"><Button>Créer un événement</Button></Link>
+        </div>
+        <div className="w-full mt-10">
+          <Filter variant="noCreator" />
+          <EventsTable events={events} />
+          <div className="mt-5 flex w-full justify-center items-start">
+            <Pagination totalPages={totalPages} />
+          </div>
         </div>
       </div>
     </>

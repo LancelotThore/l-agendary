@@ -37,7 +37,7 @@ function Calendar({ events, user, viewOrModif, setViewOrModif, upEvent }) {
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
       initialView="dayGridMonth"
       locale='fr'
-      locales={[frLocale]} // Ajoutez cette ligne pour inclure la localisation française
+      locales={[frLocale]}
       headerToolbar={{
         left: 'prev,next today',
         center: 'title',
@@ -59,7 +59,7 @@ function Calendar({ events, user, viewOrModif, setViewOrModif, upEvent }) {
         view: viewOrModif,
         setView: setViewOrModif,
         upEvent: upEvent
-      }))} // Transformez les événements pour FullCalendar
+      }))}
     />
   );
 }
