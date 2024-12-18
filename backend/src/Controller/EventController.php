@@ -307,6 +307,7 @@ class EventController extends AbstractController
         $event->setEndDate(new \DateTime($eventData['end_date']));
         $event->setImage($eventData['image']);
         $event->setCreator($user);
+        $event->setToken(bin2hex(random_bytes(10)));
         // Ajouter l'utilisateur créateur à la liste des utilisateurs inscrits
         $userEvent = new UserEvent();
         $userEvent->setToken(bin2hex(random_bytes(32)));
@@ -541,4 +542,31 @@ class EventController extends AbstractController
 
         return $this->json(['status' => 'success']);
     }
+
+/**
+ * @Route("/verifyToken", name="verify-token", methods={"GET"})
+ */
+public function verifyToken(Request $request, EventRepository $eventRepository): JsonResponse
+{
+    $eventId = $request->query->get('eventId');
+    $token = $request->query->get('token');
+
+    if (!$eventId || !$token) {
+        return new JsonResponse(['error' => 'Missing parameters'], 400);
+    }
+
+    $event = $eventRepository->find($eventId);
+
+    if (!$event) {
+        return new JsonResponse(['error' => 'Event not found'], 404);
+    }
+
+    // Assuming the event entity has a method getToken() to retrieve the token from the database
+    $storedToken = $event->getToken();
+
+    if ($storedToken !== $token) {
+        return new JsonResponse(['error' => 'Invalid token'], 400);
+    }
+
+    return new JsonResponse(['status' => 'success', 'token' => $token], 200);
 }

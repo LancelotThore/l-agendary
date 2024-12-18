@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import EventHeader from "@/components/ui/event/eventHeader";
 import EventOrganizer from "@/components/ui/event/eventOrganizer";
@@ -11,14 +11,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { LockOpenIcon, LockClosedIcon, Close } from "@/components/ui/icons";
+import { LockOpenIcon, LockClosedIcon, Close, DeleteIcon, ModifyIcon, PlusCircle } from "@/components/ui/icons";
 import { FormElement } from "@/components/ui/form/formElement";
-import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration } from "@/lib/event";
+import { fetchEvent, updateEvent, joinEvent, isUserRegistered, leaveEvent, deleteEvent, createEventRegistration, verifyToken } from "@/lib/event";
 import { toast } from "sonner";
 import { fetchUser } from "@/lib/data";
 import PageEventSkeleton from "./loading";
 import NotFound from "@/app/not-found";
 import Image from "next/image";
+
 
 export default function Event({ params }) {
   const [id, setId] = useState(null);
@@ -40,33 +41,80 @@ export default function Event({ params }) {
   const [success, setSuccess] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formEmail, setFormEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   const [spinnerActive, setSpinnerActive] = useState(false);
+  const [accessKey, setAccessKey] = useState('');
+  const [isTokenValid, setIsTokenValid] = useState(false);
+
+  const handleAccess = () => {
+    setIsTokenValid(false);
+  };
 
   useEffect(() => {
     if (!params?.id) return;
 
     const fetchData = async () => {
       try {
-        await upEvent();
-
         const currentUser = await fetchUser();
         setUser(currentUser);
 
         if (currentUser) {
           const registered = await isUserRegistered(params.id);
           setIsRegistered(registered.isRegistered);
+          if (!registered.isRegistered) {
+            handleAccess();
+          } else {
+            setIsTokenValid(true);
+          }
+        } else {
+          handleAccess();
         }
+
+        const eventData = await fetchEvent(params.id);
+        setEvent(eventData);
       } catch (error) {
         console.error("Erreur lors du chargement des données :", error);
       }
     };
 
-    fetchData();
+    const verifyAccessToken = async (token) => {
+      try {
+        const response = await verifyToken(params.id, token);
+        if (response.status === 'success') {
+          setIsTokenValid(true);
+          await fetchData();
+        } else {
+          throw new Error('Invalid token');
+        }
+      } catch (error) {
+        console.error("Invalid access token:", error);
+        setErrorMessage('Invalid access key. Please try again.');
+      }
+    };
+
+    const fetchEventData = async () => {
+      const eventData = await fetchEvent(params.id);
+      setEvent(eventData);
+
+      const token = searchParams.get('accessKey');
+
+      if (eventData?.privacy === false) {
+        setIsTokenValid(true);
+        console.log("Event is public, token is valid");
+        fetchData();
+      } else if (!user && token) {
+        verifyAccessToken(token);
+      } else {
+        fetchData();
+      }
+    };
+
+    fetchEventData();
   }, [params?.id]);
 
   const closeModal = () => {
@@ -102,6 +150,31 @@ export default function Event({ params }) {
         setErrorMessage("Erreur lors de l'inscription à l'événement. Veuillez réessayer.");
         setSpinnerActive(false);
       }
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      const eventData = await fetchEvent(params.id);
+      const token = eventData.privacy ? eventData.token : null;
+
+      const shareText = token ? 
+        `Viens rejoindre cet événement ! Voici la clé d'accès : ${token}` : 
+        `Viens rejoindre cet événement !`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: eventData.title,
+          text: shareText,
+          url: window.location.href,
+        })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing', error));
+      } else {
+        alert('Web Share API is not supported in your browser.');
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération du token :", error);
     }
   };
 
@@ -255,12 +328,7 @@ export default function Event({ params }) {
 
     // Delete previous image
 
-    console.log(inputImage);
-    
-    let newImage = image;
-
-
-    if (inputImage != null ) {
+    if (inputImage) {
       try {
         const response = await fetch(`/api/upload/event_pic?fileName=${image}`, {
           method: "DELETE",
@@ -273,24 +341,26 @@ export default function Event({ params }) {
         setError(err.message);
         return;
       }
-
-
-      const formData = new FormData();
-      formData.append("file", inputImage);
-
-      try {
-        const response = await fetch("/api/upload/event_pic", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await response.json();
-        newImage = data.fileName;
-        console.log(data);
-      } catch (err) {
-        setError("Erreur lors de la mise à jour de l'image de l'event");
-        return;
-      }
     }
+
+    const formData = new FormData();
+    formData.append("file", inputImage);
+
+    let newImage = image;
+
+    try {
+      const response = await fetch("/api/upload/event_pic", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      newImage = data.fileName;
+      console.log(data);
+    } catch (err) {
+      setError("Erreur lors de la mise à jour de l'image de l'event");
+      return;
+    }
+
 
 
     try {
@@ -303,9 +373,29 @@ export default function Event({ params }) {
     }
   };
 
+  const handleSubmitToken = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSpinnerActive(true);
+    setErrorMessage('');
+
+    try {
+      const response = await verifyToken(params.id, accessKey);
+      if (response.status === 'success') {
+        setIsTokenValid(true);
+        await upEvent();
+      } else {
+        setErrorMessage('Invalid access key. Please try again.');
+        setSpinnerActive(false);
+      }
+    } catch (error) {
+      setErrorMessage('Invalid access key. Please try again.');
+      setSpinnerActive(false);
+    }
+  };
+
   return (
     <>
-      {event ? (
+      {isTokenValid || (event && event.privacy === true) ? (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
           <Image
             src={`/uploads/event_pictures/${event.image}`}
@@ -314,231 +404,257 @@ export default function Event({ params }) {
             width={500}
             height={300}
           />
+        
           <div className="lg:col-span-3">
             <EventHeader event={event} />
           </div>
           <div className="lg:col-span-4">
             <EventOrganizer organisateur={event.creator} />
           </div>
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3 xl:col-span-4">
             <EventDescription description={event.description} />
           </div>
-          <div className="lg:col-span-3">
-            <EventShare />
+          <div className="lg:col-span-4 xl:col-span-3">
+            <EventShare handleShare={handleShare} token={event?.privacy == false ? event.token : null} />
           </div>
           <div className="flex flex-col items-center justify-center gap-4 lg:col-span-7">
-            <Button variant={"accent"} className="md:hidden" size={"lg"}>
+            <Button className="md:hidden" size={"lg"} onClick={handleShare}>
               Partager
             </Button>
-            {user && user.id !== event.creator.id && (
-              isRegistered ? (
-                <Button
-                  variant="destructive"
-                  size="lg"
-                  onClick={handleLeaveEvent}
-                >
-                  Quitter l'événement
-                </Button>
-              ) : (
-                <Button
-                  variant="accent"
-                  size="lg"
-                  onClick={handleJoinEvent}
-                >
-                  Rejoindre l'événement
-                </Button>
-              )
-            )}
-            {!user && (
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center text-xs">
+          <div className="flex mt-4 w-full max-w-[700px] gap-4">
+          <Link href="/register">
+              <Button size="default" className="w-full">S'enregistrer</Button>
+            </Link>
+            <Link href="/login">
+              <Button size="default" className="w-full">Connexion</Button>
+            </Link>
+          </div>
+          <div className="flex justify-center items-flex-start flex-col shadow-md mt-5 p-4 bg-secondary border border-FormBorder rounded-md md:p-8 w-full max-w-[700px]">
+            <h2 className="text-base md:text-lg text-start mt-5">
+              Vous n'avez pas accès à cet événement,<br /> veuillez entrer la clé d'accès pour y participer.
+            </h2>
+      
+            <form onSubmit={handleSubmitToken} className="flex flex-col items-center mt-5 w-full">
+              <Input
+                id="access"
+                placeholder="Clé d'accès"
+                type="text"
+                value={accessKey}
+                onChange={(e) => setAccessKey(e.target.value)}
+                className="text-xs placeholder:text-FormBorder border-FormBorder md:text-base mb-4 w-full"
+              />
+              <Button size="default" className="w-full">
+                {spinnerActive && (
+                  <Image
+                    width={20}
+                    height={20}
+                    className="animate-spin h-5 w-5 mr-3"
+                    src="/spinner.svg"
+                    alt="Spinner"
+                  />
+                )}
+                Valider
+              </Button>
+            </form>
+      
+            {errorMessage && <p className="text-red-500 mt-2 text-center">{errorMessage}</p>}
+          </div>
+        </div>
+      )}
+
+      {user && (isTokenValid || (event && event.privacy === true)) && (
+        <div className="sticky bottom-0 flex justify-center items-center gap-4 p-4">
+          {user.id !== event.creator.id ? (
+            isRegistered ? (
+              <Button
+                variant="destructive"
+                size="lg"
+                onClick={handleLeaveEvent}
+              >
+                <Close className="w-6 h-6" />
+              </Button>
+            ) : (
               <Button
                 variant="accent"
                 size="lg"
                 onClick={handleJoinEvent}
               >
-                Rejoindre l'événement
+                <PlusCircle className="w-6 h-6" />
               </Button>
-            )}
-
-            {user && user.id === event.creator.id && (
-              <>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button size={"lg"} className="hover:bg-primary/70">
-                      Modifier l'évènement
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[650px]">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl text-center">Modifier l'évènement</DialogTitle>
-                    </DialogHeader>
-                    <div className="sm:px-10 px-0 h-[516px] overflow-y-scroll">
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="title" className="text-left">
-                          Titre de l’événement
-                        </label>
-                        <Input
-                          id="title"
-                          name="title"
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          className="col-span-3"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="descrition" className="text-left">
-                          Description
-                        </label>
-                        <textarea
-                          className="col-span-3 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          id="description"
-                          maxLength={700}
-                          rows={5}
-                          value={description}
-                          name="description"
-                          onChange={(e) => setDescription(e.target.value)}
-                        />
-                      </div>
-                      <div className="flex flex-col gap mt-2">
-                        <label htmlFor="etat" className="text-left">
-                          Etat
-                        </label>
-                        <div className="flex flex-row gap-4">
-                          <div className="flex flex-row gap-1">
-                            <input
-                              id="etat"
-                              type="radio"
-                              name="etat"
-                              className="col-span-3"
-                              defaultChecked={!etat}
-                              onChange={() => setEtat(false)}
-                            />
-                            <Button variant={"private"} size="sm">
-                              Privé
-                              <LockClosedIcon className="w-4 ml-2" />
-                            </Button>
-                          </div>
-                          <div className="flex flex-row gap-1">
-                            <input
-                              id="etat"
-                              type="radio"
-                              name="etat"
-                              className="col-span-3"
-                              defaultChecked={etat}
-                              onChange={() => setEtat(true)}
-                            />
-                            <Button variant={"public"} size="sm">
-                              Public
-                              <LockOpenIcon className="w-4 ml-2" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="location" className="text-left">
-                          Lieu
-                        </label>
-                        <Input
-                          id="location"
-                          name="location"
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                          className="col-span-3"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="startdate" className="text-left">
-                          Date de début
-                        </label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <Input
-                            id="startdate"
-                            type="date"
-                            name="startdate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
+            )
+          ) : (
+            <>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size={"lg"} className="hover:bg-primary/70">
+                    <ModifyIcon className="w-6 h-6"/>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[650px]">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl text-center">Modifier l'événement</DialogTitle>
+                  </DialogHeader>
+                  <div className="sm:px-10 px-0 h-[516px] overflow-y-scroll">
+                    <div className="flex flex-col gap-1 mt-2">
+                      <label htmlFor="title" className="text-left">
+                        Titre de l’événement
+                      </label>
+                      <Input
+                        id="title"
+                        name="title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1 mt-2">
+                      <label htmlFor="descrition" className="text-left">
+                        Description
+                      </label>
+                      <Input
+                        id="title"
+                        name="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="flex flex-col gap mt-2">
+                      <label htmlFor="etat" className="text-left">
+                        Etat
+                      </label>
+                      <div className="flex flex-row gap-4">
+                        <div className="flex flex-row gap-1">
+                          <input
+                            id="etat"
+                            type="radio"
+                            name="etat"
                             className="col-span-3"
+                            defaultChecked={!etat}
+                            onChange={() => setEtat(false)}
                           />
-                          <Input
-                            id="starthour"
-                            type="time"
-                            name="startdate"
-                            value={startHour}
-                            onChange={(e) => setStartHour(e.target.value)}
+                          <Button variant={"private"} size="sm">
+                            Privé
+                            <LockClosedIcon className="w-4 ml-2" />
+                          </Button>
+                        </div>
+                        <div className="flex flex-row gap-1">
+                          <input
+                            id="etat"
+                            type="radio"
+                            name="etat"
                             className="col-span-3"
+                            defaultChecked={etat}
+                            onChange={() => setEtat(true)}
                           />
+                          <Button variant={"public"} size="sm">
+                            Public
+                            <LockOpenIcon className="w-4 ml-2" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="enddate" className="text-left">
-                          Date de fin
-                        </label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <Input
-                            id="enddate"
-                            type="date"
-                            name="enddate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                          />
-                          <Input
-                            id="endhour"
-                            type="time"
-                            name="enddate"
-                            value={endHour}
-                            onChange={(e) => setEndHour(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <label htmlFor="image" className="text-left">
-                          Image de couverture
-                        </label>
-                        {typeof image === "string" && (
-                          <Image src={`/uploads/event_pictures/${image}`} alt="Image de couverture événement" className="w-32 h-32 rounded" width={512} height={512}/>
-                        )}
+                    </div>
+                    <div className="flex flex-col gap-1 mt-2">
+                      <label htmlFor="location" className="text-left">
+                        Lieu
+                      </label>
+                      <Input
+                        id="location"
+                        name="location"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1 mt-2">
+                      <label htmlFor="startdate" className="text-left">
+                        Date de début
+                      </label>
+                      <div className="grid grid-cols-2 gap-4">
                         <Input
-                          id="image"
-                          name="image"
-                          type="file"
+                          id="startdate"
+                          type="date"
+                          name="startdate"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
                           className="col-span-3"
-                          onChange={(e) => setInputImage(e.target.files[0])}
+                        />
+                        <Input
+                          id="starthour"
+                          type="time"
+                          name="startdate"
+                          value={startHour}
+                          onChange={(e) => setStartHour(e.target.value)}
+                          className="col-span-3"
                         />
                       </div>
                     </div>
-                    <DialogFooter>
-                      <span className={`text-center pb-3 ${error == "" ? 'text-green-500' : 'text-red-500'}`}>{success}{error}</span>
-                      <Button variant={"accent"} className="text-center md:mx-auto" onClick={handleEditEvent} size={"lg"}>Mettre à jour</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                    <div className="flex flex-col gap-1 mt-2">
+                      <label htmlFor="enddate" className="text-left">
+                        Date de fin
+                      </label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <Input
+                          id="enddate"
+                          type="date"
+                          name="enddate"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                        />
+                        <Input
+                          id="endhour"
+                          type="time"
+                          name="enddate"
+                          value={endHour}
+                          onChange={(e) => setEndHour(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1 mt-2">
+                      <label htmlFor="image" className="text-left">
+                        Image de couverture
+                      </label>
+                      {typeof image === "string" && (
+                        <Image src={`/uploads/event_pictures/${image}`} alt="Image de couverture événement" className="w-32 h-32 rounded" width={512} height={512} />
+                      )}
+                      <Input
+                        id="image"
+                        name="image"
+                        type="file"
+                        className="col-span-3"
+                        onChange={(e) => setInputImage(e.target.files[0])}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <span className={`text-center pb-3 ${error == "" ? 'text-green-500' : 'text-red-500'}`}>{success}{error}</span>
+                    <Button variant={"accent"} className="text-center md:mx-auto" onClick={handleEditEvent} size={"lg"}>Mettre à jour</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
 
-                <AlertDialog>
-                  <AlertDialogTrigger><Button variant={"destructive"} size={"lg"}>Supprimer l'événement</Button></AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer cet événément ?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Cette action ne peut pas pas être annulée. Toutes les données associées à cet événement seront supprimées de manière permanente.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Annuler</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDeleteEvent}>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </>
-            )}
-          </div>
-        </div>
-      ) : (
-        <>
-          {loading ? (
-            <PageEventSkeleton />
-          ) : (
-            <NotFound />
+              <AlertDialog>
+                <AlertDialogTrigger><Button variant={"destructive"} size={"lg"}><DeleteIcon className="w-6 h-6"/></Button></AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer cet événément ?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Cette action ne peut pas pas être annulée. Toutes les données associées à cet événement seront supprimées de manière permanente.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteEvent}>Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
           )}
-        </>
+        </div>
       )}
 
       {isModalOpen && (
@@ -546,7 +662,7 @@ export default function Event({ params }) {
           <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
             <Button onClick={closeModal} variant={"transparent"} size={"icon"} className="absolute top-2 right-2">
               <span className="sr-only">Close menu</span>
-              <Close className="w-5"/>
+              <Close className="w-5" />
             </Button>
             <h2 className="text-lg font-bold ">Connexion à l'application</h2>
             <p className="">En vous connectant, vous pouvez vous inscrire à plusieurs événements et les suivre facilement.</p>
@@ -581,6 +697,10 @@ export default function Event({ params }) {
       {isSuccessModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-secondary p-6 rounded-lg shadow-lg w-96 flex gap-4 flex-col relative">
+            <Button onClick={closeModal}>
+              <span className="sr-only">Close menu</span>
+              <Close className="w-5" />
+            </Button>
             <h2 className="text-lg font-bold ">Inscription réussie</h2>
             <p className="">Votre inscription a bien été prise en compte, vous allez recevoir un mail de confirmation.</p>
             <Button onClick={closeSuccessModal}>Fermer</Button>

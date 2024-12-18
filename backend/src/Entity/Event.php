@@ -44,6 +44,9 @@ class Event
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
+    #[ORM\Column(length: 64)]
+    private ?string $token = null;
+
     /**
      * @var Collection<int, UserEvent>
      */
@@ -156,6 +159,18 @@ class Event
     public function setImage(string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): static
+    {
+        $this->token = $token;
 
         return $this;
     }

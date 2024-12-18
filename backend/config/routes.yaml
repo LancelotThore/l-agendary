@@ -98,6 +98,10 @@ unique_user_names:
     path: /api/unique-user-names
     controller: App\Controller\UserController::getUniqueUserNames
 
+verify_token:
+    path: /api/verifyToken
+    controller: App\Controller\EventController::verifyToken
+
 # Users
 
     

@@ -336,3 +336,19 @@ export async function removeRegistration(token: string) {
       throw error;
   }
 }
+
+export async function verifyToken(eventId: string, token: string) {
+  try {
+    const response = await fetch(`https://localhost:443/api/verifyToken?eventId=${eventId}&token=${token}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Invalid token');
+    }
+    const data = await response.json();
+    console.log("Token verification response data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    throw error;
+  }
+}
