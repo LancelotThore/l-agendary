@@ -399,8 +399,8 @@ class UserController extends AbstractController
             return [
                 'id' => $event->getId(),
                 'title' => $event->getTitle(),
-                'startDate' => $event->getStartDate()->format(\DateTime::ATOM),
-                'endDate' => $event->getEndDate()->format(\DateTime::ATOM),
+                'start_date' => $event->getStartDate()->format(\DateTime::ATOM),
+                'end_date' => $event->getEndDate()->format(\DateTime::ATOM),
                 'privacy' => $event->isPrivacy(),
                 'location' => $event->getLocation(),
                 'description' => $event->getDescription(),

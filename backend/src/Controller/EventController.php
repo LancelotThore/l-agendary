@@ -36,6 +36,7 @@ class EventController extends AbstractController
     {
         $highlighted_events = $entityManager->getRepository(Event::class)
         ->createQueryBuilder('e')
+        ->select('e.id, e.title, e.location, e.start_date, e.end_date, e.image')
         ->leftJoin('e.userEvents', 'ue', 'WITH', 'ue.validation = 1') // Ajouter une condition au join
         ->groupBy('e.id')
         ->where('e.privacy = 1')
@@ -142,6 +143,7 @@ class EventController extends AbstractController
 
         $queryBuilder = $entityManager->getRepository(Event::class)
             ->createQueryBuilder('e')
+            ->select('e.id, e.title, e.location, e.start_date, e.end_date, e.image') // Modifier la sélection des champs
             ->leftJoin('e.creator', 'c')
             ->where('e.privacy = 1')
             ->andWhere('e.deleted IS NULL');
@@ -188,14 +190,9 @@ class EventController extends AbstractController
 
         $events = $queryBuilder->getQuery()->getResult();
 
-        $serializer = $this->container->get('serializer');
-        $events_json = $serializer->serialize($events, 'json', ['circular_reference_handler' => function ($object) {
-            return $object->getId();
-        }]);
-
         return $this->json([
             'total' => $totalEvents,
-            'events' => json_decode($events_json, true)
+            'events' => $events
         ]);
     }
 
