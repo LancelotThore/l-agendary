@@ -76,10 +76,10 @@ export default function Event({ params }) {
 
         const eventData = await fetchEvent(params.id);
         if (!eventData) {
-          setLoading(false);
           setEvent(null);
           return;
         }
+        setLoading(false);
         setEvent(eventData);
       } catch (error) {
         console.error("Erreur lors du chargement des données :", error);
@@ -104,9 +104,9 @@ export default function Event({ params }) {
     const fetchEventData = async () => {
       const eventData = await fetchEvent(params.id);
       if (!eventData) {
-        setLoading(false);
         return;
       }
+      setLoading(false);
       setEvent(eventData);
 
       const token = searchParams.get('accessKey');
@@ -393,14 +393,14 @@ export default function Event({ params }) {
     }
   };
 
-  // if (loading) {
-  //   return <PageEventSkeleton />;
-  // }
-
+  if (loading) {
+    return <PageEventSkeleton />;
+  }
+  
   if (!event || event.error) {
     return <NotFound />;
   }
-
+  
   return (
     <>
       { isTokenValid || (event && event.privacy === true) ? (

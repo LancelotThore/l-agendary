@@ -13,7 +13,7 @@ import frLocale from '@fullcalendar/core/locales/fr';
 import { fetchUserEvents } from "@/lib/data"; // Importez la nouvelle fonction
 import Link from "next/link";
 import { StarIcon, User, LockOpenIcon, LockClosedIcon, LocationOn, PeopleFill, PenIcon, EyeIcon } from "@/components/ui/icons";
-import {Popover, PopoverTrigger, PopoverContent} from "@nextui-org/react";
+import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/react";
 import { Button } from "../../components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fetchEvent, updateEvent } from "@/lib/event";
@@ -30,21 +30,32 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
-function Calendar({ events, user, viewOrModif, setViewOrModif, upEvent }) {
+function Calendar({ events, user, viewOrModif, setViewOrModif, upEvent }: { events: any; user: any; viewOrModif: any; setViewOrModif: any; upEvent: any; }) {
+  const [isMobile, setIsMobile] = useState<boolean | null>(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
       initialView="dayGridMonth"
-      locale='fr'
+      locale="fr"
       locales={[frLocale]}
       headerToolbar={{
         left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+        center: isMobile ? '' : 'title', // Cache "center" en mode mobile
+        right: isMobile ? '' : 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
       }}
       eventContent={RenderEventContent}
-      events={events.map(event => ({
+      events={events.map((event) => ({
         title: event.title,
         start: event.startDate.date,
         end: event.endDate.date,
@@ -58,7 +69,7 @@ function Calendar({ events, user, viewOrModif, setViewOrModif, upEvent }) {
         userConnected: user.email,
         view: viewOrModif,
         setView: setViewOrModif,
-        upEvent: upEvent
+        upEvent: upEvent,
       }))}
     />
   );
@@ -83,7 +94,7 @@ function extractDateAndTime(isoString) {
 }
 
 
-function RenderEventContent(eventInfo) {
+function RenderEventContent(eventInfo: any) {
   let titleEvent = eventInfo.event.title;
   let creatorEmail = eventInfo.event.extendedProps.creator;
   let userAuth = eventInfo.event.extendedProps.userConnected;
@@ -134,7 +145,7 @@ function RenderEventContent(eventInfo) {
   );
 }
 
-function InfoPopUp({ eventInfo, view }) {
+function InfoPopUp({ eventInfo, view }: { eventInfo: any; view: any; }) {
   let titleEvent = eventInfo.event.title;
   let creatorEmail = eventInfo.event.extendedProps.creator;
   let userAuth = eventInfo.event.extendedProps.userConnected;
@@ -178,11 +189,9 @@ function InfoPopUp({ eventInfo, view }) {
       </div>
 
       <div className="flex items-start gap-2 mt-4">
-        <Button size="default" className="bg-black text-white hover:bg-gray-700">
-          <Link target="_blank" href={`event/${eventInfo.event.extendedProps.idEvent}`}>
-            <EyeIcon className="w-5 h-5" />
-          </Link>
-        </Button>
+        <Link target="_blank" href={`event/${eventInfo.event.extendedProps.idEvent}`} className="bg-black text-white hover:bg-gray-700 px-4 py-2 rounded-md">
+          <EyeIcon className="w-5 h-5" />
+        </Link>
 
         {creatorEmail === userAuth && (
           <Button size="default" className="bg-black text-white hover:bg-gray-700" onClick={view}>
@@ -194,10 +203,63 @@ function InfoPopUp({ eventInfo, view }) {
   );
 }
 
-
-function ModificationEvent({ view, setView, title, setTitle, description,
-  setDescription, etat, setEtat, location, setLocation, startDate, setStartDate, startHour, setStartHour,
-  endDate, setEndDate, endHour, setEndHour, image, success, error, handleEditEvent, setInputImage }) {
+function ModificationEvent({
+  view,
+  setView,
+  title,
+  setTitle,
+  description,
+  setDescription,
+  etat,
+  setEtat,
+  location,
+  setLocation,
+  startDate,
+  setStartDate,
+  startHour,
+  setStartHour,
+  endDate,
+  setEndDate,
+  endHour,
+  setEndHour,
+  image,
+  success,
+  error,
+  handleEditEvent,
+  setInputImage,
+  initialData
+}: {
+  view: any;
+  setView: string | null;
+  title: string | null;
+  setTitle: any;
+  description: string | null;
+  setDescription: any;
+  etat: boolean | null;
+  setEtat: any;
+  location: string | null;
+  setLocation: any;
+  startDate: string | null;
+  setStartDate: any;
+  startHour: string | null;
+  setStartHour: any;
+  endDate: string | null;
+  setEndDate: any;
+  endHour: string | null;
+  setEndHour: any;
+  image: string | null;
+  success: string | null;
+  error: string | null;
+  handleEditEvent: any;
+  setInputImage: any;
+  initialData: any;
+}) {
+  // Synchronise les données initiales lorsque le composant est monté ou que `initialData` change
+  useEffect(() => {
+    if (initialData) {
+      setEtat(initialData.etat || false);
+    }
+  }, [initialData, view]);
 
   return (
     <Dialog open={view} onOpenChange={setView}>
@@ -219,11 +281,11 @@ function ModificationEvent({ view, setView, title, setTitle, description,
             />
           </div>
           <div className="flex flex-col gap-1 mt-2">
-            <label htmlFor="descrition" className="text-left">
+            <label htmlFor="description" className="text-left">
               Description
             </label>
             <Input
-              id="title"
+              id="description"
               name="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -237,11 +299,11 @@ function ModificationEvent({ view, setView, title, setTitle, description,
             <div className="flex flex-row gap-4">
               <div className="flex flex-row gap-1">
                 <input
-                  id="etat"
+                  id="etat-private"
                   type="radio"
                   name="etat"
                   className="col-span-3"
-                  defaultChecked={!etat}
+                  checked={!etat}
                   onChange={() => setEtat(false)}
                 />
                 <Button variant={"private"} size="sm">
@@ -251,11 +313,11 @@ function ModificationEvent({ view, setView, title, setTitle, description,
               </div>
               <div className="flex flex-row gap-1">
                 <input
-                  id="etat"
+                  id="etat-public"
                   type="radio"
                   name="etat"
                   className="col-span-3"
-                  defaultChecked={etat}
+                  checked={etat}
                   onChange={() => setEtat(true)}
                 />
                 <Button variant={"public"} size="sm">
@@ -293,7 +355,7 @@ function ModificationEvent({ view, setView, title, setTitle, description,
               <Input
                 id="starthour"
                 type="time"
-                name="startdate"
+                name="starthour"
                 value={startHour}
                 onChange={(e) => setStartHour(e.target.value)}
                 className="col-span-3"
@@ -315,7 +377,7 @@ function ModificationEvent({ view, setView, title, setTitle, description,
               <Input
                 id="endhour"
                 type="time"
-                name="enddate"
+                name="endhour"
                 value={endHour}
                 onChange={(e) => setEndHour(e.target.value)}
               />
@@ -338,8 +400,18 @@ function ModificationEvent({ view, setView, title, setTitle, description,
           </div>
         </div>
         <DialogFooter>
-          <span className={`text-center pb-3 ${error == "" ? 'text-green-500' : 'text-red-500'}`}>{success}{error}</span>
-          <Button variant={"accent"} className="text-center md:mx-auto" size={"lg"} onClick={handleEditEvent}>Mettre à jour</Button>
+          <span className={`text-center pb-3 ${error === "" ? "text-green-500" : "text-red-500"}`}>
+            {success}
+            {error}
+          </span>
+          <Button
+            variant={"accent"}
+            className="text-center md:mx-auto"
+            size={"lg"}
+            onClick={handleEditEvent}
+          >
+            Mettre à jour
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -347,26 +419,27 @@ function ModificationEvent({ view, setView, title, setTitle, description,
 }
 
 
-export default function Home() {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState("");
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [viewOrModif, setViewOrModif] = useState(false);
 
-  const [id, setId] = useState(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [etat, setEtat] = useState(null);
-  const [location, setLocation] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [startHour, setStartHour] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [endHour, setEndHour] = useState("");
-  const [image, setImage] = useState("");
-  const [inputImage, setInputImage] = useState(null);
-  const [success, setSuccess] = useState("");
-  const [event, setEvent] = useState(null);
+export default function Home() {
+  const [user, setUser] = useState<any>(null);
+  const [error, setError] = useState<string | null>("");
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean | null>(true);
+  const [viewOrModif, setViewOrModif] = useState<boolean | null>(false);
+
+  const [id, setId] = useState<number | null>(null);
+  const [title, setTitle] = useState<string | null>("");
+  const [description, setDescription] = useState<string | null>("");
+  const [etat, setEtat] = useState<any>(null);
+  const [location, setLocation] = useState<string | null>("");
+  const [startDate, setStartDate] = useState<string | null>("");
+  const [startHour, setStartHour] = useState<string | null>("");
+  const [endDate, setEndDate] = useState<string | null>("");
+  const [endHour, setEndHour] = useState<string | null>("");
+  const [image, setImage] = useState<string | null>("");
+  const [inputImage, setInputImage] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>("");
+  const [event, setEvent] = useState<any>(null);
 
   const upEvent = async (id) => {
     const dataEvents = await fetchEvent(id);
@@ -503,6 +576,7 @@ export default function Home() {
   }
 
   const eventProps = {
+    handleEditEvent,
     id,
     setId,
     event,
@@ -527,9 +601,7 @@ export default function Home() {
     setImage,
     setInputImage,
     success,
-    error,
-    handleEditEvent,
-    setInputImage
+    error
   };
 
   return (
