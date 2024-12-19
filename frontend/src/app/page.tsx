@@ -123,7 +123,7 @@ export default function Home() {
               ))}
             </ul>
           ) : (
-            <p className="text-center">Il n'y a pas d'évènement disponible pour le moment...</p>
+            <p className="text-center">Il n'y a pas d'évènements populaires pour le moment...</p>
           )}
         </>
       )}

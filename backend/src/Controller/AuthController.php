@@ -232,12 +232,37 @@ public function register(Request $request): JsonResponse
         $resetLink = 'https://localhost:3000/reset-password?token=' . $resetToken;
 
 
+        // URL du logo
+        $logoUrl = 'https://picsum.photos/200/300';
+
+        // Corps de l'email
+        $emailContent = '
+            <html>
+            <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: black; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                    <div style="text-align: center;">
+                        <img src="' . $logoUrl . '" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
+                    </div>
+                    <h2 style="color: #333333;">Réinitialisation de votre mot de passe</h2>
+                    <h3>Bonjour ' . htmlspecialchars($user->getFirstname()) . ',</h3>
+                    <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe :</p>
+                    <p style="text-align: center;">
+                        <a href="' . $resetLink . '" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #007bff; border-radius: 5px; text-decoration: none;">Réinitialiser le mot de passe</a>
+                    </p>
+                    <p>Si vous n\'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.</p>
+                    <p>Merci,</p>
+                    <p>L\'équipe de l\'Agendary</p>
+                </div>
+            </body>
+            </html>
+        ';
+
         // Envoyer l'email
         $email = (new Email())
             ->from('your_email@example.com')
             ->to($user->getEmail())
             ->subject('Password Reset Request')
-            ->html('<p>To reset your password, please click on the following link: <a href="' . $resetLink . '">Reset Password</a></p>');
+            ->html($emailContent);
 
         $this->mailer->send($email);
 
@@ -260,6 +285,12 @@ public function register(Request $request): JsonResponse
             // Vérifier si le token est valide et a le bon claim
             if (!$data || $data['purpose'] !== 'password_reset') {
                 return new JsonResponse(['error' => 'Invalid or expired token'], 400);
+            }
+
+            // Rechercher l'utilisateur associé au token
+            $user = $this->getUserRepository()->findOneBy(['email' => $data['username']]);
+            if (!$user) {
+                return new JsonResponse(['error' => 'User not found'], 404);
             }
 
             return new JsonResponse(['message' => 'Token is valid'], 200);

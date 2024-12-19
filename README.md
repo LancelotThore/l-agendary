@@ -39,20 +39,6 @@
 
 # Fonctionnalités Implémentées
 
-### Période : 09/12/2024 - 13/12/2024
-- Amélioration du Calendrier
-   - Ajout PopUp au click sur l'évenement
-   - Possibilité de modifier l'évenenment directement via le calendrier
-   - Possibilité de se rendre sur la page via le calendrier
-   - Différence visuelle si l'évenement est le tien ou pas
-- Amélioration du responsive de la navBar
-- Amélioration du systeme de connexion
-   - Mot de passe oublié
-   - Confirmation de l'inscription à l'app par email
-   - Gestion de la suppression du compte
-   - Vérification de la complexité du mot de passe
-
-
 ### Période : 02/12/2024 - 06/12/2024
 - Ajout des événements auquel l'utilisateur connecté participe et si il est le créateur sur le calendrier
 - Ajout de l'inscription par email avec désinscription

@@ -505,6 +505,8 @@ export default function ProfilePage() {
           </DialogContent>
         </Dialog>
 
+
+
         <div className="flex flex-col overflow-hidden h-fit lg:h-full w-full">
           <h4 className="hidden md:block mt-2.5 mb-8 font-bold text-xl md:text-2xl">
             Mon Profil

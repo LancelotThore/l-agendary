@@ -70,7 +70,7 @@ export function Navbar() {
                         href="/search"
                         className="hidden lg:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
                     >
-                        <span className='lg:hidden xl:block'>Rechercher</span>
+                        <span>Rechercher</span>
                         <Search className="w-5 h-5 min-w-5" aria-hidden="true" />
                     </Link>
                     {user && (
@@ -79,14 +79,14 @@ export function Navbar() {
                                 href="/event/create"
                                 className="hidden lg:flex items-center space-x-2 py-2 px-3 rounded hover:bg-background font-medium text-base"
                             >
-                                <span className='lg:hidden xl:block'>Créer un événement</span>
+                                <span>Créer un événement</span>
                                 <PlusCircle className="w-5 h-5 min-w-5" aria-hidden="true" />
                             </Link>
                             <Link
                                 href="/calendar"
                                 className="hidden lg:flex items-center space-x-2 block py-2 px-3 rounded hover:bg-background font-medium text-base"
                             >
-                                <span className='lg:hidden xl:block'>Calendrier</span>
+                                <span>Calendrier</span>
                                 <CalendarIcon className="w-5 h-5 min-w-5" aria-hidden="true" />
                             </Link>
                         </>
