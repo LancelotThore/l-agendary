@@ -20,6 +20,7 @@ import PageEventSkeleton from "./loading";
 import NotFound from "@/app/not-found";
 import Image from "next/image";
 
+
 export default function Event({ params }) {
   const [id, setId] = useState(null);
   const [title, setTitle] = useState("");
@@ -75,11 +76,6 @@ export default function Event({ params }) {
         }
 
         const eventData = await fetchEvent(params.id);
-        if (!eventData) {
-          setEvent(null);
-          return;
-        }
-        setLoading(false);
         setEvent(eventData);
       } catch (error) {
         console.error("Erreur lors du chargement des données :", error);
@@ -103,16 +99,13 @@ export default function Event({ params }) {
 
     const fetchEventData = async () => {
       const eventData = await fetchEvent(params.id);
-      if (!eventData) {
-        return;
-      }
-      setLoading(false);
       setEvent(eventData);
 
       const token = searchParams.get('accessKey');
 
       if (eventData?.privacy === false) {
         setIsTokenValid(true);
+        console.log("Event is public, token is valid");
         fetchData();
       } else if (!user && token) {
         verifyAccessToken(token);
@@ -165,8 +158,8 @@ export default function Event({ params }) {
       const eventData = await fetchEvent(params.id);
       const token = eventData.privacy ? eventData.token : null;
 
-      const shareText = token ? 
-        `Viens rejoindre cet événement ! Voici la clé d'accès : ${token}` : 
+      const shareText = token ?
+        `Viens rejoindre cet événement ! Voici la clé d'accès : ${token}` :
         `Viens rejoindre cet événement !`;
 
       if (navigator.share) {
@@ -255,7 +248,7 @@ export default function Event({ params }) {
   }
 
   // Fonction pour mettre à jour l'image de l'event
-  const handleInputImage = (file) => {
+  const handleInputImage = (file: any) => {
     if (file && file.type.startsWith("image/")) {
       setInputImage(file);
       setError("");
@@ -305,11 +298,11 @@ export default function Event({ params }) {
       return `${date}T${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
     };
 
-    const startHourInt = parseInt(startHour.split(":")[0], 10);
-    const startMinutesInt = parseInt(startHour.split(":")[1], 10);
+    const startHourInt = parseInt(startHour.split(":"[0]), 10);
+    const startMinutesInt = parseInt(startHour.split(":"[1]), 10);
 
-    const endHourInt = parseInt(endHour.split(":")[0], 10);
-    const endMinutesInt = parseInt(endHour.split(":")[1], 10);
+    const endHourInt = parseInt(endHour.split(":"[0]), 10);
+    const endMinutesInt = parseInt(endHour.split(":"[1]), 10);
 
     const normalizedStart = normalizeDateTime(startDate, startHourInt + 1, startMinutesInt);
     const normalizedEnd = normalizeDateTime(endDate, endHourInt + 1, endMinutesInt);
@@ -328,6 +321,11 @@ export default function Event({ params }) {
       return;
     }
 
+    // if (!inputImage) {
+    //   setError("Veuillez sélectionner une image");
+    //   return;
+    // }
+
     // Delete previous image
 
     if (inputImage) {
@@ -339,7 +337,7 @@ export default function Event({ params }) {
         if (!response.ok) {
           throw new Error(data.error || "Erreur lors de la suppression de l'ancienne image");
         }
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
         return;
       }
@@ -363,6 +361,8 @@ export default function Event({ params }) {
       return;
     }
 
+
+
     try {
       await updateEvent(id, title, description, location, etat, combinedStartDateTime, combinedEndDateTime, newImage);
       upEvent();
@@ -373,7 +373,7 @@ export default function Event({ params }) {
     }
   };
 
-  const handleSubmitToken = async (event) => {
+  const handleSubmitToken = async (event: React.FormEvent) => {
     event.preventDefault();
     setSpinnerActive(true);
     setErrorMessage('');
@@ -393,18 +393,9 @@ export default function Event({ params }) {
     }
   };
 
-  if (loading) {
-    return <PageEventSkeleton />;
-  }
-  
-  if (!event || event.error) {
-    return <NotFound />;
-  }
-  
   return (
     <>
-      { isTokenValid || (event && event.privacy === true) ? (
-        <>
+      {isTokenValid || (event && event.privacy === true) ? (
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-7">
           <Image
             src={`/uploads/event_pictures/${event.image}`}
@@ -413,7 +404,7 @@ export default function Event({ params }) {
             width={500}
             height={300}
           />
-        
+
           <div className="lg:col-span-3">
             <EventHeader event={event} />
           </div>
@@ -424,7 +415,7 @@ export default function Event({ params }) {
             <EventDescription description={event.description} />
           </div>
           <div className="lg:col-span-4 xl:col-span-3">
-            <EventShare handleShare={handleShare} token={event?.privacy == false ? event.token : null} eventName={event.title}/>
+            <EventShare handleShare={handleShare} token={event?.privacy == false ? event.token : null} />
           </div>
           <div className="flex flex-col items-center justify-center gap-4 lg:col-span-7">
             <Button className="md:hidden" size={"lg"} onClick={handleShare}>
@@ -432,14 +423,21 @@ export default function Event({ params }) {
             </Button>
           </div>
         </div>
-        </>
       ) : (
         <div className="flex flex-col items-center text-xs">
+          <div className="flex mt-4 w-full max-w-[700px] gap-4">
+            <Link href="/register">
+              <Button size="default" className="w-full">S'enregistrer</Button>
+            </Link>
+            <Link href="/login">
+              <Button size="default" className="w-full">Connexion</Button>
+            </Link>
+          </div>
           <div className="flex justify-center items-flex-start flex-col shadow-md mt-5 p-4 bg-secondary border border-FormBorder rounded-md md:p-8 w-full max-w-[700px]">
             <h2 className="text-base md:text-lg text-start mt-5">
-              Cet événement est privé, veuillez entrer la clé d'accès pour y participer.
+              Vous n'avez pas accès à cet événement,<br /> veuillez entrer la clé d'accès pour y participer.
             </h2>
-      
+
             <form onSubmit={handleSubmitToken} className="flex flex-col items-center mt-5 w-full">
               <Input
                 id="access"
@@ -462,15 +460,15 @@ export default function Event({ params }) {
                 Valider
               </Button>
             </form>
-      
+
             {errorMessage && <p className="text-red-500 mt-2 text-center">{errorMessage}</p>}
           </div>
         </div>
       )}
 
-      {user && (isTokenValid || (event && event.privacy === true)) && (
+      {(isTokenValid || (event && event.privacy === true)) && (
         <div className="sticky bottom-0 flex justify-center items-center gap-4 p-4">
-          {user.id !== event.creator.id ? (
+          {!user || (user.id !== event.creator.id) ? (
             isRegistered ? (
               <Button
                 variant="destructive"
@@ -493,7 +491,7 @@ export default function Event({ params }) {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size={"lg"} className="hover:bg-primary/70">
-                    <ModifyIcon className="w-6 h-6"/>
+                    <ModifyIcon className="w-6 h-6" />
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[650px]">
@@ -640,7 +638,7 @@ export default function Event({ params }) {
               </Dialog>
 
               <AlertDialog>
-                <AlertDialogTrigger><Button variant={"destructive"} size={"lg"}><DeleteIcon className="w-6 h-6"/></Button></AlertDialogTrigger>
+                <AlertDialogTrigger><Button variant={"destructive"} size={"lg"}><DeleteIcon className="w-6 h-6" /></Button></AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer cet événément ?</AlertDialogTitle>
