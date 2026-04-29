@@ -1,6 +1,6 @@
-# L'Art de Planifier
+# L'Agendary
 
-Projet étudiant réalisé en groupe dans le cadre de notre formation. L'Art de Planifier est une application web de gestion d'événements permettant aux utilisateurs de créer, rejoindre et gérer des événements, avec un calendrier personnel et un espace d'administration.
+Projet étudiant réalisé en groupe dans le cadre de notre formation. L'Agendary est une application web de gestion d'événements permettant aux utilisateurs de créer, rejoindre et gérer des événements, avec un calendrier personnel et un espace d'administration.
 
 ## Screenshots
 
@@ -44,8 +44,8 @@ Projet étudiant réalisé en groupe dans le cadre de notre formation. L'Art de 
 ### 1. Cloner le repo
 
 ```bash
-git clone https://github.com/LancelotThore/l-art-de-planifier.git
-cd l-art-de-planifier
+git clone https://github.com/LancelotThore/l-agendary.git
+cd l-agendary
 ```
 
 ### 2. Configurer le backend
