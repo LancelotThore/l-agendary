@@ -1,3 +1,16 @@
 
+# Migrations
 /backend/migrations
-/backend/migrations
+
+# Secrets & configuration locale
+/backend/.env
+/backend/.env.local
+/backend/.env.*.local
+/backend/config/jwt/*.pem
+
+# Uploads utilisateurs
+/frontend/public/uploads/
+
+# Fichiers système macOS
+.DS_Store
+**/.DS_Store
