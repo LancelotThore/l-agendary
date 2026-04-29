@@ -117,6 +117,24 @@ export default function Event({ params }) {
     fetchEventData();
   }, [params?.id]);
 
+  useEffect(() => {
+    if (event) {
+      const { formattedDate: sd, formattedTime: sh } = extractDateAndTime(event.startDate);
+      const { formattedDate: ed, formattedTime: eh } = extractDateAndTime(event.endDate);
+      setId(event.id);
+      setTitle(event.title);
+      setDescription(event.description);
+      setLocation(event.location);
+      setEtat(event.privacy);
+      setStartDate(sd);
+      setStartHour(sh);
+      setEndDate(ed);
+      setEndHour(eh);
+      setImage(event.image);
+      setLoading(false);
+    }
+  }, [event]);
+
   const closeModal = () => {
     setIsModalOpen(false);
     setErrorMessage("");

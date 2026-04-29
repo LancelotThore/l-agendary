@@ -9,6 +9,7 @@ use App\Entity\UserEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -77,9 +78,9 @@ public function register(Request $request): JsonResponse
 
             // Générer un token JWT pour l'utilisateur mis à jour
             $token = $this->jwtManager->create($existingUser);
-            setcookie('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true);
-
-            return new JsonResponse(200);
+            $response = new JsonResponse(200);
+            $response->headers->setCookie(Cookie::create('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true, false, 'None'));
+            return $response;
         } else {
             return new JsonResponse(['error' => 'Cet email est déjà utilisé.'], 400);
         }
@@ -111,9 +112,9 @@ public function register(Request $request): JsonResponse
 
     // Générer un token JWT pour l'utilisateur nouvellement enregistré
     $token = $this->jwtManager->create($user);
-    setcookie('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true);
-
-    return new JsonResponse(201);
+    $response = new JsonResponse(201);
+    $response->headers->setCookie(Cookie::create('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true, false, 'None'));
+    return $response;
 }
 
     // Méthode pour gérer la connexion
@@ -132,14 +133,16 @@ public function register(Request $request): JsonResponse
 
         // Créer le token JWT
         $token = $this->jwtManager->create($user);
-        setcookie('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true);
-        return new JsonResponse(200);
+        $response = new JsonResponse(200);
+        $response->headers->setCookie(Cookie::create('redirectImage', $token, time() + 2592000, '/', 'localhost', true, true, false, 'None'));
+        return $response;
     }
 
     public function logout(): JsonResponse
     {
-        setcookie('redirectImage', '', time() - 3600, '/', 'localhost', true, true);
-        return new JsonResponse(200);
+        $response = new JsonResponse(200);
+        $response->headers->clearCookie('redirectImage', '/', 'localhost', true, true, 'None');
+        return $response;
     }
 
     private function getUserRepository()
