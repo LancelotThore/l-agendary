@@ -29,7 +29,7 @@ class EventCrudController extends AbstractCrudController
             DateTimeField::new('end_date'),
             DateTimeField::new('deleted'),
             AssociationField::new('creator'),
-            // Ajoutez d'autres champs ici selon vos besoins
+            TextField::new('image'),
         ];
     }
 }

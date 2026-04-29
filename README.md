@@ -1,82 +1,102 @@
-# Informations Pratiques
+# L'Art de Planifier
 
-### Pour ouvrir le projet en mode développement :
+Projet étudiant réalisé en groupe dans le cadre de notre formation. L'Art de Planifier est une application web de gestion d'événements permettant aux utilisateurs de créer, rejoindre et gérer des événements, avec un calendrier personnel et un espace d'administration.
 
-1. **Se placer dans le dossier backend** :
-   ```sh
-   cd backend
-   ```
+## Screenshots
 
-2. **Lancer Docker Compose avec reconstruction des conteneurs** :
-   ```sh
-   docker-compose up --build
-   ```
+![Page d'accueil](image-1.png)
+![Créer un nouvel événement](image-2.png)
+![Calendrier](image-3.png)
+![Profile](image-4.png)
 
-3. **Ouvrir un Shell dans le conteneur back du projet (app-php)** :
-   ```sh
-   docker exec -it app-php bash
-   ```
+## Stack technique
 
-4. **Lancer les migrations de la base de données** :
-   ```sh
-   php bin/console doctrine:migrations:migrate
-   ```
+| Couche          | Technologies                                   |
+| --------------- | ---------------------------------------------- |
+| Frontend        | Next.js 14, React 18, TypeScript, Tailwind CSS |
+| Backend         | Symfony 7, PHP 8.3, Doctrine ORM               |
+| Auth            | JWT (LexikJWTAuthenticationBundle)             |
+| Base de données | MySQL 8                                        |
+| Infrastructure  | Docker, FrankenPHP, Caddy                      |
+| Mailing         | Symfony Mailer                                 |
+| Admin           | EasyAdmin                                      |
 
-5. **Accéder au front & au back pour accepter le risque de sécurité** :
-   - Problème lié aux certificats auto-générés.
+## Fonctionnalités
 
-6. **Ajouter des données initiales** :
-   - Voir [data.md](./data.md).
+- Inscription et connexion avec authentification JWT
+- Création, modification et suppression d'événements
+- Rejoindre / quitter un événement
+- Calendrier personnel affichant les événements de l'utilisateur
+- Page de recherche avec filtres (date, lieu, créateur, pagination)
+- Gestion des photos de profil et des images d'événements
+- Événements privés avec lien d'invitation par email
+- Mot de passe oublié / réinitialisation
+- Interface d'administration (backoffice)
+- Mentions légales et politique de confidentialité
 
-6. **Accèder à la page administrateur** :
-   - Vous devez renseigner un rôle admin dans phpmyadmin à l'adresse : [http://localhost:8080/](http://localhost:8080/)
-   - Les informations à renseigner dans le rôle de l'utilisateur est : ```["ROLE_USER", "ROLE_ADMIN"]```
-   - *Utilisateur: root*
-   - *Mot de passe: root*
+## Lancer le projet en local
 
+### Prérequis
 
----
+- [Docker](https://www.docker.com/) (v2.10+)
 
-# Fonctionnalités Implémentées
+### 1. Cloner le repo
 
-### Période : 02/12/2024 - 06/12/2024
-- Ajout des événements auquel l'utilisateur connecté participe et si il est le créateur sur le calendrier
-- Ajout de l'inscription par email avec désinscription
-- Popup de cookies
-- Revue du footer avec page politique de confidentialité et mentions légales
-- Amélioration du filtrage par location et par créateur sur la page recherche
+```bash
+git clone https://github.com/LancelotThore/l-art-de-planifier.git
+cd l-art-de-planifier
+```
 
+### 2. Configurer le backend
 
-### Période : 25/11/2024 - 29/11/2024
-- Le backoffice https://localhost/admin
-- La fonction de recherche fonctionnel avec la pagination
-- Suppression d'un event par son créateur sur la page de l'event
-- Intégration page 404
-- Intégration du calendrier seulement
+```bash
+cd backend
+cp .env.example .env
+```
 
+Édite `.env` et renseigne tes propres valeurs pour :
 
-### Période : 17/11/2024 - 22/11/2024
-- rejoindre et quitter un événements en tant qu'utilisateur connecté
-- Sauvegarde l'image de l'event à la création de celui-ci dans ./frontend/public/uploads/events_pictures
-- Possibilité de modifier un évènement lorsque c'est l'évènement du créateur
-- Ajout d'une flèche pour revenir en arrière
-- Ajout des filtres sur la page recherche ( searchBar, date, lieu, créateur)
-- Probléme de Pagination aprés une recherche
+- `APP_SECRET` — une chaîne aléatoire de 32 caractères
+- `JWT_PASSPHRASE` — une passphrase de ton choix
+- `MAILER_DSN` — ta configuration email
 
+Puis lance Docker :
 
+```bash
+docker compose up --build
+```
 
-### Période : 12/11/2024 - 15/11/2024
-_(Inclut les fonctionnalités présentes avant cette semaine)_
+### 3. Générer les clés JWT
 
-- Page de recherche : Intégration des requêtes pour les événements.
-- Page d’accueil : Affichage des événements mis en avant.
-- Page profil : Modification des informations utilisateur.
-- Page événement : Requêtes de données pour l'événement et son organisateur.
-- Déconnexion
-- Connexion
-- Création de compte
-- Création d'événement
-- Squelettes des cartes d'événements
-- Squelettes de la page d'événement
-- Spinner de chargement dans les boutons de login et register
+```bash
+docker exec -it app-php bash
+php bin/console lexik:jwt:generate-keypair
+exit
+```
 
+### 4. Lancer les migrations
+
+```bash
+docker exec -it app-php bash
+php bin/console doctrine:migrations:migrate
+exit
+```
+
+### 5. Accéder à l'application
+
+| Service       | URL                     |
+| ------------- | ----------------------- |
+| Frontend      | https://localhost:3000  |
+| Backend (API) | https://localhost       |
+| PhpMyAdmin    | http://localhost:8080   |
+| Admin         | https://localhost/admin |
+
+> ⚠️ Le backend utilise des certificats TLS auto-générés. Avant d'ouvrir le frontend, visite d'abord [https://localhost](https://localhost) et accepte l'avertissement de sécurité dans ton navigateur, sinon les appels API seront bloqués.
+
+### 6. Créer un compte administrateur
+
+Connecte-toi à PhpMyAdmin (`root` / `root`) et attribue le rôle admin à un utilisateur :
+
+```json
+["ROLE_USER", "ROLE_ADMIN"]
+```
