@@ -4,10 +4,12 @@ Projet étudiant réalisé en groupe dans le cadre de notre formation. L'Art de 
 
 ## Screenshots
 
-<img width="354" height="202" alt="Page d'accueil" src="https://github.com/user-attachments/assets/b2573138-699d-4197-91d1-e9a11d87d2c9" />
-<img width="354" height="202" alt="Page créer un nouvel événement" src="https://github.com/user-attachments/assets/d7806fe0-d074-4852-8c28-0945b9cdb370" />
-<img width="354" height="202" alt="Page calendrier" src="https://github.com/user-attachments/assets/84c3152a-3219-47f4-b1e0-5a00c0b9b720" />
-<img width="354" height="202" alt="PAge profil utilisateur" src="https://github.com/user-attachments/assets/97fcfc59-67b1-4f3e-9432-7c22a4ddf445" />
+<div>
+  <img width="354" height="202" alt="Page d'accueil" src="https://github.com/user-attachments/assets/b2573138-699d-4197-91d1-e9a11d87d2c9" />
+  <img width="354" height="202" alt="Page créer un nouvel événement" src="https://github.com/user-attachments/assets/d7806fe0-d074-4852-8c28-0945b9cdb370" />
+  <img width="354" height="202" alt="Page calendrier" src="https://github.com/user-attachments/assets/84c3152a-3219-47f4-b1e0-5a00c0b9b720" />
+  <img width="354" height="202" alt="Page profil utilisateur" src="https://github.com/user-attachments/assets/97fcfc59-67b1-4f3e-9432-7c22a4ddf445" />
+</div>
 
 ## Stack technique
 
